@@ -3,8 +3,8 @@ from django.http import HttpResponse
 
 
 def home(request):
-	return HttpResponse('<h1>Job Tracker Home</h1>')
+	return render(request, 'jobs/home.html')
 
 
 def companies(request):
-	return HttpResponse('<h1>Companies Page</h1>')
+	return render(request, 'jobs/companies.html')
