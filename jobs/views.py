@@ -7,4 +7,29 @@ def home(request):
 
 
 def companies(request):
-	return render(request, 'jobs/companies.html')
+	# placeholder data to render the template with content.
+	# This will be replaced with actual data from models.py
+	companies = [
+		{
+			'name': 'Amazon',
+			'careers_url': 'www.amazon.com/careers',
+			'industry': 'Tech'
+		}, 
+		{
+			'name': 'Flatiron',
+			'careers_url': 'www.flatiron.com/careers',
+			'industry': 'Healthcare'
+		}, 
+		{
+			'name': 'Google',
+			'careers_url': 'www.google.com/careers',
+			'industry': 'Tech'
+		}
+	]
+
+	context = {
+		'title': 'Companies',
+		'companies': companies
+	}
+
+	return render(request, 'jobs/companies.html', context)
