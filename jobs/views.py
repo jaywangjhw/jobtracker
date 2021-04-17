@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from .models import Position
 
 
 def home(request):
@@ -33,3 +34,14 @@ def companies(request):
 	}
 
 	return render(request, 'jobs/companies.html', context)
+
+def positions(request):
+
+	list_positions = Position.objects.all()
+
+	context = {
+		'title': 'Positions',
+		'positions': list_positions,
+	}
+
+	return render(request, 'jobs/positions.html', context)

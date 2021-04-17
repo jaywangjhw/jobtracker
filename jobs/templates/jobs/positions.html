@@ -1,0 +1,9 @@
+{% extends "jobs/base.html" %}
+
+{% block content %}
+	<h1>Positions Page</h1>
+    <h3>List of Positions</h3>
+	{% for position in positions %}
+		<li>{{ position.position_title }}</li>
+	{% endfor %}
+{% endblock content %}
