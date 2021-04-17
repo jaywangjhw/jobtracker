@@ -21,19 +21,19 @@ class Company(models.Model):
 # Need to add dependencies on User and Source class
 class Position(models.Model):
 
-	INDUSTRY_SKILL = {
+	INDUSTRY_SKILL = [
 		{'java', 'Java'}, 
 		{'c++', 'C++'},
 		{'algorithm', 'Algorithm Design'}, 
-		{'object_oriented', "Object Oriented"}, 
-		{'kubernetes', "Kubernetes"}
-	}
+		{'object_oriented', 'Object Oriented'}, 
+		{'kubernetes', 'Kubernetes'},
+	]
 
 	# Columns in Position table
 	position_title = models.CharField(max_length=100)
 	position_url = models.URLField(max_length=300, null=True)
 	date_opened = models.DateField(null=True)
 	date_closed = models.DateField(null=True)
-	skills = models.CharField(choices=INDUSTRY_SKILL, null=True)
+	skills = models.CharField(choices=INDUSTRY_SKILL, null=True, max_length=100)
 	job_description = models.TextField(null=True)
 	
