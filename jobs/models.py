@@ -25,7 +25,7 @@ class Position(models.Model):
 		{'java', 'Java'}, 
 		{'c++', 'C++'},
 		{'algorithm', 'Algorithm Design'}, 
-		{'object_oriented', 'Object Oriented'}, 
+		{'object', 'Object Oriented'}, 
 		{'kubernetes', 'Kubernetes'},
 	]
 
@@ -33,7 +33,7 @@ class Position(models.Model):
 	position_title = models.CharField(max_length=100)
 	position_url = models.URLField(max_length=300, null=True)
 	date_opened = models.DateField(null=True)
-	date_closed = models.DateField(null=True)
-	skills = models.CharField(choices=INDUSTRY_SKILL, null=True, max_length=100)
+	date_closed = models.DateField(null=True, blank=True, default='')
+	skills = models.CharField(choices=INDUSTRY_SKILL, null=True, max_length=100) # Need to look into multiple selection
 	job_description = models.TextField(null=True)
 	
