@@ -3,6 +3,8 @@
 {% block content %}
 	<h1>Positions Page</h1>
 
+    <button onclick="location.href='/positions/new'" type="button">Add Position</button>
+
 	{% for position in positions %}
 		<h3>{{ position.position_title }}</h3>
         <p>URL: {{ position.position_url }}</p>
