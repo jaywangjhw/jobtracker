@@ -1,9 +1,9 @@
 {% extends "jobs/base.html" %}
 
 {% block content %}
-	<h1>Positions Page</h1>
+    <h1>Positions Page</h1>
 
-    <button onclick="location.href='/positions/new'" type="button">Add Position</button>
+    <button type="button" class="btn btn-primary btn-lg" onclick="location.href='/positions/new'">Add Position</button></br></br>
 
 	{% for position in positions %}
 		<h3>{{ position.position_title }}</h3>
@@ -13,4 +13,5 @@
         <p>Skills: {{ position.skills }}</p>
         <p>Job Description: {{ position.job_description }}</p></br>
 	{% endfor %}
+
 {% endblock content %}
