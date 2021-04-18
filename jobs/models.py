@@ -22,11 +22,11 @@ class Company(models.Model):
 class Position(models.Model):
 
 	INDUSTRY_SKILL = [
-		{'java', 'Java'}, 
-		{'c++', 'C++'},
-		{'algorithm', 'Algorithm Design'}, 
-		{'object', 'Object Oriented'}, 
-		{'kubernetes', 'Kubernetes'},
+		('java', 'Java'), 
+		('c++', 'C++'),
+		('algorithm', 'Algorithm Design'), 
+		('object', 'Object Oriented'), 
+		('kubernetes', 'Kubernetes')
 	]
 
 	# Columns in Position table
@@ -34,6 +34,5 @@ class Position(models.Model):
 	position_url = models.URLField(max_length=300, null=True)
 	date_opened = models.DateField(null=True)
 	date_closed = models.DateField(null=True, blank=True, default='')
-	skills = models.CharField(choices=INDUSTRY_SKILL, null=True, max_length=100) # Need to look into multiple selection
+	skills = models.CharField(choices=INDUSTRY_SKILL, max_length=100) # Need to look into multiple selection
 	job_description = models.TextField(null=True)
-	

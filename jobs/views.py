@@ -1,11 +1,11 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from .models import Position
-
+from .forms import PositionForm
+import json
 
 def home(request):
 	return render(request, 'jobs/home.html')
-
 
 def companies(request):
 	# placeholder data to render the template with content.
@@ -35,7 +35,30 @@ def companies(request):
 
 	return render(request, 'jobs/companies.html', context)
 
-def positions(request):
+def add_position(request): 
+
+	if request.method == 'POST':
+		form = PositionForm(request.POST)
+
+		# Render list of positions that have been added to db
+		if form.is_valid():
+			print("Saving Position data")
+			form.save()
+			print("Redirecting to /positions")
+			return HttpResponseRedirect('/positions')
+
+	else: 
+		# Render blank Position form
+		form = PositionForm()
+
+	context = {
+		"form": form
+	}
+
+	print("Rendering add_position.html")
+	return render(request, 'jobs/add_position.html', context)
+
+def list_positions(request):
 
 	list_positions = Position.objects.all()
 
