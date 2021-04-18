@@ -2,13 +2,13 @@
 
 {% block content %}
 	<h1>Positions Page</h1>
+
 	{% for position in positions %}
 		<h3>{{ position.position_title }}</h3>
-        <p>URL: {{ position.position_url}}</p>
-        <p>Date Opened: {{ position.date_opened}}</p>
-        <p>Date Closed: {{ position.date_closed}}</p>
-        <p>Skills: {{ position.skills}}</p>
-        <p>Job Description: {{ position.job_description}}</p></br>
-
+        <p>URL: {{ position.position_url }}</p>
+        <p>Date Opened: {{ position.date_opened }}</p>
+        <p>Date Closed: {{ position.date_closed }}</p>
+        <p>Skills: {{ position.skills }}</p>
+        <p>Job Description: {{ position.job_description }}</p></br>
 	{% endfor %}
 {% endblock content %}
