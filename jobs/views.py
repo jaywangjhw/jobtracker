@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import Position, Company
+from .models import Position, Company, Account
 from .forms import PositionForm, NewCompanyForm
 import json
 
@@ -68,3 +68,14 @@ def list_positions(request):
     }
 
     return render(request, 'jobs/positions.html', context)
+
+def account(request):
+    account = Account.objects.all()
+    
+    context = {
+        'title': 'Account',
+        'account': account
+    }
+    return render(request, 'jobs/account.html', context)
+
+

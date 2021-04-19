@@ -42,3 +42,8 @@ class Position(models.Model):
 	date_closed = models.DateField(null=True, blank=True, default='')
 	skills = models.CharField(choices=INDUSTRY_SKILL, max_length=100) # Need to look into multiple selection
 	job_description = models.TextField(null=True)
+
+class Account(models.Model):
+
+	def __str__(self):
+		return self.name
