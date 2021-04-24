@@ -3,6 +3,7 @@ from django.urls import reverse_lazy
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import ListView, CreateView, DetailView
 from django.views.generic.edit import UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Position, Company, Account
 from .forms import PositionForm
 import json
@@ -18,11 +19,16 @@ class CompanyListView(ListView):
     context_object_name = 'companies'
 
 
-class CompanyCreateView(CreateView):
+class CompanyCreateView(LoginRequiredMixin, CreateView):
+    login_url = '../login'
     model = Company
     context_object_name = 'company'
-    fields = '__all__'
+    fields = ['name', 'careers_url', 'industry']
     success = '/companies'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
 
 class CompanyDetailView(DetailView):

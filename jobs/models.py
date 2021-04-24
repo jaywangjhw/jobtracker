@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User
 
 
 class Company(models.Model):
@@ -15,6 +16,7 @@ class Company(models.Model):
 		('other', 'Other'),
 	]
 	
+	user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
 	name = models.CharField(max_length=100)
 	careers_url = models.URLField(max_length=300, null=True)
 	industry = models.CharField(choices=INDUSTRY_CHOICES, max_length=100, null=True)
