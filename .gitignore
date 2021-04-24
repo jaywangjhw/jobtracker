@@ -1,6 +1,7 @@
 jobs/__pycache__
 jobs/migrations/__pycache__
 jobtracker/__pycache__
+users/__pycache__
 venv
 env
 .DS_store
