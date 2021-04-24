@@ -1,6 +1,8 @@
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import ListView, CreateView, DetailView
+from django.views.generic.edit import UpdateView, DeleteView
 from .models import Position, Company, Account
 from .forms import PositionForm
 import json
@@ -26,6 +28,17 @@ class CompanyCreateView(CreateView):
 class CompanyDetailView(DetailView):
     model = Company
     context_object_name = 'company'
+
+
+class CompanyUpdateView(UpdateView):
+    model = Company
+    fields = '__all__'
+    template_name_suffix = '_update_form'
+
+
+class CompanyDeleteView(DeleteView):
+    model = Company
+    success_url = reverse_lazy('jobs-companies')
 
 
 def add_position(request):
@@ -63,6 +76,7 @@ def list_positions(request):
 
     return render(request, 'jobs/positions.html', context)
 
+
 def account(request):
     account = Account.objects.all()
     
@@ -71,5 +85,3 @@ def account(request):
         'account': account
     }
     return render(request, 'jobs/account.html', context)
-
-
