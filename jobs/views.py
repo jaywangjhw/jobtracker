@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
+from django.views.generic import ListView, CreateView, DetailView
 from .models import Position, Company, Account
-from .forms import PositionForm, NewCompanyForm
+from .forms import PositionForm
 import json
 
 
@@ -9,29 +10,22 @@ def home(request):
     return render(request, 'jobs/home.html')
 
 
-def companies(request):
-    all_companies = Company.objects.all()
-    
-    context = {
-        'title': 'Companies',
-        'companies': all_companies
-    }
-    return render(request, 'jobs/companies.html', context)
+class CompanyListView(ListView):
+    model = Company
+    template_name = 'jobs/companies.html'
+    context_object_name = 'companies'
 
 
-def add_company(request):
-	if request.method == 'POST':
-		form = NewCompanyForm(request.POST)
-		if form.is_valid():
-			form.save()
-			return HttpResponseRedirect('/companies')
-	else:
-		form = NewCompanyForm()
+class CompanyCreateView(CreateView):
+    model = Company
+    context_object_name = 'company'
+    fields = '__all__'
+    success = '/companies'
 
-	context = {
-		'form': form,
-	}
-	return render(request, 'jobs/add_company.html', context)
+
+class CompanyDetailView(DetailView):
+    model = Company
+    context_object_name = 'company'
 
 
 def add_position(request):

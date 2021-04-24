@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 
 class Company(models.Model):
@@ -21,6 +22,9 @@ class Company(models.Model):
 	def __str__(self):
 		"""String for representing the Company as the Company name"""
 		return self.name
+
+	def get_absolute_url(self):
+		return reverse('jobs-company-detail', kwargs={'pk': self.pk})
 
 
 
