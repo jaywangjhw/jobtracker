@@ -6,7 +6,10 @@
     <button type="button" class="btn btn-primary btn-lg" onclick="location.href='/positions/new'">Add Position</button></br></br>
 
 	{% for position in positions %}
-		<h3>{{ position.position_title }}</h3>
+		<h3>{{ position.position_title }}    
+            <a class="btn btn-sm btn-info" href=""> Update</a>
+            <a class="btn btn-sm btn-danger" href=""> Delete</a>
+        </h3>
         <p>URL: {{ position.position_url }}</p>
         <p>Date Opened: {{ position.date_opened }}</p>
         <p>Date Closed: {{ position.date_closed }}</p>
