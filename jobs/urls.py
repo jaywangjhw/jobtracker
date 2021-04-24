@@ -3,6 +3,7 @@ from .views import *
 from . import views
 from users import views as user_views
 
+
 urlpatterns = [
     path('', views.home, name='jobs-home'),
     path('companies/', CompanyListView.as_view(extra_context={'title': 'Companies'}), name='jobs-companies'),
@@ -12,10 +13,8 @@ urlpatterns = [
     path('companies/delete/<int:pk>', CompanyDeleteView.as_view(), name='jobs-company-delete'),
     path('positions/', views.list_positions, name='jobs-positions'),
     path('positions/new', views.add_position, name='jobs-new-position'),
-    path('account/', views.account, name='jobs-account'),
+    path('account/', views.account, name='jobs-account')
 ]
-
-#Add Django site authentication urls (for login, logout, password management)
 
 urlpatterns += [
     path('accounts/', include('django.contrib.auth.urls')),
