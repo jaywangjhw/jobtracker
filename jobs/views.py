@@ -64,76 +64,18 @@ class PositionCreateView(CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
+
 class PositionUpdateView(UpdateView):
     model = Position
     fields = '__all__'
     template_name = 'jobs/update_position.html'
     context_object_name = 'position'
 
+
 class PositionDeleteView(DeleteView):
     model = Position
     success_url = reverse_lazy('jobs-list-positions')
 
-# def add_position(request):
-
-    # if request.method == 'POST':
-    #     form = PositionForm(request.POST)
-
-    #     # Render list of positions that have been added to db
-    #     if form.is_valid():
-    #         form.save()
-    #         print("Redirecting to /positions")
-    #         return redirect('/positions')
-
-    # else:
-    #     # Render blank Position form
-    #     form = PositionForm()
-
-    # context = {
-    #     "form": form
-    # }
-
-    # return render(request, 'jobs/add_position.html', context)
-
-
-# def update_position(request, pk):
-
-    # position = Position.objects.get(id=pk)
-    # form = PositionForm(instance=position)
-
-    # if request.method == "POST":
-
-    #     form = PositionForm(request.POST, instance=position)
-
-    #     if form.is_valid():
-    #         form.save()
-    #         return redirect('/positions')
-
-    # context = {
-    #     'form': form
-    # }
-
-    # return render(request, 'jobs/update_position.html', context)
-
-
-# def delete_position(request, pk):
-
-    # position = Position.objects.get(id=pk) 
-    # position.delete()   
-    
-    # return redirect('/positions')
-
-
-# def list_positions(request):
-
-    # list_positions = Position.objects.all()
-
-    # context = {
-    #     'title': 'Positions',
-    #     'positions': list_positions,
-    # }
-
-    # return render(request, 'jobs/positions.html', context)
 
 
 def account(request):

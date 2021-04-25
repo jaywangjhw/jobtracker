@@ -15,10 +15,6 @@ urlpatterns = [
     path('positions/new', PositionCreateView.as_view(), name='jobs-new-position'),
     path('positions/<int:pk>', PositionUpdateView.as_view(), name='jobs-update-position'),
     path('positions/delete/<int:pk>', PositionDeleteView.as_view(), name='jobs-delete-position'),
-    # path('positions/', views.list_positions, name='jobs-positions'),
-    # path('positions/new', views.add_position, name='jobs-new-position'),
-    # path('positions/<int:pk>/', views.update_position, name='jobs-update-position'),
-    # path('positions/delete/<int:pk>/', views.delete_position, name='jobs-delete-position'),
     path('account/', views.account, name='jobs-account'),
 ]
 
