@@ -1,7 +1,11 @@
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.http import HttpResponse, HttpResponseRedirect
+from django.views.generic import ListView, CreateView, DetailView
+from django.views.generic.edit import UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Position, Company, Account
-from .forms import PositionForm, NewCompanyForm
+from .forms import PositionForm
 import json
 
 
@@ -9,29 +13,38 @@ def home(request):
     return render(request, 'jobs/home.html')
 
 
-def companies(request):
-    all_companies = Company.objects.all()
-    
-    context = {
-        'title': 'Companies',
-        'companies': all_companies
-    }
-    return render(request, 'jobs/companies.html', context)
+class CompanyListView(ListView):
+    model = Company
+    template_name = 'jobs/companies.html'
+    context_object_name = 'companies'
 
 
-def add_company(request):
-	if request.method == 'POST':
-		form = NewCompanyForm(request.POST)
-		if form.is_valid():
-			form.save()
-			return HttpResponseRedirect('/companies')
-	else:
-		form = NewCompanyForm()
+class CompanyCreateView(LoginRequiredMixin, CreateView):
+    login_url = '../login'
+    model = Company
+    context_object_name = 'company'
+    fields = ['name', 'careers_url', 'industry']
+    success = '/companies'
 
-	context = {
-		'form': form,
-	}
-	return render(request, 'jobs/add_company.html', context)
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+
+class CompanyDetailView(DetailView):
+    model = Company
+    context_object_name = 'company'
+
+
+class CompanyUpdateView(UpdateView):
+    model = Company
+    fields = '__all__'
+    template_name_suffix = '_update_form'
+
+
+class CompanyDeleteView(DeleteView):
+    model = Company
+    success_url = reverse_lazy('jobs-companies')
 
 
 def add_position(request):
@@ -69,6 +82,7 @@ def list_positions(request):
 
     return render(request, 'jobs/positions.html', context)
 
+
 def account(request):
     account = Account.objects.all()
     
@@ -77,5 +91,3 @@ def account(request):
         'account': account
     }
     return render(request, 'jobs/account.html', context)
-
-
