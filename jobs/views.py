@@ -53,7 +53,6 @@ def add_position(request):
 
         # Render list of positions that have been added to db
         if form.is_valid():
-            print("Saving Position data")
             form.save()
             print("Redirecting to /positions")
             return HttpResponseRedirect('/positions')
@@ -66,8 +65,35 @@ def add_position(request):
         "form": form
     }
 
-    print("Rendering add_position.html")
     return render(request, 'jobs/add_position.html', context)
+
+
+def update_position(request, pk):
+
+    position = Position.objects.get(id=pk)
+    form = PositionForm(instance=position)
+
+    if request.method == "POST":
+
+        form = PositionForm(request.POST, instance=position)
+
+        if form.is_valid():
+            form.save()
+            return redirect('/positions')
+
+    context = {
+        'form': form
+    }
+
+    return render(request, 'jobs/update_position.html', context)
+
+
+def delete_position(request, pk):
+
+    position = Position.objects.get(id=pk) 
+    position.delete()   
+    
+    return redirect('/positions')
 
 
 def list_positions(request):
