@@ -55,14 +55,13 @@ def add_position(request):
 
     return render(request, 'jobs/add_position.html', context)
 
+
 def update_position(request, pk):
 
     position = Position.objects.get(id=pk)
     form = PositionForm(instance=position)
 
     if request.method == "POST":
-
-        print("HIT THE POST")
 
         form = PositionForm(request.POST, instance=position)
 
@@ -76,6 +75,15 @@ def update_position(request, pk):
 
     return render(request, 'jobs/update_position.html', context)
 
+
+def delete_position(request, pk):
+
+    position = Position.objects.get(id=pk) 
+    position.delete()   
+    
+    return redirect('/positions')
+
+
 def list_positions(request):
 
     list_positions = Position.objects.all()
@@ -86,6 +94,7 @@ def list_positions(request):
     }
 
     return render(request, 'jobs/positions.html', context)
+
 
 def account(request):
     account = Account.objects.all()
