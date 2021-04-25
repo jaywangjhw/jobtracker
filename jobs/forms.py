@@ -10,8 +10,9 @@ class PositionForm(ModelForm):
         model = Position
         fields = '__all__'
         help_texts = {
-            'date_opened': 'mm/dd/yyyy',
-            'date_closed': 'mm/dd/yyyy'
+            'position_url': "Ex: http://www.google.com",
+            'date_opened': 'Ex: mm/dd/yyyy',
+            'date_closed': 'Ex: mm/dd/yyyy'
         }
 
 class AccountForm(ModelForm):
