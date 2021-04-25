@@ -20,7 +20,6 @@ class CompanyListView(ListView):
 
 
 class CompanyCreateView(LoginRequiredMixin, CreateView):
-    login_url = '../login'
     model = Company
     context_object_name = 'company'
     fields = ['name', 'careers_url', 'industry']
