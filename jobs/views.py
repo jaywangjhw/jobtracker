@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Position, Company, Account
 from .forms import PositionForm, NewCompanyForm
@@ -57,13 +57,24 @@ def add_position(request):
 
 def update_position(request, pk):
 
-    form = PositionForm()
+    position = Position.objects.get(id=pk)
+    form = PositionForm(instance=position)
+
+    if request.method == "POST":
+
+        print("HIT THE POST")
+
+        form = PositionForm(request.POST, instance=position)
+
+        if form.is_valid():
+            form.save()
+            return redirect('/positions')
 
     context = {
         'form': form
     }
 
-    return render(request, 'jobs/add_position.html', context)
+    return render(request, 'jobs/update_position.html', context)
 
 def list_positions(request):
 

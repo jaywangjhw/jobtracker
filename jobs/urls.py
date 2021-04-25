@@ -8,7 +8,7 @@ urlpatterns = [
     path('companies/new', views.add_company, name='jobs-new-company'),
     path('positions/', views.list_positions, name='jobs-positions'),
     path('positions/new', views.add_position, name='jobs-new-position'),
-    path('positions/<str:pk>/', views.add_position, name='jobs-update-position'),
+    path('positions/<int:pk>/', views.update_position, name='jobs-update-position'),
     path('account/', views.account, name='jobs-account'),
 ]
 
