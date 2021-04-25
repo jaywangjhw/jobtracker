@@ -38,11 +38,11 @@ class Company(models.Model):
 class Position(models.Model):
 
 	INDUSTRY_SKILL = [
-		('java', 'Java'), 
-		('c++', 'C++'),
-		('algorithm', 'Algorithm Design'), 
-		('object', 'Object Oriented'), 
-		('kubernetes', 'Kubernetes')
+		('Java', 'Java'), 
+		('C++', 'C++'),
+		('Algorithm Design', 'Algorithm Design'), 
+		('Object Oriented', 'Object Oriented'), 
+		('Kubernetes', 'Kubernetes')
 	]
 
 	# Columns in Position table
