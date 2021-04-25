@@ -19,9 +19,3 @@ class AccountForm(ModelForm):
 	class Meta:
 		model = Account
 		fields = '__all__'
-
-class NewCompanyForm(ModelForm):
-
-	class Meta:
-		model = Company
-		fields = '__all__'

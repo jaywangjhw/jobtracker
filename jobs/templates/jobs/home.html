@@ -2,4 +2,7 @@
 
 {% block content %}
 	<h1>Job Tracker Home Page</h1>
+	{% if request.user.is_authenticated %}
+		<h3>Welcome {{ request.user.username }}</h3>
+	{% endif %}
 {% endblock content %}

@@ -1,10 +1,55 @@
 {% extends "jobs/base.html" %}
 
 {% block content %}
-	<h1>Companies Page</h1>
-	{% for company in companies %}
-		<h3>{{ company.name }}</h3>
-		<p>Careers website: {{ company.careers_url }}</p>
-		<p>Industry: {{ company.industry }}</p>
-	{% endfor %}
+	<script type='text/javascript'>
+		// Search for company in the list of all companies
+		$(document).ready(function(){
+		  $("#companySearch").keyup(function() {
+		  	// make the searc case insensitive
+		    var searchStr = $(this).val().toLowerCase();
+		    // hide any rows in the company table that do not match this search
+		    $("#companyTable tr").filter(function() {
+		      $(this).toggle($(this).text().toLowerCase().indexOf(searchStr) > -1)
+		    });
+		  });
+		});
+
+		// Allows each row in the company list to become clickable
+		$(document).ready(function($) {
+		    $(".make-row-clickable").click(function() {
+		        window.location = $(this).data("link");
+		    });
+		});
+	</script>
+
+	<div class="container p-5">
+		<h1 class="text-center">Companies</h1>
+	</div>
+	<div class="row">
+		<div class="col-4">
+			<input class="form-control" id="companySearch" type="text" placeholder="Search for Company">
+  			<br>
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th scope="col">Company</th>
+						<th scope="col">Applications</th>
+						<th scope="col">Industry</th>
+					</tr>
+				</thead>
+				<tbody id="companyTable">
+					{% for company in companies %}
+					<tr class="make-row-clickable" data-link="{% url 'jobs-company-detail' company.id %}">
+						<th scope="row">{{ company.name }}</th>
+						<td>#</td>
+						<td>{{ company.industry }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		<div class="col-7 md">
+			<p>Ultimately should display info about selected company</p>
+		</div>
+	</div>
 {% endblock content %}

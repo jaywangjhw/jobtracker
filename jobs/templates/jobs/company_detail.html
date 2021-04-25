@@ -1,0 +1,12 @@
+{% extends "jobs/base.html" %}
+
+{% block content %}
+<a href="{% url 'jobs-companies' %}">< View all companies</a>
+<br>
+<br>
+<h3>{{ company.name }}</h3>
+<p>Insustry: {{ company.industry }}</p>
+<p>Careers Link: {{ company.careers_url }}</p>
+<a class="btn btn-primary" href="{% url 'jobs-company-update' company.id %}" role="button">Edit Details</a>
+<a class="btn btn-primary" href="{% url 'jobs-company-delete' company.id %}" role="button">Delete</a>
+{% endblock content %}
