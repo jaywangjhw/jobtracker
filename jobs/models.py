@@ -53,6 +53,12 @@ class Position(models.Model):
 	skills = models.CharField(choices=INDUSTRY_SKILL, max_length=100) # Need to look into multiple selection
 	job_description = models.TextField(null=True)
 
+	def __str__(self):
+		"""String for representing the Position as the Position name"""
+		return self.position_title
+
+	def get_absolute_url(self):
+		return reverse('jobs-list-positions')
 
 class Account(models.Model):
 	user = models.OneToOneField(
