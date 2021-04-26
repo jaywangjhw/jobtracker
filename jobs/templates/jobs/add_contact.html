@@ -1,0 +1,13 @@
+{% extends "jobs/base.html" %}
+
+{% block content %}
+	<h1>Add a New Contact</h1>
+
+    <form action="/contacts/new" method="post">
+        {% csrf_token %}
+        <table>
+        {{ form.as_table }}
+        </table>
+        <input type="submit" value="Submit">
+    </form>
+{% endblock content %}
