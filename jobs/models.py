@@ -33,7 +33,6 @@ class Company(models.Model):
 		return reverse('jobs-company-detail', kwargs={'pk': self.pk})
 
 
-
 # Need to add dependencies on User and Source class
 class Position(models.Model):
 
@@ -60,14 +59,68 @@ class Position(models.Model):
 	def get_absolute_url(self):
 		return reverse('jobs-list-positions')
 
+
 class Account(models.Model):
 	user = models.OneToOneField(
 		User,
         on_delete=models.CASCADE
-    )
+    	)
 
 	def __str__(self):
 		return self.user.username
+
+
+class Application(models.Model):
+	user = models.ForeignKey(
+		User,
+		on_delete=models.CASCADE,
+		default=1
+		)
+	position = models.ForeignKey(
+		Position,
+		on_delete=models.CASCADE
+		)
+	date_started = models.DateField(null=True, blank=True)
+	date_submitted = models.DateField(null=True, blank=True)
+	email_used = models.EmailField(null=True, blank=True, max_length=128)
+	offer = models.BooleanField()
+	accepted = models.BooleanField()
+	notes = models.TextField(null=True, blank=True)
+
+
+class Interview(models.Model):
+	user = models.ForeignKey(
+		User,
+		on_delete=models.CASCADE,
+		default=1
+		)
+	application = models.ForeignKey(
+		Application,
+		on_delete=models.CASCADE
+		)
+	date = models.DateField(null=True, blank=True)
+	time = models.CharField(null=True, blank=True, max_length=10)
+	location = models.CharField(null=True, blank=True, max_length=256)
+	virtual_url = models.CharField(null=True, blank=True, max_length=512)
+	complete = models.BooleanField()
+	notes = models.TextField(null=True, blank=True)
+
+
+class Assessment(models.Model):
+	user = models.ForeignKey(
+		User,
+		on_delete=models.CASCADE,
+		default=1
+		)
+	application = models.ForeignKey(
+		Application,
+		on_delete=models.CASCADE
+		)
+	date = models.DateField(null=True, blank=True)
+	time = models.CharField(null=True, blank=True, max_length=10)
+	virtual_url = models.CharField(null=True, blank=True, max_length=512)
+	complete = models.BooleanField()
+	notes = models.TextField(null=True, blank=True)
 
 
 def post_new_user_created_signal(sender, instance, created, **kwargs):
