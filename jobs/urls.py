@@ -16,6 +16,10 @@ urlpatterns = [
     path('positions/<int:pk>', PositionUpdateView.as_view(), name='jobs-update-position'),
     path('positions/delete/<int:pk>', PositionDeleteView.as_view(), name='jobs-delete-position'),
     path('account/', views.account, name='jobs-account'),
+    path('contacts/', ContactListView.as_view(), name='jobs-contacts'),
+    path('contacts/new', ContactCreateView.as_view(), name='jobs-new-contact'),
+    path('contacts/<int:pk>', ContactUpdateView.as_view(), name='jobs-update-contact'),
+    path('contacts/delete/<int:pk>', ContactDeleteView.as_view(), name='jobs-delete-contact'),
 ]
 
 urlpatterns += [
