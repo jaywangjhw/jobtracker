@@ -5,7 +5,7 @@
 		// Search for company in the list of all companies
 		$(document).ready(function(){
 		  $("#companySearch").keyup(function() {
-		  	// make the searc case insensitive
+		  	// make the search case insensitive
 		    var searchStr = $(this).val().toLowerCase();
 		    // hide any rows in the company table that do not match this search
 		    $("#companyTable tr").filter(function() {
@@ -17,7 +17,7 @@
 		// Allows each row in the company list to become clickable
 		$(document).ready(function($) {
 		    $(".make-row-clickable").click(function() {
-		        window.location = $(this).data("link");
+		        window.location.href = $(this).data("link");
 		    });
 		});
 	</script>
