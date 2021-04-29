@@ -18,7 +18,7 @@
 	{% endif %}
 
 </head>
-<body>
+<body class="h-100">
 
 	<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
 		<div class="container-fluid">
@@ -29,11 +29,12 @@
 			<div class="collapse navbar-collapse"></div>
 			<div class="collapse navbar-collapse" id="expandMenu">
 				<ul class="navbar-nav mr-auto">
+					{% if request.user.is_authenticated %}
 					<li class="nav-item">
 						<a class="nav-link active" aria-current="page" href="/">Dashboard</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="/companies">Companies</a>
+						<a class="nav-link" href="{% url 'jobs-companies' %}">Companies</a>
 					</li>
 					<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">Jobs</a>
@@ -48,6 +49,7 @@
 					<li class="nav-item">
 						<a class="nav-link" href="#">Skills</a>
 					</li>
+					{% endif %}
 				</ul>
 				<ul class="navbar-nav">
 					{% if request.user.is_authenticated %}
@@ -69,7 +71,7 @@
 					</li>
 					{% else %}
 					<li class="nav-item">
-						<a class="nav-link" href="/login">Login</a>
+						<a class="nav-link" href="{% url 'login' %}">Login</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link" href="/register">Register</a>
