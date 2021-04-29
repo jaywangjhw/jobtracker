@@ -4,11 +4,13 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import ListView, CreateView, DetailView
 from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from .models import Position, Company, Account, Contact
 from .forms import PositionForm
 import json
 
 
+@login_required
 def home(request):
     return render(request, 'jobs/home.html')
 
