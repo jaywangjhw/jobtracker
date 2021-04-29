@@ -59,7 +59,21 @@ class Position(models.Model):
 	def get_absolute_url(self):
 		return reverse('jobs-list-positions')
 
-
+class Contact(models.Model):
+	user = models.ForeignKey(
+		User,
+		on_delete=models.CASCADE,
+		default=1
+		)
+	
+	last_name = models.TextField(null=True, blank=True)
+	first_name = models.TextField(null=True, blank=True)
+	email = models.EmailField(null=True, blank=True, max_length=128)
+	phone_number = models.IntegerField(null=True, blank=True)
+	notes = models.TextField(null=True, blank=True)
+	def get_absolute_url(self):
+		return reverse('jobs-contacts')
+        
 class Account(models.Model):
 	user = models.OneToOneField(
 		User,

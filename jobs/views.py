@@ -5,7 +5,7 @@ from django.views.generic import ListView, CreateView, DetailView
 from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
-from .models import Position, Company, Account
+from .models import Position, Company, Account, Contact
 from .forms import PositionForm
 import json
 
@@ -78,7 +78,32 @@ class PositionDeleteView(DeleteView):
     model = Position
     success_url = reverse_lazy('jobs-list-positions')
 
+class ContactListView(ListView):
+    model = Contact
+    template_name = 'jobs/contacts.html'
+    context_object_name = 'contacts'
 
+class ContactCreateView(CreateView):
+    model = Contact
+    context_object_name = 'contact'
+    template_name = 'jobs/add_contact.html'
+    fields = '__all__'
+    success = '/contacts'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+class ContactUpdateView(UpdateView):
+    model = Contact
+    fields = '__all__'
+    template_name = 'jobs/update_contact.html'
+    context_object_name = 'contact'
+
+
+class ContactDeleteView(DeleteView):
+    model = Contact
+    success_url = reverse_lazy('jobs-contacts')
 
 def account(request):
     account = Account.objects.all()
