@@ -23,11 +23,42 @@
 						<a class="btn btn-primary" href="{% url 'jobs-company-update' company.id %}" role="button">Edit Details</a>
 						<a class="btn btn-primary" href="{% url 'jobs-company-delete' company.id %}" role="button">Delete</a>
 					</div>
+					{{ company.positions }}
 			    </div>
 			</div>
 		</div>
 	</div>
+	<div class="positions mb-5">
+		{% for position in company.position_set.all %}
+		<div class="card mb-3">
+			<div class="card-body">
+				<div class="row">
+					<div class="col-md-10">
+						<h5 class="card-title mb-2">{{ position.position_title }}</h5>
+						<p>{{ position.job_description }}</p>
+						<a href="{{ position.position_url }}" class="card-text ">{{ position.position_url }}</a>
+						<p class="card-text"><small class="text-muted">Opened - {{ position.date_opened }}</small></p>
+					</div>
+					<div class="col-md-2 align-content-stretch">
+						<div class="row mb-1">
+							{% if position.application_set.all %}
+								<a class="btn btn-primary" href="#" role="button">View Application</a>
+							{% else %}
+								<a class="btn btn-primary" href="#" role="button">Create Application</a>
+							{% endif %}
+						</div>
+						<div class="row mb-1">
+							<a class="btn btn-primary" href="#" role="button">Update Position</a>
+						</div>
+						<div class="row mb-1">
+							<a class="btn btn-primary" href="#" role="button">Delete Position</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>      
+		{% endfor %}
+	</div>
 </div>
-
 
 {% endblock content %}

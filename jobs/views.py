@@ -44,6 +44,7 @@ class CompanyListView(LoginRequiredMixin, View):
 
 
 class CompanyCreateView(LoginRequiredMixin, CreateView):
+    
     model = Company
     context_object_name = 'company'
     fields = ['name', 'careers_url', 'industry']
@@ -55,6 +56,7 @@ class CompanyCreateView(LoginRequiredMixin, CreateView):
 
 
 class CompanyUpdateView(LoginRequiredMixin, UpdateView):
+    
     model = Company
     fields = ['name', 'careers_url', 'industry']
     template_name_suffix = '_update_form'
@@ -77,6 +79,7 @@ class CompanyUpdateView(LoginRequiredMixin, UpdateView):
 
 
 class CompanyDeleteView(LoginRequiredMixin, DeleteView):
+    
     model = Company
     success_url = reverse_lazy('jobs-companies')
 
@@ -86,37 +89,77 @@ class CompanyDeleteView(LoginRequiredMixin, DeleteView):
         context['id'] = self.kwargs['pk']
         return context
 
+
+class CompanyDetailView(LoginRequiredMixin, DetailView):
+
+    model = Company
+    template_name = 'jobs/company_detail.html'
+    context_object_name = 'company'
+
+
 #-------------------------------------Company Views End----------------------------------------
 
-class PositionListView(ListView):
+#---------------------------------------Position Views-----------------------------------------
+
+class PositionListView(LoginRequiredMixin, ListView):
     
     model = Position
     template_name = 'jobs/positions.html'
     context_object_name = 'positions'
+    fields = ['company', 'position_title', 'position_url', 'date_opened', 'date_closed',
+                'skills', 'job_description']
 
 
-class PositionCreateView(CreateView):
+class PositionCreateView(LoginRequiredMixin, CreateView):
     model = Position
     context_object_name = 'position'
     template_name = 'jobs/add_position.html'
-    fields = '__all__'
+    fields = ['company', 'position_title', 'position_url', 'date_opened', 'date_closed',
+                'skills', 'job_description']
     success = '/positions'
+
+    def get_initial(self):
+        ''' Allows you to set initial values for the new Position form. 
+            Currently set up to receive a URL query param with a Company's PK. 
+            This will then set the initial form value for the Company. 
+        '''
+        # Get the company query param from the request (may not be there).
+        company_id = self.request.GET.get('company')
+        # Check to see if the query param is there & make sure this is a 
+        # GET request. We don't want to run this if the form is being POSTed.
+        if company_id and self.request.method == "GET":
+            # Grabs the initial dictionary by calling superclass.
+            initial = super().get_initial()
+            company = Company.objects.get(pk=company_id)
+            initial['company'] = company
+            return initial
+        # If this isn't a new Position for a specific company, just use the 
+        # default initial values. 
+        return super().get_initial()
 
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
 
-class PositionUpdateView(UpdateView):
+class PositionUpdateView(LoginRequiredMixin, UpdateView):
     model = Position
-    fields = '__all__'
+    fields = ['company', 'position_title', 'position_url', 'date_opened', 'date_closed',
+                'skills', 'job_description']
     template_name = 'jobs/update_position.html'
     context_object_name = 'position'
 
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
-class PositionDeleteView(DeleteView):
+
+class PositionDeleteView(LoginRequiredMixin, DeleteView):
     model = Position
     success_url = reverse_lazy('jobs-list-positions')
+
+
+#-------------------------------------Position Views End----------------------------------------
 
 
 class ContactListView(ListView):

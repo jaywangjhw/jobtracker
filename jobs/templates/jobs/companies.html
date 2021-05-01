@@ -28,7 +28,7 @@
 		</table>
 	</div>
 	<div class="col-8">
-		<div class="container ml-3">
+		<div class="container ml-3 show-company">
 			<div class="row mt-3">
 				<div class="col-md-auto">
 					{% if show_co %}
@@ -50,11 +50,15 @@
 					<div class="row mb-3">
 						<div class="col">
 							{% if show_co %}
-							<a class="btn btn-primary edit-company" href="{% url 'jobs-company-update' show_co.id %}" role="button">Edit Details</a>
-							<a class="btn btn-primary delete-company" href="{% url 'jobs-company-delete' show_co.id %}" role="button">Delete</a>
+								<a class="btn btn-primary edit-company" href="{% url 'jobs-company-update' show_co.id %}" role="button">Edit Details</a>
+								<a class="btn btn-primary delete-company" href="{% url 'jobs-company-delete' show_co.id %}" role="button">Delete</a>
+								<a class="btn btn-primary positions-company" href="{% url 'jobs-company-details' show_co.id %}" role="button">Positions</a>
+								<a class="btn btn-primary add-position" href="{% url 'jobs-new-position' %}?company={{ company.id }}" role="button">Add Position</a>
 							{% else %}
-							<a class="btn btn-primary invisible edit-company" href="#" role="button">Edit Details</a>
-							<a class="btn btn-primary invisible delete-company" href="#" role="button">Delete</a>
+								<a class="btn btn-primary invisible edit-company" href="#" role="button">Edit Details</a>
+								<a class="btn btn-primary invisible delete-company" href="#" role="button">Delete</a>
+								<a class="btn btn-primary invisible positions-company" href="#" role="button">Positions</a>
+								<a class="btn btn-primary invisible add-position" href="#" role="button">Add Position</a>
 							{% endif %}
 						</div>
 				    </div>
