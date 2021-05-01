@@ -4,7 +4,7 @@
 
 <form method="post">
 	{% csrf_token %}
-	<p>You are about to delete contact: "{{ object }}". Are you sure?</p>
+	<p>You are about to delete this contact. Are you sure?</p>
 	<input class="btn btn-primary" type="submit" value="Delete">
 	<a class="btn btn-primary" href="{% url 'jobs-contacts' %}" role="button">Cancel</a>
 </form>

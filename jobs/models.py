@@ -75,9 +75,9 @@ class Contact(models.Model):
 		on_delete=models.CASCADE,
 		default=1
 		)
-	
-	last_name = models.TextField(null=True, blank=True)
-	first_name = models.TextField(null=True, blank=True)
+
+	first_name = models.CharField(max_length=100)
+	last_name = models.CharField(max_length=100)
 	email = models.EmailField(null=True, blank=True, max_length=128)
 	phone_number = models.IntegerField(null=True, blank=True)
 	notes = models.TextField(null=True, blank=True)
