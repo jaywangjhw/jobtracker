@@ -45,6 +45,15 @@ class Position(models.Model):
 	]
 
 	# Columns in Position table
+	user = models.ForeignKey(
+		User,
+		on_delete=models.CASCADE,
+		default=1
+		)
+	company = models.ForeignKey(
+		Company,
+		on_delete=models.CASCADE
+		)
 	position_title = models.CharField(max_length=100)
 	position_url = models.URLField(max_length=300, null=True)
 	date_opened = models.DateField(null=True)
@@ -59,6 +68,7 @@ class Position(models.Model):
 	def get_absolute_url(self):
 		return reverse('jobs-list-positions')
 
+
 class Contact(models.Model):
 	user = models.ForeignKey(
 		User,
@@ -71,9 +81,11 @@ class Contact(models.Model):
 	email = models.EmailField(null=True, blank=True, max_length=128)
 	phone_number = models.IntegerField(null=True, blank=True)
 	notes = models.TextField(null=True, blank=True)
+	
 	def get_absolute_url(self):
 		return reverse('jobs-contacts')
-        
+    
+
 class Account(models.Model):
 	user = models.OneToOneField(
 		User,
@@ -134,6 +146,25 @@ class Assessment(models.Model):
 	time = models.CharField(null=True, blank=True, max_length=10)
 	virtual_url = models.CharField(null=True, blank=True, max_length=512)
 	complete = models.BooleanField()
+	notes = models.TextField(null=True, blank=True)
+
+
+class Communication(models.Model):
+	user = models.ForeignKey(
+		User,
+		on_delete=models.CASCADE,
+		default=1
+		)
+	application = models.ForeignKey(
+		Application,
+		on_delete=models.CASCADE
+		)
+	contact = models.ForeignKey(
+		Contact,
+		on_delete=models.CASCADE
+		)
+	data = models.DateField(null=True, blank=True)
+	method = models.CharField(choices=[('phone','Phone'), ('email','Email'), ('meeting','Meeting'),], max_length=100, null=True)
 	notes = models.TextField(null=True, blank=True)
 
 
