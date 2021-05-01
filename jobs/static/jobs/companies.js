@@ -9,12 +9,6 @@ $(document).ready(function(){
 		});
 	});
 
-	// Allows each row in the company list to become clickable
-	//$(".make-row-clickable").click(function() {
-	//	window.location.href = $(this).data("link");
-	//});
-
-
 	$('.make-row-clickable').click(function () {
 	    $.ajax({
 	        url: $(this).closest('tr').data('link'),
@@ -28,6 +22,8 @@ $(document).ready(function(){
 	            $( "a" ).removeClass( "invisible" ).addClass( "visible" );
 	            $("a.edit-company").attr("href", "/companies/edit/" + response.id);
 	            $("a.delete-company").attr("href", "/companies/delete/" + response.id);
+	           	$("a.positions-company").attr("href", "/companies/" + response.id);
+	            $("a.add-position").attr("href", "/positions/new?company=" + response.id);
 	        },
 	        error: function (response) {
 	            console.log(response.responseJSON.errors)

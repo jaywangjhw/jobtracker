@@ -8,7 +8,8 @@ class PositionForm(ModelForm):
 
     class Meta: 
         model = Position
-        fields = '__all__'
+        fields = ['company', 'position_title', 'position_url', 'date_opened', 'date_closed',
+                    'skills', 'job_description']
         help_texts = {
             'position_url': "Ex: http://www.google.com",
             'date_opened': 'Ex: mm/dd/yyyy',
