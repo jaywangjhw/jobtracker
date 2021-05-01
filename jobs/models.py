@@ -113,6 +113,9 @@ class Application(models.Model):
 	accepted = models.BooleanField()
 	notes = models.TextField(null=True, blank=True)
 
+	def get_absolute_url(self):
+		return reverse('jobs-list-applications')
+
 
 class Interview(models.Model):
 	user = models.ForeignKey(
