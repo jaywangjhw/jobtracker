@@ -85,7 +85,7 @@ class CompanyDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Pass the pk as a context variable, so that our templtes can access it.
+        # Pass the pk as a context variable, so that our templates can access it.
         context['id'] = self.kwargs['pk']
         return context
 
@@ -170,6 +170,17 @@ class ApplicationListView(LoginRequiredMixin, ListView):
     context_object_name = 'applications'
     fields = ['position', 'date_started', 'date_submitted', 'email_used', 'offer',
                 'accepted', 'notes']
+    
+    def get_context_data(self, **kwargs):
+
+        offer = Application.objects.all().filter(offer=True).count()
+        accepted = Application.objects.all().filter(accepted=True).count()
+
+        context = super().get_context_data(**kwargs)
+        # Pass the pk as a context variable, so that our templates can access it.
+        context['offer_count'] = offer
+        context['accepted_count'] = accepted
+        return context
 
 
 class ApplicationCreateView(LoginRequiredMixin, CreateView):
