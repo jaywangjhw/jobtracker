@@ -162,13 +162,13 @@ class PositionDeleteView(LoginRequiredMixin, DeleteView):
 #-------------------------------------Position Views End----------------------------------------
 
 
-class ContactListView(ListView):
+class ContactListView(LoginRequiredMixin, ListView):
     model = Contact
     template_name = 'jobs/contacts.html'
     context_object_name = 'contacts'
 
 
-class ContactCreateView(CreateView):
+class ContactCreateView(LoginRequiredMixin, CreateView):
     model = Contact
     context_object_name = 'contact'
     template_name = 'jobs/add_contact.html'
@@ -180,18 +180,19 @@ class ContactCreateView(CreateView):
         return super().form_valid(form)
 
 
-class ContactUpdateView(UpdateView):
+class ContactUpdateView(LoginRequiredMixin, UpdateView):
     model = Contact
     fields = '__all__'
     template_name = 'jobs/update_contact.html'
     context_object_name = 'contact'
 
 
-class ContactDeleteView(DeleteView):
+class ContactDeleteView(LoginRequiredMixin, DeleteView):
     model = Contact
     success_url = reverse_lazy('jobs-contacts')
 
 
+@login_required
 def account(request):
     account = Account.objects.all()
     
