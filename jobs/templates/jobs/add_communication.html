@@ -1,0 +1,34 @@
+{% extends "jobs/base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container h-100 mt-5">
+	<div class="container ml-3">
+		<div class="row mt-3">
+			<div class="col-md-auto">
+				<h2>Add New Communication</h2>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-auto mb-3">
+				<p>Track communication with a contact regarding one of your applications</p>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-6 mb-3">
+				<form method="POST">
+				{% csrf_token %}
+				{{ form|crispy }}
+					<div class="row mb-3">
+						<div class="col">
+							<button class="btn btn-primary mt-3" type="submit">Add Communication</button>
+						</div>
+				    </div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock content %}
