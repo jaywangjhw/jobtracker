@@ -38,6 +38,13 @@
 					<li class="nav-item">
 						<a class="nav-link active" href="{% url 'jobs-companies' %}">Companies</a>
 					</li>
+					<li class="nav-item">
+						<a class="nav-link active" href="{% url 'jobs-list-positions' %}">Positions</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link active" href="#">Applications</a>
+					</li>
+					<!--
 					<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle active" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">Jobs</a>
 						<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
@@ -45,12 +52,15 @@
 							<li><a class="dropdown-item" href="/applications">Applications</a></li>
 						</ul>
 					</li>
+					-->
 					<li class="nav-item">
 						<a class="nav-link active" href="/contacts">Contacts</a>
 					</li>
+					<!--
 					<li class="nav-item">
 						<a class="nav-link active" href="#">Skills</a>
 					</li>
+					-->
 					{% endif %}
 				</ul>
 				<ul class="navbar-nav">
@@ -66,7 +76,7 @@
 					<li class="dropdown ml-2">
 						<a class="nav-link active dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false"> {{ request.user.username }} </a>
 						<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-							<li><a class="dropdown-item" href="/account">My Account</a></li>
+							<li><a class="dropdown-item" href="/profile">My Account</a></li>
 							<li><a class="dropdown-item" href="/logout">Logout</a></li>
 							<li><a class="dropdown-item" href="#">Reset Password</a></li>
 						</ul>
