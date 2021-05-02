@@ -1,0 +1,18 @@
+{% extends "jobs/base.html" %}
+
+{% block content %}
+
+<div class="container h-100 mt-5">
+	<div class="row justify-content-md-center mt-3">
+		<div class="col-md-auto">
+			<h2>Successfully logged out</h2>
+		</div>
+	</div>
+	<div class="row justify-content-md-center">
+		<div class="col-sm-6 mt-3 mb-3 border-top pt-3 text-center">
+			<a class="btn btn-primary" href="{% url 'login' %}">Login</a>
+		</div>
+	</div>
+</div>
+
+{% endblock content %}
