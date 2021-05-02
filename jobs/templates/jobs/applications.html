@@ -6,10 +6,10 @@
     <button type="button" class="btn btn-primary btn-lg" onclick="location.href='/applications/new'">Add Application</button></br></br>
 
     <h2>Offer Count: {{ offer_count }}</h2>
-    <h2>Accepted Count: {{ accepted_count }}</h2>
+    <h2>Accepted Count: {{ accepted_count }}</h2></br></br>
 
 	{% for application in applications %}
-		<h3>{{ application.id }}
+		<h3>Application ID: {{ application.id }}
             <a class="btn btn-sm btn-info" href="{% url 'jobs-update-application' application.id %}"> Update</a>
             <a class="btn btn-sm btn-danger" href="{% url 'jobs-delete-application' application.id %}"> Delete</a>
         </h3>
