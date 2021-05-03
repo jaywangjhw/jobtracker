@@ -273,3 +273,4 @@ def account(request):
         'account': account
     }
     return render(request, 'jobs/account.html', context)
+
