@@ -6,7 +6,7 @@ from django.views.generic import ListView, CreateView, DetailView
 from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
-from .models import Position, Company, Account, Contact
+from .models import Position, Company, Account, Contact, Application
 from .forms import PositionForm
 import json
 
@@ -85,7 +85,7 @@ class CompanyDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Pass the pk as a context variable, so that our templtes can access it.
+        # Pass the pk as a context variable, so that our templates can access it.
         context['id'] = self.kwargs['pk']
         return context
 
@@ -159,8 +159,80 @@ class PositionDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('jobs-list-positions')
 
 
-#-------------------------------------Position Views End----------------------------------------
+#-------------------------------------Position Views End------------------------------------------
 
+#---------------------------------------Application Views-----------------------------------------
+
+class ApplicationListView(LoginRequiredMixin, ListView):
+    
+    model = Application
+    template_name = 'jobs/applications.html'
+    context_object_name = 'applications'
+    fields = ['position', 'date_started', 'date_submitted', 'email_used', 'offer',
+                'accepted', 'notes']
+    
+    def get_context_data(self, **kwargs):
+
+        offer = Application.objects.all().filter(offer=True).count()
+        accepted = Application.objects.all().filter(accepted=True).count()
+
+        context = super().get_context_data(**kwargs)
+        # Pass the pk as a context variable, so that our templates can access it.
+        context['offer_count'] = offer
+        context['accepted_count'] = accepted
+        return context
+
+
+class ApplicationCreateView(LoginRequiredMixin, CreateView):
+    model = Application
+    context_object_name = 'application'
+    template_name = 'jobs/add_application.html'
+    fields = ['position', 'date_started', 'date_submitted', 'email_used', 'offer',
+                'accepted', 'notes']
+    success = '/applications'
+
+    def get_initial(self):
+        ''' Allows you to set initial values for the new Application form. 
+            Currently set up to receive a URL query param with a Position PK. 
+            This will then set the initial form value for the Position. 
+        '''
+        # Get the company query param from the request (may not be there).
+        position_id = self.request.GET.get('position')
+        # Check to see if the query param is there & make sure this is a 
+        # GET request. We don't want to run this if the form is being POSTed.
+        if position_id and self.request.method == "GET":
+            # Grabs the initial dictionary by calling superclass.
+            initial = super().get_initial()
+            Position = Position.objects.get(pk=position_id)
+            initial['position'] = position
+            return initial
+        # If this isn't a new Application for a specific position, just use the 
+        # default initial values. 
+        return super().get_initial()
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+
+class ApplicationUpdateView(LoginRequiredMixin, UpdateView):
+    model = Application
+    fields = ['position', 'date_started', 'date_submitted', 'email_used', 'offer',
+                'accepted', 'notes']
+    template_name = 'jobs/update_application.html'
+    context_object_name = 'application'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+
+class ApplicationDeleteView(LoginRequiredMixin, DeleteView):
+    model = Application
+    success_url = reverse_lazy('jobs-list-applications')
+
+
+#-------------------------------------Applications Views End------------------------------------------
 
 class ContactListView(LoginRequiredMixin, ListView):
     model = Contact
