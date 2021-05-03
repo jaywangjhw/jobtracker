@@ -84,6 +84,10 @@ class Contact(models.Model):
 	
 	def get_absolute_url(self):
 		return reverse('jobs-contacts')
+
+	def __str__(self):
+		"""String for representing a Contact as their first and last names"""
+		return self.first_name + ' ' + self.last_name
     
 
 class Account(models.Model):
@@ -112,9 +116,6 @@ class Application(models.Model):
 	offer = models.BooleanField()
 	accepted = models.BooleanField()
 	notes = models.TextField(null=True, blank=True)
-
-	def get_absolute_url(self):
-		return reverse('jobs-list-applications')
 
 
 class Interview(models.Model):
@@ -166,9 +167,14 @@ class Communication(models.Model):
 		Contact,
 		on_delete=models.CASCADE
 		)
-	data = models.DateField(null=True, blank=True)
+	date = models.DateField(null=True, blank=True)
 	method = models.CharField(choices=[('phone','Phone'), ('email','Email'), ('meeting','Meeting'),], max_length=100, null=True)
 	notes = models.TextField(null=True, blank=True)
+
+	def __str__(self):
+		company = self.application.position.company.name
+		job_title = self.application.position.position_title
+		return self.contact.last_name + '-' + company + '-' + job_title
 
 
 def post_new_user_created_signal(sender, instance, created, **kwargs):

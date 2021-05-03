@@ -6,7 +6,7 @@ from django.views.generic import ListView, CreateView, DetailView
 from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
-from .models import Position, Company, Account, Contact, Application
+from .models import Position, Company, Account, Contact, Communication
 from .forms import PositionForm
 import json
 
@@ -85,7 +85,7 @@ class CompanyDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Pass the pk as a context variable, so that our templates can access it.
+        # Pass the pk as a context variable, so that our templtes can access it.
         context['id'] = self.kwargs['pk']
         return context
 
@@ -159,7 +159,7 @@ class PositionDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('jobs-list-positions')
 
 
-#-------------------------------------Position Views End------------------------------------------
+#-------------------------------------Position Views End----------------------------------------
 
 #---------------------------------------Application Views-----------------------------------------
 
@@ -263,6 +263,54 @@ class ContactDeleteView(LoginRequiredMixin, DeleteView):
     model = Contact
     success_url = reverse_lazy('jobs-contacts')
 
+#-------------------------------------Communication Views----------------------------------------
+
+class CommunicationListView(LoginRequiredMixin, ListView):
+    
+    model = Communication
+    template_name = 'jobs/communications.html'
+    context_object_name = 'comms'
+    fields = ['application', 'contact', 'date', 'method', 'notes']
+
+
+class CommunicationCreateView(LoginRequiredMixin, CreateView):
+    
+    model = Communication
+    template_name = 'jobs/add_communication.html'
+    context_object_name = 'comms'
+    fields = ['application', 'contact', 'date', 'method', 'notes']
+    success_url = reverse_lazy('jobs-contacts')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+
+class CommunicationUpdateView(LoginRequiredMixin, UpdateView):
+    
+    model = Communication
+    fields = ['application', 'contact', 'date', 'method', 'notes']
+    template_name = 'jobs/update_communication.html'
+    context_object_name = 'comms'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+
+class CommunicationDeleteView(LoginRequiredMixin, DeleteView):
+    
+    model = Communication
+    success_url = reverse_lazy('jobs-contacts')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Pass the pk as a context variable, so that our templtes can access it.
+        context['id'] = self.kwargs['pk']
+        return context
+
+
+#-------------------------------------Communication Views End-------------------------------------
 
 @login_required
 def account(request):
