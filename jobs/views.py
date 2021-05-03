@@ -205,7 +205,7 @@ class ApplicationCreateView(LoginRequiredMixin, CreateView):
         if self.request.method == "GET" and position_id:
             position = Position.objects.get(pk=position_id)
             initial['position'] = position
-            
+
         return initial
 
     def form_valid(self, form):
@@ -277,7 +277,7 @@ class CommunicationCreateView(LoginRequiredMixin, CreateView):
     template_name = 'jobs/add_communication.html'
     context_object_name = 'comms'
     fields = ['application', 'contact', 'date', 'method', 'notes']
-    success_url = reverse_lazy('jobs-contacts')
+    success_url = reverse_lazy('jobs-list-communications')
 
     def get_initial(self):
         ''' Allows you to set initial values for the new Communication form. 
