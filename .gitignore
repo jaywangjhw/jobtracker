@@ -6,4 +6,3 @@ users/__pycache__
 venv
 env
 .DS_store
-db.sqlite3

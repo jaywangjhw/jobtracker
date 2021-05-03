@@ -18,6 +18,10 @@ urlpatterns = [
     path('positions/<int:pk>', PositionUpdateView.as_view(), name='jobs-update-position'),
     path('positions/delete/<int:pk>', PositionDeleteView.as_view(), name='jobs-delete-position'),
     path('account/', views.account, name='jobs-account'),
+    path('applications/', ApplicationListView.as_view(), name='jobs-list-applications'),
+    path('applications/new', ApplicationCreateView.as_view(), name='jobs-new-application'),
+    path('applications/<int:pk>', ApplicationUpdateView.as_view(), name='jobs-update-application'),
+    path('applications/delete/<int:pk>', ApplicationDeleteView.as_view(), name='jobs-delete-application'),
     path('contacts/', ContactListView.as_view(), name='jobs-contacts'),
     path('contacts/new', ContactCreateView.as_view(), name='jobs-new-contact'),
     path('contacts/<int:pk>', ContactUpdateView.as_view(), name='jobs-update-contact'),
@@ -44,3 +48,4 @@ urlpatterns += [
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(
         template_name='users/password_reset_complete.html'), name='password_reset_complete')
 ]
+
