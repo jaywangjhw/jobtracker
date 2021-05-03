@@ -63,7 +63,7 @@ class Position(models.Model):
 
 	def __str__(self):
 		"""String for representing the Position as the Position name"""
-		return self.position_title
+		return self.position_title + ' - ' + self.company.name
 
 	def get_absolute_url(self):
 		return reverse('jobs-list-positions')

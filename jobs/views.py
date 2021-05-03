@@ -196,19 +196,17 @@ class ApplicationCreateView(LoginRequiredMixin, CreateView):
             Currently set up to receive a URL query param with a Position PK. 
             This will then set the initial form value for the Position. 
         '''
+        # Grabs the initial dictionary by calling superclass.
+        initial = super().get_initial()
         # Get the position query param from the request (may not be there).
         position_id = self.request.GET.get('position')
         # Check to see if the query param is there & make sure this is a 
         # GET request. We don't want to run this if the form is being POSTed.
-        if position_id and self.request.method == "GET":
-            # Grabs the initial dictionary by calling superclass.
-            initial = super().get_initial()
-            Position = Position.objects.get(pk=position_id)
+        if self.request.method == "GET" and position_id:
+            position = Position.objects.get(pk=position_id)
             initial['position'] = position
-            return initial
-        # If this isn't a new Application for a specific position, just use the 
-        # default initial values. 
-        return super().get_initial()
+            
+        return initial
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -280,6 +278,32 @@ class CommunicationCreateView(LoginRequiredMixin, CreateView):
     context_object_name = 'comms'
     fields = ['application', 'contact', 'date', 'method', 'notes']
     success_url = reverse_lazy('jobs-contacts')
+
+    def get_initial(self):
+        ''' Allows you to set initial values for the new Communication form. 
+            Currently set up to receive URL query params with either a Contact PK,
+            or an Application PK. 
+            This will then set the initial form value for either. 
+        '''
+        # Grab the initial dictionary by calling superclass.
+        initial = super().get_initial()
+
+        # GET request. We don't want to run this if the form is being POSTed.
+        if self.request.method == "GET":
+            # Get the Application query param from the request (may not be there).
+            app_id = self.request.GET.get('application')
+            # Get the Contact query param from the request (may not be there).
+            contact_id = self.request.GET.get('contact')
+
+            if app_id:
+                application = Application.objects.get(pk=app_id)
+                initial['application'] = application
+            elif contact_id:
+                contact = Contact.objects.get(pk=contact_id)
+                initial['contact'] = contact
+            
+        return initial
+
 
     def form_valid(self, form):
         form.instance.user = self.request.user

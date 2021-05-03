@@ -30,7 +30,7 @@
                     </div>
                     <div class="col-md-2 align-content-stretch">
                         <div class="row mb-1">
-                            <a class="btn btn-sm btn-primary" href="{% url 'jobs-new-communication' %}">Add Communication</a>
+                            <a class="btn btn-sm btn-primary" href="{% url 'jobs-new-communication' %}?contact={{ contact.id }}">Add Communication</a>
                         </div>
                         <div class="row mb-1">
                             <a class="btn btn-sm btn-info" href="{% url 'jobs-update-contact' contact.id %}"> Update</a>
