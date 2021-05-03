@@ -10,7 +10,8 @@ urlpatterns = [
     path('companies/', CompanyListView.as_view(), name='jobs-companies'),
     path('companies/<int:pk>', CompanyDetailView.as_view(), name='jobs-company-details'),
     path('companies/edit/<int:pk>', CompanyUpdateView.as_view(), name='jobs-company-update'),
-    path('companies/new', CompanyCreateView.as_view(extra_context={'title': 'Add Company'}), name='jobs-new-company'),
+    path('companies/new', CompanyCreateView.as_view(extra_context={'title': 'Add Company'}),
+        name='jobs-new-company'),
     path('companies/delete/<int:pk>', CompanyDeleteView.as_view(), name='jobs-company-delete'),
     path('positions/', PositionListView.as_view(), name='jobs-list-positions'),
     path('positions/new', PositionCreateView.as_view(), name='jobs-new-position'),
@@ -21,6 +22,11 @@ urlpatterns = [
     path('contacts/new', ContactCreateView.as_view(), name='jobs-new-contact'),
     path('contacts/<int:pk>', ContactUpdateView.as_view(), name='jobs-update-contact'),
     path('contacts/delete/<int:pk>', ContactDeleteView.as_view(), name='jobs-delete-contact'),
+    path('communications/', CommunicationListView.as_view(), name='jobs-list-communications'),
+    path('communications/new', CommunicationCreateView.as_view(extra_context={'title': 'Add Communication'}), 
+            name='jobs-new-communication'),
+    path('communications/<int:pk>', CommunicationUpdateView.as_view(), name='jobs-update-communication'),
+    path('communications/delete/<int:pk>', CommunicationDeleteView.as_view(), name='jobs-delete-communication'),
 ]
 
 urlpatterns += [
