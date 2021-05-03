@@ -6,7 +6,7 @@ from django.views.generic import ListView, CreateView, DetailView
 from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
-from .models import Position, Company, Account, Contact, Communication
+from .models import Position, Company, Account, Contact, Communication, Application
 from .forms import PositionForm
 import json
 
