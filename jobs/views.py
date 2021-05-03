@@ -301,7 +301,7 @@ class CommunicationUpdateView(LoginRequiredMixin, UpdateView):
 class CommunicationDeleteView(LoginRequiredMixin, DeleteView):
     
     model = Communication
-    success_url = reverse_lazy('jobs-contacts')
+    success_url = reverse_lazy('jobs-list-communications')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

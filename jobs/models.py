@@ -120,6 +120,11 @@ class Application(models.Model):
 	def get_absolute_url(self):
 		return reverse('jobs-list-applications')
 
+	def __str__(self):
+		company = self.position.company.name
+		job_title = self.position.position_title
+		return company + ' - ' + job_title
+
 
 class Interview(models.Model):
 	user = models.ForeignKey(
@@ -178,6 +183,9 @@ class Communication(models.Model):
 		company = self.application.position.company.name
 		job_title = self.application.position.position_title
 		return self.contact.last_name + '-' + company + '-' + job_title
+	
+	def get_absolute_url(self):
+		return reverse('jobs-list-communications')
 
 
 def post_new_user_created_signal(sender, instance, created, **kwargs):
