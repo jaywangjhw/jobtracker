@@ -1,4 +1,3 @@
-db.sqlite3
 jobs/__pycache__
 users/__pycache__
 jobs/migrations/__pycache__
@@ -7,3 +6,4 @@ users/__pycache__
 venv
 env
 .DS_store
+db.sqlite3
