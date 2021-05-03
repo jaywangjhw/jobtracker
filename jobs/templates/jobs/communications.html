@@ -7,6 +7,10 @@
 		<div class="row mt-3">
 			<div class="col-md-auto">
 				<h3>Your communication history:</h3>
+				<p>Track your communication with Contacts relating to your Applications</p>
+			</div>
+			<div class="col-md-2">
+				<a class="btn btn-primary" href="{% url 'jobs-new-communication' %}" role="button">Add New</a>
 			</div>
 		</div>
 		{% for comm in comms %}
