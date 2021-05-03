@@ -46,11 +46,7 @@
 					</div>
 					<div class="col-md-2 align-content-stretch">
 						<div class="row mb-1">
-							{% if position.application_set.all %}
-								<a class="btn btn-primary" href="#" role="button">View Application</a>
-							{% else %}
-								<a class="btn btn-primary" href="#" role="button">Create Application</a>
-							{% endif %}
+							<a class="btn btn-primary" href="{% url 'jobs-new-application' %}/?position={{ position.id }}" role="button">Create Application</a>
 						</div>
 						<div class="row mb-1">
 							<a class="btn btn-primary" href="{% url 'jobs-update-position' position.id %}" role="button">Update Position</a>

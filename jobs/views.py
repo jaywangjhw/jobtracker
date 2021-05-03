@@ -177,7 +177,7 @@ class ApplicationListView(LoginRequiredMixin, ListView):
         accepted = Application.objects.all().filter(accepted=True).count()
 
         context = super().get_context_data(**kwargs)
-        # Pass the pk as a context variable, so that our templates can access it.
+        # Pass the offer_count and accepted_count as context variables, so that our templates can access.
         context['offer_count'] = offer
         context['accepted_count'] = accepted
         return context
@@ -196,7 +196,7 @@ class ApplicationCreateView(LoginRequiredMixin, CreateView):
             Currently set up to receive a URL query param with a Position PK. 
             This will then set the initial form value for the Position. 
         '''
-        # Get the company query param from the request (may not be there).
+        # Get the position query param from the request (may not be there).
         position_id = self.request.GET.get('position')
         # Check to see if the query param is there & make sure this is a 
         # GET request. We don't want to run this if the form is being POSTed.
