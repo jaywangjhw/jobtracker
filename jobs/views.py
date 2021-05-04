@@ -242,7 +242,7 @@ class ContactCreateView(LoginRequiredMixin, CreateView):
     model = Contact
     context_object_name = 'contact'
     template_name = 'jobs/add_contact.html'
-    fields = '__all__'
+    fields = ['first_name', 'last_name', 'email', 'phone_number', 'notes']
     success = '/contacts'
 
     def form_valid(self, form):
