@@ -9,8 +9,9 @@
 		<h3>{{ position.position_title }}
             <a class="btn btn-sm btn-info" href="{% url 'jobs-update-position' position.id %}"> Update</a>
             <a class="btn btn-sm btn-danger" href="{% url 'jobs-delete-position' position.id %}"> Delete</a>
+            <a class="btn btn-sm btn-primary" href="{% url 'jobs-new-application' %}?position={{ position.id }}" role="button">Add Application</a>
         </h3>
-        <p>ID: {{ position.id }}</p>
+        <p>Company: {{ position.company.name }}</p>
         <p>URL: {{ position.position_url }}</p>
         <p>Date Opened: {{ position.date_opened }}</p>
         <p>Date Closed: {{ position.date_closed }}</p>
