@@ -2,7 +2,6 @@ from django import forms
 from django.forms import ModelForm
 from .models import Position, Company, Account, Contact
 
-# Need to add skills to db
 
 class PositionForm(ModelForm):
 
@@ -16,8 +15,16 @@ class PositionForm(ModelForm):
             'date_closed': 'Ex: mm/dd/yyyy'
         }
 
+
 class AccountForm(ModelForm):
 
 	class Meta:
 		model = Account
 		fields = '__all__'
+
+
+class CompanyForm(ModelForm):
+
+    class Meta:
+        model = Company
+        fields = ['name', 'careers_url', 'industry']

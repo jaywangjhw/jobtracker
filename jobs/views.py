@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.views import View
@@ -6,14 +7,39 @@ from django.views.generic import ListView, CreateView, DetailView
 from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import ensure_csrf_cookie
 from .models import Position, Company, Account, Contact, Communication, Application
-from .forms import PositionForm
+from .forms import PositionForm, CompanyForm
 import json
+from jobs.parse_url import get_domain_company, get_amazon_data
 
 
 @login_required
 def home(request):
     return render(request, 'jobs/home.html')
+
+
+@login_required
+@ensure_csrf_cookie
+def new_app(request):
+    # Job posting url should be passed in as a query parram
+    url = request.GET.get('app-url')
+    # Parse the url to get relevant data
+    job_data = get_amazon_data(url)
+    
+    # Set the company and position forms with initial data from the parsed data
+    company_form = CompanyForm(initial={'name': job_data['company']})
+    position_form = PositionForm(initial={'position_title': job_data['position_title'], 
+                                            'job_description': job_data['job_description'], 
+                                            'position_url': url})
+
+    context = {'company_form': company_form}
+    context['position_form'] = position_form
+
+    template = 'jobs/full_application_form.html'
+
+    return HttpResponse(render_to_string(template, context))
+
 
 #-------------------------------------Company Views----------------------------------------
 class CompanyListView(LoginRequiredMixin, View):
