@@ -35,10 +35,39 @@ $(document).ready(function(){
 	            url: target_url,
 	            data: $(this).serialize(), //{'csrfmiddlewaretoken': csrftoken, 'app-url': app_url},
 	            success : function(response) {
-	                $("#id_name").val(response.company);
-	                $("#id_position_title").val(response.position_title);
-	                $("#id_job_description").val(response.job_description);
-	                $("#id_position_url").val(app_url);
+	            	if("company_message" in response) {
+	            		$("#new-app-url").after('<div class="alert alert-success" role="alert">' + 
+	            				response.company_message + '</div>');
+	            		$("#div_id_careers_url").remove();
+	            		$("#div_id_industry").remove();
+	            	}
+	            	else {
+	            		if("industry" in response) {
+	            			$("#id_industry").val(response.industry).addClass("btn-outline-success");
+	            		}
+
+		                if("careers_url" in response) {
+		                	$("#id_careers_url").val(response.careers_url).addClass("btn-outline-success");
+		                }           		
+	            	}
+
+	            	if("company" in response) {
+	            		$("#id_name").val(response.company).addClass("btn-outline-success");
+	            	}
+
+	                if("job_description" in response) {
+	                	$("#id_job_description").val(response.job_description).addClass("btn-outline-success");
+	                }
+
+	                if("position_title" in response) {
+	                	$("#id_position_title").val(response.position_title).addClass("btn-outline-success");
+	                }
+
+	            	if("industry" in response) {
+	                	$("#id_industry").val(response.industry).addClass("btn-outline-success");
+	                }
+
+	                $("#id_position_url").val(app_url).addClass("btn-outline-success");
 	            }
 	        })
 	    });

@@ -10,12 +10,18 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
 from .models import Position, Company, Account, Contact, Communication, Application
 from .forms import PositionForm, CompanyForm, ApplicationForm, CombinedPositionForm, CombinedApplicationForm, CombinedCompanyForm
-import json
+from django.contrib import messages
 from jobs.parse_url import get_domain_company, get_amazon_data
+import json
 
 
 @login_required
 def home(request):
+
+    if request.method == 'POST':
+        print(request.POST.get('name'))
+        return redirect('jobs-home')
+
     company_form = CombinedCompanyForm()
     position_form = CombinedPositionForm()
     application_form = CombinedApplicationForm()
@@ -34,7 +40,16 @@ def parse_job_url(request):
     url = request.GET.get('app-url')
     # Parse the url to get relevant data
     job_data = get_amazon_data(url)
-    print(job_data['company'])
+
+    company = Company.objects.get(name__icontains=job_data['company'], user=request.user)
+    if company:
+        job_data['company_id'] = company.id
+        job_data['company'] = company.name
+        job_data['careers_url'] = company.careers_url
+        job_data['industry'] = company.industry
+        job_data['company_message'] = 'This application is for a company you already track!'
+
+    print(company)
     return JsonResponse(job_data)
 
 

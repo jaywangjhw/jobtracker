@@ -10,7 +10,7 @@
 <div class="container">
 	<div class="row mt-3">
 		<div class="col">
-			<button class="btn btn-primary mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Track a new Application</button>
+			<button class="btn btn-primary mb-2 form-control" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Track a new Application</button>
 		</div>
 	</div>
 	<div class="collapse" id="collapseExample">
@@ -26,14 +26,14 @@
 			</form>
 			<div class="row">
 				<div class="col-sm-6 mb-3">
-					<form method="POST">
-					{% csrf_token %}
-					{{ company_form|crispy }}
-					{{ position_form|crispy }}
-					{{ application_form|crispy }}
+					<form method="POST" id="full-app-form">
+						{% csrf_token %}
+						{{ company_form|crispy }}
+						{{ position_form|crispy }}
+						{{ application_form|crispy }}
 						<div class="row mb-3">
 							<div class="col">
-								<button class="btn btn-primary mt-3" type="submit">Add New Application</button>
+								<input class="btn btn-outline-primary mt-3" type="submit" id="submit-new-app">
 							</div>
 					    </div>
 					</form>

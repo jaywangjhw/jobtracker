@@ -1,8 +1,6 @@
 from django import forms
 from django.forms import ModelForm
 from .models import Position, Company, Account, Contact, Application
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, MultiField, ButtonHolder, Submit, Div
 
 
 class PositionForm(ModelForm):
@@ -30,7 +28,6 @@ class CompanyForm(ModelForm):
     class Meta:
         model = Company
         fields = ['name', 'careers_url', 'industry']
-
 
 
 class ApplicationForm(ModelForm):
@@ -77,6 +74,5 @@ class CombinedCompanyForm(CompanyForm):
             'name': 'Company Name',
             'careers_url': 'Link to company careers page'
         }
-
 
 
