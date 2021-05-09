@@ -8,22 +8,41 @@
 	<h1>Dashboard</h1>
 </div>
 <div class="container">
-	<h3>List of cards goes here...</h3>
-</div>
-<div class="container">
-	<div class="row mt-5" id="new-app">
+	<div class="row mt-3">
 		<div class="col">
-			<form id="new-app-url" action="{% url 'create-app-from-url' %}" method="GET">
-				<label for="app-url">Start Tracking a New Application:</label>
+			<button class="btn btn-primary mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Track a new Application</button>
+		</div>
+	</div>
+	<div class="collapse" id="collapseExample">
+		<div class="card card-body">
+			<form id="new-app-url" action="{% url 'parse-job-url' %}">
+				<label for="app-url">Enter the job posting URL below and JobTracker will attempt to autofill the form</label>
 				<div class="input-group mb-3">
 					<div class="input-group-prepend">
-						<input type="submit" value="Create" id="submit-new-app-url" class="btn btn-outline-primary">
+						<input type="submit" value="Fill" id="submit-new-app-url" class="btn btn-outline-primary">
 					</div>
 					<input type="url" id="app-url" name="app-url" placeholder="Enter the url of the job posting here" required class="form-control">
 				</div>
 			</form>
+			<div class="row">
+				<div class="col-sm-6 mb-3">
+					<form method="POST">
+					{% csrf_token %}
+					{{ company_form|crispy }}
+					{{ position_form|crispy }}
+					{{ application_form|crispy }}
+						<div class="row mb-3">
+							<div class="col">
+								<button class="btn btn-primary mt-3" type="submit">Add New Application</button>
+							</div>
+					    </div>
+					</form>
+				</div>
+			</div>
 		</div>
 	</div>
+
+
 	<div class="row" id="new-app-form-row"></div>
 </div>	
 {% endblock content %}

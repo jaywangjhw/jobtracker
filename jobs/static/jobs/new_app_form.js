@@ -21,8 +21,8 @@ function getCookie(name) {
 }
 
 $(document).ready(function(){
-		// When the user submits a job url, this will create a new application form with
-		// parsed data from the url. 
+		// When the user submits a job url, this will attempt to fill data from parsing the job
+		// description url provided. 
 	    $("#new-app-url").submit(function(e){ 
 		    
 		    e.preventDefault();
@@ -35,25 +35,12 @@ $(document).ready(function(){
 	            url: target_url,
 	            data: $(this).serialize(), //{'csrfmiddlewaretoken': csrftoken, 'app-url': app_url},
 	            success : function(response) {
-	                $('#new-app-form-row').html(response);
+	                $("#id_name").val(response.company);
+	                $("#id_position_title").val(response.position_title);
+	                $("#id_job_description").val(response.job_description);
+	                $("#id_position_url").val(app_url);
 	            }
 	        })
 	    });
-
-/*
-					// Other pieces may need to be appended to the new form
-			        $('#new-app-form-col').append(
-			            $('<form />', { action: '/', method: 'POST' }).append(
-			                $('<label />', {for: 'company-name', text: 'Company Name: '}), 
-			                $('<input />', {id: 'company-name', name: 'company-name', size: '50', type: 'text', value: response.company}),
-			                $('<br />'),
-			                $('<label />', {for: 'position-title', text: 'Position Title: '}), 
-			                $('<input />', {id: 'position-title', name: 'position-title', size: '70', type: 'text', value: response.position_title}),
-			                $('<br />'),
-			                $('<input />', {id: 'submit-app', type: 'submit', value: 'Create', class: 'btn btn-outline-primary'})
-			            )
-			        );
-
-*/
 });
 

@@ -22,8 +22,8 @@ class Company(models.Model):
 		on_delete=models.CASCADE,
 		default=1)
 	name = models.CharField(max_length=100)
-	careers_url = models.URLField(max_length=300, null=True)
-	industry = models.CharField(choices=INDUSTRY_CHOICES, max_length=100, null=True)
+	careers_url = models.URLField(max_length=300, null=True, blank=True)
+	industry = models.CharField(choices=INDUSTRY_CHOICES, max_length=100, null=True, blank=True)
 
 	def __str__(self):
 		"""String for representing the Company as the Company name"""

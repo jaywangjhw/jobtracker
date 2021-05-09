@@ -31,7 +31,7 @@ urlpatterns = [
             name='jobs-new-communication'),
     path('communications/<int:pk>', CommunicationUpdateView.as_view(), name='jobs-update-communication'),
     path('communications/delete/<int:pk>', CommunicationDeleteView.as_view(), name='jobs-delete-communication'),
-    path('new_app', views.new_app, name='create-app-from-url'),
+    path('parse_job_url', views.parse_job_url, name='parse-job-url'),
 ]
 
 urlpatterns += [
