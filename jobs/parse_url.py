@@ -11,7 +11,12 @@ def get_domain_company(url):
 
 
 def get_amazon_data(url):
+	data = {}
 	company = get_domain_company(url)
+	
+	if company != 'amazon':
+		return data
+
 	page = requests.get(url)
 
 	page = page.text.replace('<br/>', ' ')

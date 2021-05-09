@@ -33,27 +33,52 @@ $(document).ready(function(){
 	        $.ajax({
 	            type: "GET",
 	            url: target_url,
-	            data: $(this).serialize(), //{'csrfmiddlewaretoken': csrftoken, 'app-url': app_url},
+	            data: $(this).serialize(),
 	            success : function(response) {
-	            	if("company_message" in response) {
+	            	// If there's a position_id, then this position is already being tracked (which means
+	            	// the company is already being tracked as well).
+	            	if("position_id" in response) {
+	            		$("#new-app-url").after('<div class="alert alert-success" role="alert">' + 
+	            				response.position_message + '</div>');
+	            		// embed the hidden pk's for the position and company.
+	            		$("#full-app-form").append('<input type="hidden" id="company_id" name="company_id" value="' + 
+	            				response.company_id + '">');
+	            		$("#full-app-form").append('<input type="hidden" id="position_id" name="position_id" value="' + 
+	            				response.position_id + '">');
+	            		// Remove extraneous fields since we already (should) have this data.
+	            		$("#div_id_careers_url").remove();
+	            		$("#div_id_industry").remove();
+	            		$("#div_id_date_opened").remove();
+	            		$("#div_id_date_closed").remove();
+	            		$("#div_id_skills").remove();
+	            		$("#div_id_job_description").remove();
+	            	}
+	            	// If there is only a company_id, then the company is tracked, but this is a new position.
+	            	else if("company_id" in response) {
 	            		$("#new-app-url").after('<div class="alert alert-success" role="alert">' + 
 	            				response.company_message + '</div>');
+	            		$("#new-app-url").after('<div class="alert alert-success" role="alert">' + 
+	            				response.position_message + '</div>');
+	            		$("#full-app-form").append('<input type="hidden" id="company_id" name="company_id" value="' + 
+	            				response.company_id + '">');
 	            		$("#div_id_careers_url").remove();
 	            		$("#div_id_industry").remove();
 	            	}
+	            	// If we don't have either company or position id's, then either the url couldn't be
+	            	// parsed, or this is a brand new company and position. 
 	            	else {
-	            		if("industry" in response) {
-	            			$("#id_industry").val(response.industry).addClass("btn-outline-success");
-	            		}
-
-		                if("careers_url" in response) {
-		                	$("#id_careers_url").val(response.careers_url).addClass("btn-outline-success");
-		                }           		
+	            		$("#new-app-url").after('<div class="alert alert-warning" role="alert">' + 
+	            				response.company_message + '</div>');            		
 	            	}
 
+	            	// Insert any values we were able to parse from the url, into the form fields.
 	            	if("company" in response) {
 	            		$("#id_name").val(response.company).addClass("btn-outline-success");
 	            	}
+
+	                if("careers_url" in response) {
+	                	$("#id_careers_url").val(response.careers_url).addClass("btn-outline-success");
+	                }  
 
 	                if("job_description" in response) {
 	                	$("#id_job_description").val(response.job_description).addClass("btn-outline-success");
@@ -61,10 +86,6 @@ $(document).ready(function(){
 
 	                if("position_title" in response) {
 	                	$("#id_position_title").val(response.position_title).addClass("btn-outline-success");
-	                }
-
-	            	if("industry" in response) {
-	                	$("#id_industry").val(response.industry).addClass("btn-outline-success");
 	                }
 
 	                $("#id_position_url").val(app_url).addClass("btn-outline-success");
