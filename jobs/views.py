@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.views import View
@@ -6,14 +7,111 @@ from django.views.generic import ListView, CreateView, DetailView
 from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import ensure_csrf_cookie
 from .models import Position, Company, Account, Contact, Communication, Application
-from .forms import PositionForm
+from .forms import PositionForm, CompanyForm, ApplicationForm, CombinedPositionForm, CombinedApplicationForm, CombinedCompanyForm
+from django.contrib import messages
+from jobs.parse_url import get_domain_company, get_amazon_data
 import json
 
 
+
+class HomeView(LoginRequiredMixin, View):
+
+    def get(self, request):
+        company_form = CombinedCompanyForm()
+        position_form = CombinedPositionForm()
+        application_form = CombinedApplicationForm()
+
+        context = {'company_form': company_form}
+        context['position_form'] = position_form
+        context['application_form'] = application_form
+
+        return render(request, 'jobs/home.html', context)
+
+
+    def post(self, request):
+        context = {}
+        # If there is a company_id in the form, then we know this company
+        # already exists, and we do not want to re-save it
+        if 'company_id' in request.POST:
+            # Get the company instance so it can be used when creating the position/application
+            company = Company.objects.get(pk=request.POST.get('company_id'))
+        else:
+            # If this is a new company, create a bounded form instance with the data from 
+            # the post request. 
+            company_form = CombinedCompanyForm(request.POST)
+            company_form.instance.user = self.request.user
+
+            if company_form.is_valid():
+                company = company_form.save()
+                messages.success(request, f'New Company Saved!')
+            else:
+                context['company_form']= company_form
+
+        if 'position_id' in request.POST:
+            position = Position.objects.get(pk=request.POST.get('position_id'))
+        else:
+            position_form = CombinedPositionForm(request.POST)
+            position_form.instance.user = self.request.user
+            position_form.instance.company = company
+
+            if position_form.is_valid():
+                position = position_form.save()
+                messages.success(request, f'New Position Saved!')
+            else:
+                context['position_form'] = position_form
+
+        application_form = CombinedApplicationForm(request.POST)
+        application_form.instance.user = self.request.user
+        application_form.instance.company = company
+        application_form.instance.position = position
+
+        if application_form.is_valid():
+            application = application_form.save()
+            messages.success(request, f'New Application Saved!')
+            return redirect('jobs-home')
+        else:
+            context['application_form'] = application_form
+
+        return render(request, 'jobs/home.html', context) 
+
+
 @login_required
-def home(request):
-    return render(request, 'jobs/home.html')
+@ensure_csrf_cookie
+def parse_job_url(request):
+    job_data = {}
+    # Job posting url should be passed in as a query parram
+    url = request.GET.get('app-url')
+    
+    # See if this user already tracks this specific position
+    if Position.objects.filter(user=request.user, position_url=url).exists():
+        position = Position.objects.filter(user=request.user, position_url=url).first()
+        job_data['position_message'] = 'This application is for a position you already track!'
+        job_data['company_id'] = position.company.id
+        job_data['company'] = position.company.name
+        job_data['position_id'] = position.id
+        job_data['position_title'] = position.position_title
+    else:
+        # If this is a new position, we need to parse the url to get any relevant data
+        job_data = get_amazon_data(url)
+
+        if job_data:
+            if 'company' in job_data:
+                # Check if the user already tracks this company
+                company = Company.objects.filter(name__icontains=job_data['company'], user=request.user).first()
+                if company:
+                    job_data['company_id'] = company.id
+                    job_data['company'] = company.name
+                    job_data['company_message'] = 'This application is for a company you already track!'
+                else:
+                    # Need to add more fields from the parsed data here...
+                    job_data['company_message'] = 'You are not tracking this company yet. So we\'ll add it to your companies list!'
+        else:
+            job_data['company_message'] = 'We couldn\'t figure out many details from this url. Please fill out the form manually.'  
+
+    return JsonResponse(job_data)
+
 
 #-------------------------------------Company Views----------------------------------------
 class CompanyListView(LoginRequiredMixin, View):
