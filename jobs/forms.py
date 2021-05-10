@@ -10,10 +10,16 @@ class PositionForm(ModelForm):
         fields = ['company', 'position_title', 'position_url', 'date_opened', 'date_closed',
                     'skills', 'job_description']
         help_texts = {
-            'position_url': "Ex: http://www.google.com",
             'date_opened': 'Ex: mm/dd/yyyy',
             'date_closed': 'Ex: mm/dd/yyyy'
         }
+        labels = {
+            'position_title': 'Job Title',
+            'position_url': 'Job Posting URL',
+            'date_opened': 'When did the job open?',
+            'date_closed': 'When did the job close? (optional)'
+        }
+
 
 
 class AccountForm(ModelForm):
@@ -36,12 +42,6 @@ class ApplicationForm(ModelForm):
         model = Application
         exclude = ('user',)
 
-
-class CombinedApplicationForm(ApplicationForm):
-
-    class Meta:
-        model = Application
-        exclude = ('user', 'company', 'position',)
         labels = {
             'email_used': 'What email address did you use to create this application?',
             'date_started': 'When did you start this application?',
@@ -52,17 +52,19 @@ class CombinedApplicationForm(ApplicationForm):
         }
 
 
+class CombinedApplicationForm(ApplicationForm):
+
+    class Meta:
+        model = Application
+        exclude = ('user', 'company', 'position',)
+
+
 class CombinedPositionForm(PositionForm):
 
     class Meta:
         model = Position
         exclude = ('user', 'company', )
-        labels = {
-            'position_title': 'Job Title',
-            'position_url': 'Job Posting URL',
-            'date_opened': 'When did the job open?',
-            'date_closed': 'When did the job close? (optional)'
-        }
+
 
 
 class CombinedCompanyForm(CompanyForm):

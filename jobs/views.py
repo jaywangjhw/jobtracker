@@ -20,12 +20,16 @@ class HomeView(LoginRequiredMixin, View):
 
     def get(self, request):
         company_form = CombinedCompanyForm()
-        position_form = CombinedPositionForm()
-        application_form = CombinedApplicationForm()
+        combined_position_form = CombinedPositionForm()
+        full_position_form = PositionForm()
+        combined_application_form = CombinedApplicationForm()
+        full_application_form = ApplicationForm()
 
         context = {'company_form': company_form}
-        context['position_form'] = position_form
-        context['application_form'] = application_form
+        context['combined_position_form'] = combined_position_form
+        context['full_position_form'] = full_position_form
+        context['combined_application_form'] = combined_application_form
+        context['full_application_form'] = full_application_form
 
         return render(request, 'jobs/home.html', context)
 
