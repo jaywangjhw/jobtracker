@@ -12,6 +12,7 @@ from .models import Position, Company, Account, Contact, Communication, Applicat
 from .forms import PositionForm, CompanyForm, ApplicationForm, CombinedPositionForm, CombinedApplicationForm, CombinedCompanyForm
 from django.contrib import messages
 from jobs.parse_url import get_domain_company, get_amazon_data
+from jobs.reddit import get_reddit_data
 import json
 
 
@@ -26,6 +27,13 @@ class HomeView(LoginRequiredMixin, View):
         context = {'company_form': company_form}
         context['position_form'] = position_form
         context['application_form'] = application_form
+
+        results = get_reddit_data(subreddit="cscareerquestions", limit=5, q="Object oriented programming", sort="hot")
+        context['reddit_data'] = results
+
+        print("Right before results")
+
+        print(results)
 
         return render(request, 'jobs/home.html', context)
 

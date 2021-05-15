@@ -44,5 +44,18 @@
 
 
 	<div class="row" id="new-app-form-row"></div>
-</div>	
+</div>
+<div class="container">
+	</br>
+	<h1>Reddit Feed</h1>
+	</br>
+	{% for item in reddit_data %}
+    <tr> 
+        <td>{{ item.title }}</td>
+        <td>{{ item.url }} </td>
+    	</br></br>
+    </tr>
+    {% endfor %}
+</div> 
+	
 {% endblock content %}
