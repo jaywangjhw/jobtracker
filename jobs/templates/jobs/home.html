@@ -18,14 +18,14 @@
 			<div class="row">
 				<div class="col-4">
 					<div class="list-group" id="list-tab" role="tablist">
-						<a class="list-group-item list-group-item-action active" id="list-home-list" data-bs-toggle="list" href="#list-home" role="tab" aria-controls="list-home">For an existing Company</a>
-						<a class="list-group-item list-group-item-action" id="list-profile-list" data-bs-toggle="list" href="#list-profile" role="tab" aria-controls="list-profile">For an existing Position</a>
-						<a class="list-group-item list-group-item-action" id="list-messages-list" data-bs-toggle="list" href="#list-messages" role="tab" aria-controls="list-messages">New Company & Position</a>
+						<a class="list-group-item list-group-item-action active" id="list-existing-company-list" data-bs-toggle="list" href="#existing-company" role="tab" aria-controls="existing-company">For an existing Company</a>
+						<a class="list-group-item list-group-item-action" id="list-existing-position-list" data-bs-toggle="list" href="#existing-position" role="tab" aria-controls="existing-position">For an existing Position</a>
+						<a class="list-group-item list-group-item-action" id="list-new-everything-list" data-bs-toggle="list" href="#new-everything" role="tab" aria-controls="new-everything">New Company & Position</a>
 					</div>
 				</div>
 				<div class="col-8">
 					<div class="tab-content" id="nav-tabContent">
-						<div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
+						<div class="tab-pane fade show active" id="existing-company" role="tabpanel" aria-labelledby="list-home-list">
 							<div class="row">
 								<div class="col-sm-12 mb-3">
 									<form method="POST" id="existing-company-form">
@@ -55,7 +55,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
+						<div class="tab-pane fade" id="existing-position" role="tabpanel" aria-labelledby="list-profile-list">
 							<div class="row">
 								<div class="col-sm-10 mb-3">
 									<form method="POST" id="existing-position-form">
@@ -70,14 +70,14 @@
 								</div>
 							</div>
 						</div>
-						<div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">
+						<div class="tab-pane fade" id="new-everything" role="tabpanel" aria-labelledby="list-messages-list">
 							<form id="new-app-url" action="{% url 'parse-job-url' %}" >
 								<label for="app-url">Enter the job posting URL below and JobTracker will attempt to autofill the form</label>
 								<div class="input-group mb-3">
 									<div class="input-group-prepend">
 										<input type="submit" value="Fill" id="submit-new-app-url" class="btn btn-outline-primary">
 									</div>
-									<input type="url" id="app-url" name="app-url" placeholder="Enter the url of the job posting here" required class="form-control">
+									<input type="url" id="app-url" name="app_url" placeholder="Enter the url of the job posting here" required class="form-control">
 								</div>
 							</form>
 							<div class="row">
