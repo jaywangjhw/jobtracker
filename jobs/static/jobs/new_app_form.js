@@ -49,7 +49,9 @@ $(document).ready(function(){
 
 	                if("position_title" in response) {
 	                	$("#id_position_title").val(response.position_title).addClass("btn-outline-success");
-	                }      		
+	                } 
+
+	                $("#id_position_url").val(app_url).addClass("btn-outline-success");   		
 	        	}
 	        })  	
 	    }

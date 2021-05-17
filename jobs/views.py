@@ -42,30 +42,29 @@ class HomeView(LoginRequiredMixin, View):
 
     def post(self, request):
         context = {}
-        print(request.POST)
-        # If there is a position in the form, then we know this is only an application form
+        # If position is in the form, then we know this is solely an application form
         # which will be for an existing position.
         if 'position' in request.POST:
-            application_form = ApplicationForm(request.POST)
+            application_form = ApplicationForm(request.POST, user=self.request.user)
             application_form.instance.user = self.request.user
             
             if application_form.is_valid():
                 application = application_form.save()
                 messages.success(request, f'New Application Saved!')
             else:
-                context['application_form'] = application_form  
+                context['application_form'] = application_form
         else:
+            # Otherwise, this is a new position and new application for an existing company
+            # or it's a new company, new position, and new application. 
+            company = None
+            position = None
+            
             # If company is in the form, this is a position for an existing company.
             if 'company' in request.POST:
-                position_form = PositionForm(request.POST)
-                position_form.instance.user = self.request.user
-                
-                if position_form.is_valid():
-                    position = position_form.save()
-                    messages.success(request, f'New Position Saved!')
-                else:
-                    context['position_form'] = position_form        
+                position_form = PositionForm(request.POST, user=self.request.user)
             else:
+                position_form = CombinedPositionForm(request.POST)
+
                 company_form = CombinedCompanyForm(request.POST)
                 company_form.instance.user = self.request.user
 
@@ -75,20 +74,21 @@ class HomeView(LoginRequiredMixin, View):
                 else:
                     context['company_form'] = company_form
 
-                position_form = CombinedPositionForm(request.POST)
-                position_form.instance.user = self.request.user
+            position_form.instance.user = self.request.user
+            if company:
                 position_form.instance.company = company
 
-                if position_form.is_valid():
-                    position = position_form.save()
-                    messages.success(request, f'New Position Saved!')
-                else:
-                    context['position_form'] = position_form
+            if position_form.is_valid():
+                position = position_form.save()
+                messages.success(request, f'New Position Saved!')
+            else:
+                context['position_form'] = position_form
 
             application_form = CombinedApplicationForm(request.POST)
             application_form.instance.user = self.request.user
-            application_form.instance.position = position
-
+            if position:
+                application_form.instance.position = position
+            
             if application_form.is_valid():
                 application = application_form.save()
                 messages.success(request, f'New Application Saved!')
@@ -96,7 +96,7 @@ class HomeView(LoginRequiredMixin, View):
             else:
                 context['application_form'] = application_form
 
-        return render(request, 'jobs/home.html', context) 
+        return redirect(reverse_lazy('jobs-home'))
 
 
 @login_required
