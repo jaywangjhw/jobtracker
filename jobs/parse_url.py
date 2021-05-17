@@ -31,3 +31,10 @@ def get_amazon_data(url):
 	data['job_description'] = description.text
 
 	return data
+
+
+def get_job_data(url, company_name):
+	if company_name.lower() == 'amazon':
+		return get_amazon_data(url)
+	else:
+		return {}

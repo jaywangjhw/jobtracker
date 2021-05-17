@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from .models import Position, Company, Account, Contact, Application
+from .models import Position, Company, Account, Contact, Application, Communication
 
 
 class PositionForm(ModelForm):
@@ -20,6 +20,13 @@ class PositionForm(ModelForm):
             'date_closed': 'When did the job close? (optional)'
         }
 
+    def __init__(self, *args, **kwargs):
+        ''' This filters the options in the company dropdown field to only those companies
+            this user has added.
+        '''
+        user = kwargs.pop('user')
+        super(PositionForm, self).__init__(*args, **kwargs)
+        self.fields['company'].queryset = Company.objects.filter(user=user)
 
 
 class AccountForm(ModelForm):
@@ -41,7 +48,48 @@ class ApplicationForm(ModelForm):
     class Meta:
         model = Application
         exclude = ('user',)
+        labels = {
+            'email_used': 'What email address did you use to create this application?',
+            'date_started': 'When did you start this application?',
+            'date_submitted': 'If submitted, when?',
+            'offer': 'Check if you\'ve received an offer',
+            'accepted': 'Check if you\'ve accepted',
+            'notes': 'Any notes specific to this application:'
+        }
 
+    def __init__(self, *args, **kwargs):
+        ''' This filters the options in the position dropdown field to only those positions
+            this user has added.
+        '''
+        user = kwargs.pop('user')
+        super(ApplicationForm, self).__init__(*args, **kwargs)
+        self.fields['position'].queryset = Position.objects.filter(user=user)
+
+
+class CommunicationForm(ModelForm):
+
+    class Meta: 
+        model = Communication
+        fields = ['application', 'contact', 'date', 'method', 'notes']
+        help_texts = {
+            'date': 'Ex: mm/dd/yyyy',
+        }
+
+    def __init__(self, *args, **kwargs):
+        ''' This filters the options in the company dropdown field to only those companies
+            this user has added.
+        '''
+        user = kwargs.pop('user')
+        super(CommunicationForm, self).__init__(*args, **kwargs)
+        self.fields['application'].queryset = Application.objects.filter(user=user)
+        self.fields['contact'].queryset = Contact.objects.filter(user=user)
+
+
+class CombinedApplicationForm(ModelForm):
+
+    class Meta:
+        model = Application
+        exclude = ('user', 'company', 'position',)
         labels = {
             'email_used': 'What email address did you use to create this application?',
             'date_started': 'When did you start this application?',
@@ -52,19 +100,11 @@ class ApplicationForm(ModelForm):
         }
 
 
-class CombinedApplicationForm(ApplicationForm):
-
-    class Meta:
-        model = Application
-        exclude = ('user', 'company', 'position',)
-
-
-class CombinedPositionForm(PositionForm):
+class CombinedPositionForm(ModelForm):
 
     class Meta:
         model = Position
         exclude = ('user', 'company', )
-
 
 
 class CombinedCompanyForm(CompanyForm):
@@ -76,5 +116,3 @@ class CombinedCompanyForm(CompanyForm):
             'name': 'Company Name',
             'careers_url': 'Link to company careers page'
         }
-
-

@@ -26,21 +26,25 @@
 				<div class="col-8">
 					<div class="tab-content" id="nav-tabContent">
 						<div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
-							<form id="new-app-url" action="{% url 'parse-job-url' %}">
-								<label for="app-url">Enter the job posting URL below and JobTracker will attempt to autofill the form</label>
-								<div class="input-group mb-3">
-									<div class="input-group-prepend">
-										<input type="submit" value="Fill" id="submit-new-app-url" class="btn btn-outline-primary">
-									</div>
-									<input type="url" id="app-url" name="app-url" placeholder="Enter the url of the job posting here" required class="form-control">
-								</div>
-							</form>
 							<div class="row">
-								<div class="col-sm-10 mb-3">
+								<div class="col-sm-12 mb-3">
 									<form method="POST" id="full-app-form">
 										{% csrf_token %}
-										{{ full_position_form|crispy }}
-										{{ application_form|crispy }}
+										<label for="id_company">First select the company:</label>
+										{{ full_position_form.company|as_crispy_field }}
+										<label for="existing-company-app-url">After selecting the company above, enter the job posting URL here and JobTracker will attempt to autofill the form</label>
+										<div class="input-group mb-3">
+											<div class="input-group-prepend">
+												<div id="existing-company-fill" class="btn btn-outline-primary" name="{% url 'parse-job-url' %}">Fill</div>
+											</div>
+											<input type="url" id="existing-company-app-url" name="existing-company-app-url" placeholder="Enter the url of the job posting here" required class="form-control">
+										</div>
+										{{ full_position_form.position_title|as_crispy_field }}
+										{{ full_position_form.date_opened|as_crispy_field }}
+										{{ full_position_form.date_closed|as_crispy_field }}
+										{{ full_position_form.skills|as_crispy_field }}
+										{{ full_position_form.job_description|as_crispy_field }}
+										{{ combined_application_form|crispy }}
 										<div class="row mb-3">
 											<div class="col">
 												<input class="btn btn-outline-primary mt-3" type="submit" id="submit-new-app">
@@ -66,7 +70,7 @@
 							</div>
 						</div>
 						<div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">
-							<form id="new-app-url" action="{% url 'parse-job-url' %}">
+							<form id="new-app-url" action="{% url 'parse-job-url' %}" >
 								<label for="app-url">Enter the job posting URL below and JobTracker will attempt to autofill the form</label>
 								<div class="input-group mb-3">
 									<div class="input-group-prepend">
