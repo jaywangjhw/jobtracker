@@ -28,7 +28,7 @@ def get_reddit_data(limit, q, sort, subreddit):
 	restrict = "on"
 	subreddit = "cscareerquestions"
 	 
-	res = requests.get(f'https://oauth.reddit.com/r/{subreddit}/search?q={q}&sort={sort}&restrict_sr={restrict}&limit={limit}', headers=headers)
+	res = requests.get(f'https://oauth.reddit.com/r/{subreddit}/search?q={q}&sort={sort}&restrict_sr={restrict}&limit={limit}&raw_json=1', headers=headers)
 		 
 	results = res.json()['data']
 	children = results['children']
@@ -43,7 +43,8 @@ def get_reddit_data(limit, q, sort, subreddit):
 			
 		entry['title'] = content['title']
 		entry['url'] = content['url']
-		entry['body'] = content['selftext'] 
+		entry['body'] = content['selftext_html']
+		entry['score'] = content['score']
 
 		results.append(entry)
 	

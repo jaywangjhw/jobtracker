@@ -31,10 +31,6 @@ class HomeView(LoginRequiredMixin, View):
         results = get_reddit_data(subreddit="cscareerquestions", limit=5, q="Object oriented programming", sort="hot")
         context['reddit_data'] = results
 
-        print("Right before results")
-
-        print(results)
-
         return render(request, 'jobs/home.html', context)
 
 
