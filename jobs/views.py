@@ -8,7 +8,7 @@ from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
-from .models import Position, Company, Account, Contact, Communication, Application
+from .models import Position, Company, Account, Contact, Communication, Application, Interview
 from .forms import (ApplicationForm,
                     CombinedPositionForm,
                     CombinedApplicationForm,
@@ -36,6 +36,28 @@ class HomeView(LoginRequiredMixin, View):
         context['full_position_form'] = full_position_form
         context['combined_application_form'] = combined_application_form
         context['full_application_form'] = full_application_form
+
+        applications = Application.objects.filter(user=self.request.user).values()
+
+        for app in applications:
+            position = Position.objects.get(pk=app['position_id'])
+            app['position'] = position.position_title
+            app['company'] = position.company.name
+
+            if app['accepted'] and app['accepted'] == True:
+                status = "Accepted"
+            elif app['offer'] and app['offer'] == True:
+                status = 'Received Offer'
+            elif Interview.objects.filter(application=app['id']):
+                status = 'Interviewed'
+            elif app['date_submitted']:
+                status = 'Submitted'
+            else:
+                status = 'Started'
+
+            app['status'] = status
+
+        context['applications'] = applications
 
         return render(request, 'jobs/home.html', context)
 
