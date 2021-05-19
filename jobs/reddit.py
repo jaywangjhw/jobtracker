@@ -21,13 +21,8 @@ def get_reddit_data(limit, q, sort, subreddit):
 	 
 	headers['Authorization'] = f'bearer {ACCESS_TOKEN}'
 
-	# Query parameters
-	# limit = 5
-	# q = "Object oriented programming"
-	# sort = "top"
-	# restrict = "on"
-	# subreddit = "cscareerquestions"
-	 
+	restrict = "on"
+		 
 	res = requests.get(f'https://oauth.reddit.com/r/{subreddit}/search?q={q}&sort={sort}&restrict_sr={restrict}&limit={limit}&raw_json=1', headers=headers)
 		 
 	results = res.json()['data']

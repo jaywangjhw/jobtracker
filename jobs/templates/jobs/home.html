@@ -49,8 +49,44 @@
 
 <div class="container-fluid">
 
-	</br><h1>Reddit Feed</h1></br>
+    <div class="container-fluid">
+		</br><h1>Reddit Feed</h1>
 
+		<div class="form-check form-check-inline">
+			Search:&nbsp 	
+			<input class="form-control" type="text" value="Software Engineer" id=input_query>
+		</div>
+
+		<div class="form-check form-check-inline">
+			Subreddit:&nbsp 	
+			<input class="form-control" type="text" value="cscareerquestions" id=input_subreddit>
+		</div>
+
+		<div class="form-check form-check-inline">
+			Sort:&nbsp 	
+			<select class="custom-select mr-sm-2" id="select_sort">
+				<option selected value="Hot">Hot</option>
+				<option value="Top">Top</option>
+				<option value="New">New</option>
+			</select>
+		</div>
+
+		<div class="form-check form-check-inline">
+			Result:&nbsp 			
+			<select class="custom-select mr-sm-2" id="select_result">
+				<option selected value="5">5</option>
+				<option value="10">10</option>
+				<option value="25">25</option>
+				<option value="50">50</option>
+			</select>
+		</div>
+		
+		<div class="form-check form-check-inline">
+			<input class="btn btn-primary" type="submit" value="Search" id="submit_search">
+		</div>
+	</div>
+	
+	</br>
 	<div class="accordion" id="accordionReddit">
 
 		{% for item in reddit_data %}
