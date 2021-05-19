@@ -34,10 +34,13 @@
                     </div>
                     <div class="col-md-2 align-content-stretch">
                         <div class="row mb-1">
+                            <a class="btn btn-sm btn-primary" href="{% url 'jobs-detail-application' application.id %}"> Details</a>
+                        </div>
+                        <div class="row mb-1">
                             <a class="btn btn-sm btn-primary" href="{% url 'jobs-new-communication' %}?application={{ application.id }}">Add Communication</a>
                         </div>
                         <div class="row mb-1">
-                            <a class="btn btn-sm btn-info" href="{% url 'jobs-update-application' application.id %}"> Update</a>
+                            <a class="btn btn-sm btn-primary" href="{% url 'jobs-update-application' application.id %}"> Update</a>
                         </div>
                         <div class="row mb-1">
                             <a class="btn btn-sm btn-danger" href="{% url 'jobs-delete-application' application.id %}"> Delete</a>

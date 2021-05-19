@@ -8,7 +8,7 @@ from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
-from .models import Position, Company, Account, Contact, Communication, Application, Interview
+from .models import Position, Company, Account, Contact, Communication, Application, Interview, Assessment
 from .forms import (ApplicationForm,
                     CombinedPositionForm,
                     CombinedApplicationForm,
@@ -385,6 +385,22 @@ class ApplicationDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('jobs-list-applications')
 
 
+class ApplicationDetailView(LoginRequiredMixin, DetailView):
+
+    model = Application
+    template_name = 'jobs/application_detail.html'
+    context_object_name = 'app'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['interviews'] = Interview.objects.filter(application=self.kwargs['pk'])
+        context['assessments'] = Assessment.objects.filter(application=self.kwargs['pk'])
+        context['communications'] = Communication.objects.filter(application=self.kwargs['pk'], user=self.request.user)
+        print(context)
+        return context
+
+
+
 #-------------------------------------Applications Views End------------------------------------------
 
 class ContactListView(LoginRequiredMixin, ListView):
@@ -504,6 +520,19 @@ class CommunicationDeleteView(LoginRequiredMixin, DeleteView):
 
 
 #-------------------------------------Communication Views End-------------------------------------
+
+
+#-------------------------------------Interview Views----------------------------------------
+class InterviewListView(LoginRequiredMixin, ListView):
+    model = Interview
+    template_name = 'jobs/interviews.html'
+    context_object_name = 'comms'
+    fields = ['application', 'date', 'time', 'location', 'virtual_url', 'complete', 'notes']
+    
+    def get_queryset(self):
+        return self.model.objects.filter(user=self.request.user)
+
+#-------------------------------------Interview Views End-------------------------------------
 
 @login_required
 def account(request):

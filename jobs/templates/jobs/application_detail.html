@@ -1,0 +1,65 @@
+{% extends "jobs/base.html" %}
+
+{% block content %}
+
+<div class="container h-100 mt-5">
+	<div class="container ml-3">
+		<div class="row mt-3">
+			<div class="col-md-auto">
+				<h2>{{ app.position }}</h2>
+			</div>
+		</div>
+		<div class="row mt-3">
+			<div class="col-md-auto">
+				<p>Application started on {{ app.date_started }}</p>
+				{% if app.date_submitted %}
+					<p>Status: Submited on {{ app.date_submitted }}</p>
+					{% if app.offer %}
+						<p>Offer received</p>
+					{% endif %}
+					{% if app.accepted %}
+						<p>You have accepted this job offer!</p>
+					{% endif %}
+				{% else %}
+					<p>Status: Not submitted yet</p>
+				{% endif %}
+				<p>Email used for this application: {{ app.email_used }}</p>
+				<p>{{ app.notes }}</p>
+			</div>
+		</div>
+		{% if app.interviews %}
+			<div class="row mt-3">
+				<div class="col-md-auto">
+					<h4>Interviews</h4>
+					{% for interview in app.interviews %}
+						<p>Date: {{ interview.date }}</p>
+					{% endfor %}
+				</div>
+			</div>
+		{% endif %}
+		{% if app.assessments %}
+			<div class="row mt-3">
+				<div class="col-md-auto">
+					<h4>Assessments</h4>
+					{% for assessment in app.assessments %}
+						<p>Date: {{ assessment.date }}</p>
+					{% endfor %}
+				</div>
+			</div>
+		{% endif %}
+		{% if communications %}
+			<div class="row mt-3">
+				<div class="col-md-auto">
+					<h4>Communication Related to this Application:</h4>
+					{% for communication in communications %}
+						<p>Contact: {{ communication.contact }}</p>
+						<p>Method of contact: {{ communication.method }}</p>
+						<p>Notes: {{ communication.notes }}</p>
+					{% endfor %}
+				</div>
+			</div>
+		{% endif %}
+	</div>
+</div>
+
+{% endblock content %}
