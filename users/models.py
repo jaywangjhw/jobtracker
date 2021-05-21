@@ -4,6 +4,11 @@ from django.contrib.auth.models import User
 
 
 class Document(models.Model):
+    user = models.ForeignKey(
+		User,
+		on_delete=models.CASCADE,
+		default=1
+		)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     upload = models.FileField()
 

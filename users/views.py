@@ -49,11 +49,17 @@ def profile(request):
 
 class DocumentCreateView(CreateView):
     model = Document
-    fields = ['upload', ]
+    fields = ['upload' ]
     success_url = reverse_lazy('upload')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        documents = Document.objects.all()
+        
+        documents = Document.objects.filter(user=self.request.user)
+        
         context['documents'] = documents
         return context
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
