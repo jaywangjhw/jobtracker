@@ -92,8 +92,5 @@ $(document).ready(function(){
 	            }
 	        })
 	    });
-	
-	console.log("Luke's code goes here")
-
 });
 

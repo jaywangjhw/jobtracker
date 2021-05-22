@@ -20,6 +20,7 @@ import json
 class HomeView(LoginRequiredMixin, View):
 
     def get(self, request):
+
         company_form = CombinedCompanyForm()
         position_form = CombinedPositionForm()
         application_form = CombinedApplicationForm()
@@ -28,18 +29,30 @@ class HomeView(LoginRequiredMixin, View):
         context['position_form'] = position_form
         context['application_form'] = application_form
         
-        query = request.GET.get('query')
-        subreddit = request.GET.get('subreddit')
-        sort = request.GET.get('sort')
-        limit = request.GET.get('results')
+        refresh = 0
+
+        if request.GET.get('query') != None: 
+            refresh = 1
+            query = request.GET.get('query')
+            subreddit = request.GET.get('subreddit')
+            sort = request.GET.get('sort')
+            limit = request.GET.get('results')
+
+        else:
+            query = "Software Engineer"
+            subreddit = "software"
+            sort = 'hot'
+            limit = '5'
 
         print(f'Query: {query} Subreddit: {subreddit} Sort: {sort} Limit:{limit}')
 
-        results = get_reddit_data(1, query, sort, subreddit)
+        results = get_reddit_data(limit, query, sort, subreddit)
 
         context['reddit_data'] = results
 
-        print(context['reddit_data'])
+        # print(context['reddit_data'])
+        if(refresh == 1):
+            return JsonResponse(results, safe=False)
 
         return render(request, 'jobs/home.html', context)
 
