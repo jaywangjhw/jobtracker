@@ -2,6 +2,8 @@ import requests
 
 def get_reddit_data(limit, q, sort, subreddit):
 	
+	print(f'Limit: {limit}, Q: {q}, Sort: {sort}, Subreddit: {subreddit}')
+
 	REDDIT_USERNAME = "Key_River6193"
 	REDDIT_PASSWORD = "password123"
 	APP_ID = "I26Rkh_33ecfDw"

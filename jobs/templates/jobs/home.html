@@ -59,15 +59,15 @@
 
 		<div class="form-check form-check-inline">
 			Subreddit:&nbsp 	
-			<input class="form-control" type="text" value="cscareerquestions" id=input_subreddit>
+			<input class="form-control" type="text" value="software" id=input_subreddit>
 		</div>
 
 		<div class="form-check form-check-inline">
 			Sort:&nbsp 	
 			<select class="custom-select mr-sm-2" id="select_sort">
-				<option selected value="Hot">Hot</option>
-				<option value="Top">Top</option>
-				<option value="New">New</option>
+				<option selected value="hot">Hot</option>
+				<option value="top">Top</option>
+				<option value="new">New</option>
 			</select>
 		</div>
 
@@ -99,7 +99,8 @@
 				</h2>
 				<div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#accordionReddit">
 					<div class="accordion-body">
-							{{ item.body|safe }}
+							{{ item.body|safe }}</br>
+							{{ item.url|safe }}
 					</div>
 				</div>
 			</div>
