@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from .models import Position, Company, Account, Contact, Application, Communication
+from .models import Position, Company, Account, Contact, Application, Communication, Interview, Assessment
 
 
 class PositionForm(ModelForm):
@@ -83,6 +83,21 @@ class CommunicationForm(ModelForm):
         super(CommunicationForm, self).__init__(*args, **kwargs)
         self.fields['application'].queryset = Application.objects.filter(user=user)
         self.fields['contact'].queryset = Contact.objects.filter(user=user)
+
+
+class InterviewForm(ModelForm):
+
+    class Meta:
+        model = Interview
+        exclude = ('user',)
+
+    def __init__(self, *args, **kwargs):
+        ''' This filters the options in the application dropdown field to only the application
+            from which the user selected to create a new interview
+        '''
+        pk = kwargs.pop('app_pk')
+        super(InterviewForm, self).__init__(*args, **kwargs)
+        self.fields['application'].queryset = Application.objects.filter(pk=pk)
 
 
 class CombinedApplicationForm(ModelForm):

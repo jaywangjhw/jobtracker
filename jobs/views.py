@@ -15,6 +15,7 @@ from .forms import (ApplicationForm,
                     CombinedCompanyForm,
                     CommunicationForm,
                     CompanyForm,
+                    InterviewForm,
                     PositionForm)
 from django.contrib import messages
 from jobs.parse_url import get_job_data
@@ -523,14 +524,26 @@ class CommunicationDeleteView(LoginRequiredMixin, DeleteView):
 
 
 #-------------------------------------Interview Views----------------------------------------
-class InterviewListView(LoginRequiredMixin, ListView):
+class InterviewCreateView(LoginRequiredMixin, CreateView):
     model = Interview
-    template_name = 'jobs/interviews.html'
-    context_object_name = 'comms'
-    fields = ['application', 'date', 'time', 'location', 'virtual_url', 'complete', 'notes']
-    
-    def get_queryset(self):
-        return self.model.objects.filter(user=self.request.user)
+    template_name = 'jobs/add_interview.html'
+    context_object_name = 'interview'
+    #fields = ['application', 'date', 'time', 'location', 'virtual_url', 'complete', 'notes']
+    success_url = reverse_lazy('jobs-list-applications')
+    form_class = InterviewForm
+
+    def get_form_kwargs(self):
+        ''' Allows us to pass in the user to the kwargs when the form is created. Then, within
+            the PositionForm class, the __init__ filters the company queryset to only those
+            companies for this user.
+        '''
+        kwargs = super(InterviewCreateView, self).get_form_kwargs()
+        kwargs['app_pk'] = self.kwargs['pk']
+        return kwargs
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
 #-------------------------------------Interview Views End-------------------------------------
 
