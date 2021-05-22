@@ -58,7 +58,7 @@
 			<div class="accordion-item">
 				<h2 class="accordion-header" id= {{ item.url }}>
 					<button class="btn btn-secondary btn-lg btn-block" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="true" aria-controls="collapseOne">
-						{{ item.title }}
+						{{ item.title|safe }}
 					</button>
 				</h2>
 				<div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#accordionReddit">
