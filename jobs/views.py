@@ -27,9 +27,19 @@ class HomeView(LoginRequiredMixin, View):
         context = {'company_form': company_form}
         context['position_form'] = position_form
         context['application_form'] = application_form
+        
+        query = request.GET.get('query')
+        subreddit = request.GET.get('subreddit')
+        sort = request.GET.get('sort')
+        limit = request.GET.get('results')
 
-        results = get_reddit_data(subreddit="cscareerquestions", limit=5, q="Object oriented programming", sort="hot")
+        print(f'Query: {query} Subreddit: {subreddit} Sort: {sort} Limit:{limit}')
+
+        results = get_reddit_data(1, query, sort, subreddit)
+
         context['reddit_data'] = results
+
+        print(context['reddit_data'])
 
         return render(request, 'jobs/home.html', context)
 

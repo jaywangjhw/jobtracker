@@ -2,6 +2,8 @@ import requests
 
 def get_reddit_data(limit, q, sort, subreddit):
 	
+	print(f'Limit: {limit}, Q: {q}, Sort: {sort}, Subreddit: {subreddit}')
+
 	REDDIT_USERNAME = "Key_River6193"
 	REDDIT_PASSWORD = "password123"
 	APP_ID = "I26Rkh_33ecfDw"
@@ -22,7 +24,11 @@ def get_reddit_data(limit, q, sort, subreddit):
 	headers['Authorization'] = f'bearer {ACCESS_TOKEN}'
 
 	restrict = "on"
+<<<<<<< HEAD
 	 
+=======
+		 
+>>>>>>> 0f08df1f6e5dd4044b4552f505b63f5c6e196168
 	res = requests.get(f'https://oauth.reddit.com/r/{subreddit}/search?q={q}&sort={sort}&restrict_sr={restrict}&limit={limit}&raw_json=1', headers=headers)
 		 
 	results = res.json()['data']
