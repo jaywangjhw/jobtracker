@@ -3,4 +3,4 @@ from django.contrib import admin
 from .models import Profile
 
 admin.site.register(Profile)
-admin.site.register(Document)
+admin.site.register(users_models.Document)
