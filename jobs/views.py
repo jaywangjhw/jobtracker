@@ -8,11 +8,19 @@ from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
-from .models import Position, Company, Account, Contact, Communication, Application
-from .forms import PositionForm, CompanyForm, ApplicationForm, CombinedPositionForm, CombinedApplicationForm, CombinedCompanyForm
+from .models import Position, Company, Account, Contact, Communication, Application, Interview, Assessment
+from .forms import (ApplicationForm,
+                    CombinedPositionForm,
+                    CombinedApplicationForm,
+                    CombinedCompanyForm,
+                    CommunicationForm,
+                    CompanyForm,
+                    InterviewForm,
+                    PositionForm)
 from django.contrib import messages
 from jobs.parse_url import get_domain_company, get_amazon_data
 from jobs.reddit import get_reddit_data
+from jobs.parse_url import get_job_data
 import json
 
 
@@ -22,14 +30,42 @@ class HomeView(LoginRequiredMixin, View):
     def get(self, request):
 
         company_form = CombinedCompanyForm()
-        position_form = CombinedPositionForm()
-        application_form = CombinedApplicationForm()
+        combined_position_form = CombinedPositionForm()
+        full_position_form = PositionForm(user=request.user)
+        combined_application_form = CombinedApplicationForm()
+        full_application_form = ApplicationForm(user=request.user)
 
         context = {'company_form': company_form}
         context['position_form'] = position_form
         context['application_form'] = application_form
-        
-        refresh = 0
+		context['combined_position_form'] = combined_position_form
+        context['full_position_form'] = full_position_form
+        context['combined_application_form'] = combined_application_form
+        context['full_application_form'] = full_application_form
+
+        applications = Application.objects.filter(user=self.request.user).values()
+
+        for app in applications:
+            position = Position.objects.get(pk=app['position_id'])
+            app['position'] = position.position_title
+            app['company'] = position.company.name
+
+            if app['accepted'] and app['accepted'] == True:
+                status = "Accepted"
+            elif app['offer'] and app['offer'] == True:
+                status = 'Received Offer'
+            elif Interview.objects.filter(application=app['id']):
+                status = 'Interviewed'
+            elif app['date_submitted']:
+                status = 'Submitted'
+            else:
+                status = 'Started'
+
+            app['status'] = status
+
+        context['applications'] = applications
+		
+		refresh = 0
 
         if request.GET.get('query') != None: 
             refresh = 1
@@ -63,29 +99,41 @@ class HomeView(LoginRequiredMixin, View):
 
     def post(self, request):
         context = {}
-        # If there is a company_id in the form, then we know this company
-        # already exists, and we do not want to re-save it
-        if 'company_id' in request.POST:
-            # Get the company instance so it can be used when creating the position/application
-            company = Company.objects.get(pk=request.POST.get('company_id'))
-        else:
-            # If this is a new company, create a bounded form instance with the data from 
-            # the post request. 
-            company_form = CombinedCompanyForm(request.POST)
-            company_form.instance.user = self.request.user
-
-            if company_form.is_valid():
-                company = company_form.save()
-                messages.success(request, f'New Company Saved!')
+        # If position is in the form, then we know this is solely an application form
+        # which will be for an existing position.
+        if 'position' in request.POST:
+            application_form = ApplicationForm(request.POST, user=self.request.user)
+            application_form.instance.user = self.request.user
+            
+            if application_form.is_valid():
+                application = application_form.save()
+                messages.success(request, f'New Application Saved!')
             else:
-                context['company_form']= company_form
-
-        if 'position_id' in request.POST:
-            position = Position.objects.get(pk=request.POST.get('position_id'))
+                context['application_form'] = application_form
         else:
-            position_form = CombinedPositionForm(request.POST)
+            # Otherwise, this is a new position and new application for an existing company
+            # or it's a new company, new position, and new application. 
+            company = None
+            position = None
+            
+            # If company is in the form, this is a position for an existing company.
+            if 'company' in request.POST:
+                position_form = PositionForm(request.POST, user=self.request.user)
+            else:
+                position_form = CombinedPositionForm(request.POST)
+
+                company_form = CombinedCompanyForm(request.POST)
+                company_form.instance.user = self.request.user
+
+                if company_form.is_valid():
+                    company = company_form.save()
+                    messages.success(request, f'New Company Saved!')
+                else:
+                    context['company_form'] = company_form
+
             position_form.instance.user = self.request.user
-            position_form.instance.company = company
+            if company:
+                position_form.instance.company = company
 
             if position_form.is_valid():
                 position = position_form.save()
@@ -93,54 +141,45 @@ class HomeView(LoginRequiredMixin, View):
             else:
                 context['position_form'] = position_form
 
-        application_form = CombinedApplicationForm(request.POST)
-        application_form.instance.user = self.request.user
-        application_form.instance.company = company
-        application_form.instance.position = position
+            application_form = CombinedApplicationForm(request.POST)
+            application_form.instance.user = self.request.user
+            if position:
+                application_form.instance.position = position
+            
+            if application_form.is_valid():
+                application = application_form.save()
+                messages.success(request, f'New Application Saved!')
+                return redirect('jobs-home')
+            else:
+                context['application_form'] = application_form
 
-        if application_form.is_valid():
-            application = application_form.save()
-            messages.success(request, f'New Application Saved!')
-            return redirect('jobs-home')
-        else:
-            context['application_form'] = application_form
-
-        return render(request, 'jobs/home.html', context) 
+        return redirect(reverse_lazy('jobs-home'))
 
 
 @login_required
 @ensure_csrf_cookie
 def parse_job_url(request):
     job_data = {}
-    # Job posting url should be passed in as a query parram
-    url = request.GET.get('app-url')
-    
-    # See if this user already tracks this specific position
-    if Position.objects.filter(user=request.user, position_url=url).exists():
-        position = Position.objects.filter(user=request.user, position_url=url).first()
-        job_data['position_message'] = 'This application is for a position you already track!'
-        job_data['company_id'] = position.company.id
-        job_data['company'] = position.company.name
-        job_data['position_id'] = position.id
-        job_data['position_title'] = position.position_title
+    print(request)
+    # Job posting url should be passed in as a query param
+    if 'app_url' in request.GET:
+        url = request.GET.get('app_url')
     else:
-        # If this is a new position, we need to parse the url to get any relevant data
-        job_data = get_amazon_data(url)
+        return JsonResponse(job_data)
 
-        if job_data:
-            if 'company' in job_data:
-                # Check if the user already tracks this company
-                company = Company.objects.filter(name__icontains=job_data['company'], user=request.user).first()
-                if company:
-                    job_data['company_id'] = company.id
-                    job_data['company'] = company.name
-                    job_data['company_message'] = 'This application is for a company you already track!'
-                else:
-                    # Need to add more fields from the parsed data here...
-                    job_data['company_message'] = 'You are not tracking this company yet. So we\'ll add it to your companies list!'
-        else:
-            job_data['company_message'] = 'We couldn\'t figure out many details from this url. Please fill out the form manually.'  
+    # Company ID may/may not be passed as a param
+    if 'company_id' in request.GET:
+        company_name = Company.objects.get(pk=request.GET.get('company_id')).name
+    else:
+        company_name = None
+    
+    print(url)
+    # ** NEED TO EXPAND ** Right now only set up for amazon urls.
+    job_data = get_job_data(url, company_name)
 
+    if not job_data:
+        job_data['company_message'] = 'We couldn\'t figure out many details from this url. Please fill out the form manually.'
+ 
     return JsonResponse(job_data)
 
 
@@ -238,14 +277,25 @@ class PositionListView(LoginRequiredMixin, ListView):
     fields = ['company', 'position_title', 'position_url', 'date_opened', 'date_closed',
                 'skills', 'job_description']
 
+    def get_queryset(self):
+        return self.model.objects.filter(user=self.request.user)
+
 
 class PositionCreateView(LoginRequiredMixin, CreateView):
     model = Position
+    form_class = PositionForm
     context_object_name = 'position'
     template_name = 'jobs/add_position.html'
-    fields = ['company', 'position_title', 'position_url', 'date_opened', 'date_closed',
-                'skills', 'job_description']
     success = '/positions'
+
+    def get_form_kwargs(self):
+        ''' Allows us to pass in the user to the kwargs when the form is created. Then, within
+            the PositionForm class, the __init__ filters the company queryset to only those
+            companies for this user.
+        '''
+        kwargs = super(PositionCreateView, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
     def get_initial(self):
         ''' Allows you to set initial values for the new Position form. 
@@ -299,7 +349,10 @@ class ApplicationListView(LoginRequiredMixin, ListView):
     context_object_name = 'applications'
     fields = ['position', 'date_started', 'date_submitted', 'email_used', 'offer',
                 'accepted', 'notes']
-    
+
+    def get_queryset(self):
+        return self.model.objects.filter(user=self.request.user)
+
     def get_context_data(self, **kwargs):
 
         offer = Application.objects.all().filter(offer=True).count()
@@ -314,11 +367,19 @@ class ApplicationListView(LoginRequiredMixin, ListView):
 
 class ApplicationCreateView(LoginRequiredMixin, CreateView):
     model = Application
+    form_class = ApplicationForm
     context_object_name = 'application'
     template_name = 'jobs/add_application.html'
-    fields = ['position', 'date_started', 'date_submitted', 'email_used', 'offer',
-                'accepted', 'notes']
     success = '/applications'
+
+    def get_form_kwargs(self):
+        ''' Allows us to pass in the user to the kwargs when the form is created. Then, within
+            the ApplicationForm class, the __init__ filters the position queryset to only those
+            positions for this user.
+        '''
+        kwargs = super(ApplicationCreateView, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
     def get_initial(self):
         ''' Allows you to set initial values for the new Application form. 
@@ -359,12 +420,31 @@ class ApplicationDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('jobs-list-applications')
 
 
+class ApplicationDetailView(LoginRequiredMixin, DetailView):
+
+    model = Application
+    template_name = 'jobs/application_detail.html'
+    context_object_name = 'app'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['interviews'] = Interview.objects.filter(application=self.kwargs['pk'])
+        context['assessments'] = Assessment.objects.filter(application=self.kwargs['pk'])
+        context['communications'] = Communication.objects.filter(application=self.kwargs['pk'], user=self.request.user)
+        print(context)
+        return context
+
+
+
 #-------------------------------------Applications Views End------------------------------------------
 
 class ContactListView(LoginRequiredMixin, ListView):
     model = Contact
     template_name = 'jobs/contacts.html'
     context_object_name = 'contacts'
+
+    def get_queryset(self):
+        return self.model.objects.filter(user=self.request.user)
 
 
 class ContactCreateView(LoginRequiredMixin, CreateView):
@@ -398,15 +478,27 @@ class CommunicationListView(LoginRequiredMixin, ListView):
     template_name = 'jobs/communications.html'
     context_object_name = 'comms'
     fields = ['application', 'contact', 'date', 'method', 'notes']
+    
+    def get_queryset(self):
+        return self.model.objects.filter(user=self.request.user)
 
 
 class CommunicationCreateView(LoginRequiredMixin, CreateView):
     
     model = Communication
+    form_class = CommunicationForm
     template_name = 'jobs/add_communication.html'
     context_object_name = 'comms'
-    fields = ['application', 'contact', 'date', 'method', 'notes']
     success_url = reverse_lazy('jobs-list-communications')
+
+    def get_form_kwargs(self):
+        ''' Allows us to pass in the user to the kwargs when the form is created. Then, within
+            the CommunicationForm class, the __init__ filters the application and contact querysets
+            to only those added by this user.
+        '''
+        kwargs = super(CommunicationCreateView, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
     def get_initial(self):
         ''' Allows you to set initial values for the new Communication form. 
@@ -432,7 +524,6 @@ class CommunicationCreateView(LoginRequiredMixin, CreateView):
                 initial['contact'] = contact
             
         return initial
-
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -464,6 +555,31 @@ class CommunicationDeleteView(LoginRequiredMixin, DeleteView):
 
 
 #-------------------------------------Communication Views End-------------------------------------
+
+
+#-------------------------------------Interview Views----------------------------------------
+class InterviewCreateView(LoginRequiredMixin, CreateView):
+    model = Interview
+    template_name = 'jobs/add_interview.html'
+    context_object_name = 'interview'
+    #fields = ['application', 'date', 'time', 'location', 'virtual_url', 'complete', 'notes']
+    success_url = reverse_lazy('jobs-list-applications')
+    form_class = InterviewForm
+
+    def get_form_kwargs(self):
+        ''' Allows us to pass in the user to the kwargs when the form is created. Then, within
+            the PositionForm class, the __init__ filters the company queryset to only those
+            companies for this user.
+        '''
+        kwargs = super(InterviewCreateView, self).get_form_kwargs()
+        kwargs['app_pk'] = self.kwargs['pk']
+        return kwargs
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+#-------------------------------------Interview Views End-------------------------------------
 
 @login_required
 def account(request):

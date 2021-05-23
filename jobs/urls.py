@@ -5,6 +5,7 @@ from users import views as user_views
 from django.contrib.auth import views as auth_views
 
 
+
 urlpatterns = [
     path('', HomeView.as_view(), name='jobs-home'),
     #path('', views.home, name='jobs-home'),
@@ -21,8 +22,10 @@ urlpatterns = [
     path('account/', views.account, name='jobs-account'),
     path('applications/', ApplicationListView.as_view(), name='jobs-list-applications'),
     path('applications/new', ApplicationCreateView.as_view(), name='jobs-new-application'),
-    path('applications/<int:pk>', ApplicationUpdateView.as_view(), name='jobs-update-application'),
+    path('applications/<int:pk>', ApplicationDetailView.as_view(), name='jobs-detail-application'),
+    path('applications/edit/<int:pk>', ApplicationUpdateView.as_view(), name='jobs-update-application'),
     path('applications/delete/<int:pk>', ApplicationDeleteView.as_view(), name='jobs-delete-application'),
+    path('applications/<int:pk>/interview/', InterviewCreateView.as_view(), name='jobs-new-interview'),
     path('contacts/', ContactListView.as_view(), name='jobs-contacts'),
     path('contacts/new', ContactCreateView.as_view(), name='jobs-new-contact'),
     path('contacts/<int:pk>', ContactUpdateView.as_view(), name='jobs-update-contact'),
@@ -33,11 +36,13 @@ urlpatterns = [
     path('communications/<int:pk>', CommunicationUpdateView.as_view(), name='jobs-update-communication'),
     path('communications/delete/<int:pk>', CommunicationDeleteView.as_view(), name='jobs-delete-communication'),
     path('parse_job_url', views.parse_job_url, name='parse-job-url'),
+
 ]
 
 urlpatterns += [
     path('accounts/', include('django.contrib.auth.urls')),
     path('register/', user_views.register, name='register'),
+    path('upload/', user_views.DocumentCreateView.as_view(), name='upload'),
     path('profile/', user_views.profile, name='profile'),
     path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
@@ -48,6 +53,7 @@ urlpatterns += [
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(
         template_name='users/password_reset_confirm.html'), name='password_reset_confirm'),
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(
-        template_name='users/password_reset_complete.html'), name='password_reset_complete')
+        template_name='users/password_reset_complete.html'), name='password_reset_complete'),
+
 ]
 

@@ -1,10 +1,10 @@
 // Search for company in the list of all companies
 $(document).ready(function(){
-	$("#companySearch").keyup(function() {
+	$("#listSearch").keyup(function() {
 		// make the search case insensitive
 		var searchStr = $(this).val().toLowerCase();
 		// hide any rows in the company table that do not match this search
-		$("#companyTable tr").filter(function() {
+		$("#itemTable tr").filter(function() {
 	  	$(this).toggle($(this).text().toLowerCase().indexOf(searchStr) > -1)
 		});
 	});
