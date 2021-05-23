@@ -33,7 +33,6 @@ class Company(models.Model):
 		return reverse('jobs-company-detail', kwargs={'pk': self.pk})
 
 
-# Need to add dependencies on User and Source class
 class Position(models.Model):
 
 	INDUSTRY_SKILL = [

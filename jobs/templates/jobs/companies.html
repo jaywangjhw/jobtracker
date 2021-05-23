@@ -7,7 +7,7 @@
 <div class="row">
 	<div class="col-4">
 		<a class="btn btn-primary mb-3 btn-block" href="{% url 'jobs-new-company' %}">Add New Company</a>
-		<input class="form-control mb-2" id="companySearch" type="text" placeholder="Search for Company">
+		<input class="form-control mb-2" id="listSearch" type="text" placeholder="Search for Company">
 		<table class="table table-hover">
 			<thead>
 				<tr>
@@ -16,7 +16,7 @@
 					<th scope="col">Industry</th>
 				</tr>
 			</thead>
-			<tbody id="companyTable">
+			<tbody id="itemTable">
 				{% for company in companies %}
 				<tr class="make-row-clickable" data-link="{% url 'jobs-companies' %}?company={{ company.id }}">
 					<th scope="row">{{ company.name }}</th>
