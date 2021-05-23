@@ -6,6 +6,6 @@
 	{% csrf_token %}
 	<p>You are about to delete application: "{{ object }}". Are you sure?</p>
 	<input class="btn btn-primary" type="submit" value="Delete">
-	<a class="btn btn-primary" href="{% url 'jobs-list-applications' %}" role="button">Cancel</a>
+	<a class="btn btn-primary" href="{% url 'jobs-home' %}" role="button">Cancel</a>
 </form>
 {% endblock content %}

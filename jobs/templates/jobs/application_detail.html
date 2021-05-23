@@ -35,7 +35,7 @@
 						<p>Date: {{ interview.date }}</p>
 						<p>Completed: {{ interview.complete }}</p>
 						<a class="btn btn-primary delete-app" href="{% url 'jobs-update-interview' app.id interview.id %}" role="button">Update</a>
-						<a class="btn btn-primary delete-app" href="{% url 'jobs-delete-application' app.id %}" role="button">Delete</a>
+						<a class="btn btn-primary delete-app" href="{% url 'jobs-delete-interview' app.id interview.id %}" role="button">Delete</a>
 					{% endfor %}
 				</div>
 			</div>

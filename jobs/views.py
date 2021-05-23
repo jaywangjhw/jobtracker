@@ -383,6 +383,10 @@ class ApplicationUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
+    
+    def get_success_url(self):
+        # Go to this Interview's application details page after deleting a new interview.
+        return reverse_lazy('jobs-home')
 
 
 class ApplicationDeleteView(LoginRequiredMixin, DeleteView):
@@ -532,7 +536,7 @@ class InterviewCreateView(LoginRequiredMixin, CreateView):
     template_name = 'jobs/add_interview.html'
     context_object_name = 'interview'
     #fields = ['application', 'date', 'time', 'location', 'virtual_url', 'complete', 'notes']
-    success_url = reverse_lazy('jobs-list-applications')
+    success_url = reverse_lazy('jobs-home')
     form_class = InterviewForm
 
     def get_initial(self):
@@ -571,6 +575,16 @@ class InterviewUpdateView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         # Go to this Interview's application details page after creating a new interview.
         return reverse_lazy('jobs-detail-application', kwargs={'pk': self.kwargs['app_pk']})
+
+
+class InterviewDeleteView(LoginRequiredMixin, DeleteView):
+    
+    model = Interview
+
+    def get_success_url(self):
+        # Go to this Interview's application details page after deleting a new interview.
+        return reverse_lazy('jobs-detail-application', kwargs={'pk': self.kwargs['app_pk']})
+
 
 #-------------------------------------Interview Views End-------------------------------------
 
