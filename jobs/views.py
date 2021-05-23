@@ -21,6 +21,7 @@ from django.contrib import messages
 from jobs.parse_url import get_domain_company, get_amazon_data
 from jobs.reddit import get_reddit_data
 from jobs.parse_url import get_job_data
+from datetime import date
 import json
 
 
@@ -52,7 +53,11 @@ class HomeView(LoginRequiredMixin, View):
             elif app['offer'] and app['offer'] == True:
                 status = 'Received Offer'
             elif Interview.objects.filter(application=app['id']):
-                status = 'Interviewed'
+                for interview in Interview.objects.filter(application=app['id']):
+                    if interview.complete:
+                        status = 'Interviewed'
+                    else:
+                        status = 'Interview Scheduled'
             elif app['date_submitted']:
                 status = 'Submitted'
             else:
@@ -410,6 +415,10 @@ class ApplicationUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
+    
+    def get_success_url(self):
+        # Go to this Interview's application details page after deleting a new interview.
+        return reverse_lazy('jobs-home')
 
 
 class ApplicationDeleteView(LoginRequiredMixin, DeleteView):
@@ -426,9 +435,15 @@ class ApplicationDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['interviews'] = Interview.objects.filter(application=self.kwargs['pk'])
+
+        for interview in context['interviews']:
+            if interview.date and interview.date > date.today() and not interview.complete:
+                interview.upcoming = True
+            elif not interview.complete and interview.date < date.today():
+                interview.overdue = True
+
         context['assessments'] = Assessment.objects.filter(application=self.kwargs['pk'])
         context['communications'] = Communication.objects.filter(application=self.kwargs['pk'], user=self.request.user)
-        print(context)
         return context
 
 
@@ -559,9 +574,17 @@ class InterviewCreateView(LoginRequiredMixin, CreateView):
     model = Interview
     template_name = 'jobs/add_interview.html'
     context_object_name = 'interview'
-    #fields = ['application', 'date', 'time', 'location', 'virtual_url', 'complete', 'notes']
-    success_url = reverse_lazy('jobs-list-applications')
+    success_url = reverse_lazy('jobs-home')
     form_class = InterviewForm
+
+    def get_initial(self):
+        ''' Allows you to set initial values for the new Interview form. 
+        '''
+        # Grabs the initial dictionary by calling superclass.
+        initial = super().get_initial()
+        application = Application.objects.get(pk=self.kwargs['pk'])
+        initial['application'] = application
+        return initial
 
     def get_form_kwargs(self):
         ''' Allows us to pass in the user to the kwargs when the form is created. Then, within
@@ -575,6 +598,31 @@ class InterviewCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
+
+
+class InterviewUpdateView(LoginRequiredMixin, UpdateView):
+
+    model = Interview
+    fields = ['date', 'time', 'location', 'virtual_url', 'complete', 'notes']
+    template_name = 'jobs/update_interview.html'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        # Go to this Interview's application details page after updating an interview.
+        return reverse_lazy('jobs-detail-application', kwargs={'pk': self.kwargs['app_pk']})
+
+
+class InterviewDeleteView(LoginRequiredMixin, DeleteView):
+    
+    model = Interview
+
+    def get_success_url(self):
+        # Go to this Interview's application details page after deleting an interview.
+        return reverse_lazy('jobs-detail-application', kwargs={'pk': self.kwargs['app_pk']})
+
 
 #-------------------------------------Interview Views End-------------------------------------
 

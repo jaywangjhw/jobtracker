@@ -1,0 +1,11 @@
+{% extends "jobs/base.html" %}
+
+{% block content %}
+
+<form method="post">
+	{% csrf_token %}
+	<p>You are about to delete this interview. Are you sure?</p>
+	<input class="btn btn-primary" type="submit" value="Delete">
+	<a class="btn btn-primary" href="{% url 'jobs-detail-application' view.kwargs.app_pk %}" role="button">Cancel</a>
+</form>
+{% endblock content %}

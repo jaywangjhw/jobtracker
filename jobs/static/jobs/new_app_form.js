@@ -23,7 +23,7 @@ function getCookie(name) {
 $(document).ready(function(){
 
 	$("#existing-company-fill").click(function(e) { 
-	    
+
 	    e.stopPropagation();
 	    var target_url = $(this).attr('name');
 	    var app_url = $("#existing-company-app-url").val();
