@@ -18,14 +18,16 @@ from .forms import (ApplicationForm,
                     InterviewForm,
                     PositionForm)
 from django.contrib import messages
+from jobs.parse_url import get_domain_company, get_amazon_data
+from jobs.reddit import get_reddit_data
 from jobs.parse_url import get_job_data
 import json
-
 
 
 class HomeView(LoginRequiredMixin, View):
 
     def get(self, request):
+
         company_form = CombinedCompanyForm()
         combined_position_form = CombinedPositionForm()
         full_position_form = PositionForm(user=request.user)
@@ -59,9 +61,38 @@ class HomeView(LoginRequiredMixin, View):
             app['status'] = status
 
         context['applications'] = applications
+        
+        refresh = 0
+
+        if request.GET.get('query') != None: 
+            refresh = 1
+            query = request.GET.get('query')
+            subreddit = request.GET.get('subreddit')
+            sort = request.GET.get('sort')
+            limit = request.GET.get('results')
+
+        else:
+            query = "Software Engineer"
+            subreddit = "software"
+            sort = 'hot'
+            limit = '5'
+
+        results = get_reddit_data(limit, query, sort, subreddit)
+        context['reddit_data'] = results
+
+        positions = Position.objects.filter(user=request.user)
+        
+        positions_list = []
+
+        for position in positions:
+            positions_list.append(position.position_title)
+
+        context['positions'] = positions_list
+
+        if(refresh == 1):
+            return JsonResponse(results, safe=False)
 
         return render(request, 'jobs/home.html', context)
-
 
     def post(self, request):
         context = {}
