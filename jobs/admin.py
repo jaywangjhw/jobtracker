@@ -10,4 +10,4 @@ admin.site.register(jobs_models.Interview)
 admin.site.register(jobs_models.Assessment)
 admin.site.register(jobs_models.Contact)
 admin.site.register(jobs_models.Communication)
-admin.site.register(jobs_models.Document)
+
