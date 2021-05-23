@@ -3,27 +3,29 @@ from django.db.models.signals import post_save
 from django.urls import reverse
 from django.contrib.auth.models import User
 
+class Skill(models.Model):
+
+	# Columns in Skill table
+	user = models.ForeignKey(
+		User,
+		on_delete=models.CASCADE,
+		default=1
+		)
+
+	skill_name = models.CharField(max_length=100)
+
+	def __str__(self):
+		"""String for representing the Skill as the Skill name"""
+		return self.skill_name
 
 class Company(models.Model):
-	INDUSTRY_CHOICES = [
-		('tech', 'Tech'),
-		('ecommerce', 'Ecommerce'), 
-		('healthcare', 'Healthcare'),
-		('pharma', 'Pharmaceutical'),
-		('aerospace', 'Aerospace'),
-		('fintech', 'FinTech'),
-		('nonprofit', 'Nonprofit'),
-		('defense', 'Defense'),
-		('other', 'Other'),
-	]
-	
 	user = models.ForeignKey(
 		User,
 		on_delete=models.CASCADE,
 		default=1)
 	name = models.CharField(max_length=100)
 	careers_url = models.URLField(max_length=300, null=True, blank=True)
-	industry = models.CharField(choices=INDUSTRY_CHOICES, max_length=100, null=True, blank=True)
+	industry = models.ManyToManyField(Skill)
 
 	def __str__(self):
 		"""String for representing the Company as the Company name"""
@@ -33,15 +35,8 @@ class Company(models.Model):
 		return reverse('jobs-company-detail', kwargs={'pk': self.pk})
 
 
-class Position(models.Model):
 
-	INDUSTRY_SKILL = [
-		('Java', 'Java'), 
-		('C++', 'C++'),
-		('Algorithm Design', 'Algorithm Design'), 
-		('Object Oriented', 'Object Oriented'), 
-		('Kubernetes', 'Kubernetes')
-	]
+class Position(models.Model):
 
 	# Columns in Position table
 	user = models.ForeignKey(
@@ -57,7 +52,7 @@ class Position(models.Model):
 	position_url = models.URLField(max_length=300, null=True)
 	date_opened = models.DateField(null=True)
 	date_closed = models.DateField(null=True, blank=True, default='')
-	skills = models.CharField(choices=INDUSTRY_SKILL, max_length=100) # Need to look into multiple selection
+	skills = models.ManyToManyField(Skill)
 	job_description = models.TextField(null=True)
 
 	def __str__(self):
@@ -97,7 +92,6 @@ class Account(models.Model):
 
 	def __str__(self):
 		return self.user.username
-
 
 class Application(models.Model):
 	user = models.ForeignKey(
