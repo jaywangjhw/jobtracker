@@ -54,12 +54,16 @@
 
 		<div class="form-check form-check-inline">
 			Search:&nbsp 	
-			<input class="form-control" type="text" value="Software Engineer" id=input_query>
+			<select class="custom-select mr-sm-2" id="input_query">
+				{% for position in positions %}
+					<option value="{{ position }}">{{ position }}</option>
+				{% endfor %}
+			</select>
 		</div>
 
 		<div class="form-check form-check-inline">
 			Subreddit:&nbsp 	
-			<input class="form-control" type="text" value="software" id=input_subreddit>
+			<input class="form-control" type="text" value="cscareerquestions" id=input_subreddit>
 		</div>
 
 		<div class="form-check form-check-inline">

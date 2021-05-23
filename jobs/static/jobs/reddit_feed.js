@@ -1,9 +1,7 @@
 // Get the parameters for Reddit feed for GET request
 $(document).ready(function(){
  
-	
 	$("#submit_search").click(function() {
-
 
 		// Get current parameters from Reddit feed
 		var subreddit = $('#input_subreddit').val();
@@ -48,7 +46,5 @@ $(document).ready(function(){
 				}
 			}
 		});
-
 	});
-
 });

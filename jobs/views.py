@@ -44,18 +44,22 @@ class HomeView(LoginRequiredMixin, View):
             sort = 'hot'
             limit = '5'
 
-        print(f'Query: {query} Subreddit: {subreddit} Sort: {sort} Limit:{limit}')
-
         results = get_reddit_data(limit, query, sort, subreddit)
-
         context['reddit_data'] = results
 
-        # print(context['reddit_data'])
+        positions = Position.objects.filter(user=request.user)
+        
+        positions_list = []
+
+        for position in positions:
+            positions_list.append(position.position_title)
+
+        context['positions'] = positions_list
+
         if(refresh == 1):
             return JsonResponse(results, safe=False)
 
         return render(request, 'jobs/home.html', context)
-
 
     def post(self, request):
         context = {}
