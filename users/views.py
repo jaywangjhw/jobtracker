@@ -4,6 +4,9 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from .forms import UserRegisterForm, UserUpdateForm
+from django.views.generic.edit import CreateView
+from django.urls import reverse_lazy
+from .models import Document
 
 
 # Create your views here.
@@ -41,3 +44,22 @@ def profile(request):
     }
 
     return render(request, 'users/profile.html', context)
+
+
+
+class DocumentCreateView(CreateView):
+    model = Document
+    fields = ['upload' ]
+    success_url = reverse_lazy('upload')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        documents = Document.objects.filter(user=self.request.user)
+        
+        context['documents'] = documents
+        return context
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
