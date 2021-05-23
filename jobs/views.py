@@ -24,7 +24,6 @@ from jobs.parse_url import get_job_data
 import json
 
 
-
 class HomeView(LoginRequiredMixin, View):
 
     def get(self, request):
@@ -36,9 +35,7 @@ class HomeView(LoginRequiredMixin, View):
         full_application_form = ApplicationForm(user=request.user)
 
         context = {'company_form': company_form}
-        context['position_form'] = position_form
-        context['application_form'] = application_form
-		context['combined_position_form'] = combined_position_form
+        context['combined_position_form'] = combined_position_form
         context['full_position_form'] = full_position_form
         context['combined_application_form'] = combined_application_form
         context['full_application_form'] = full_application_form
@@ -64,8 +61,8 @@ class HomeView(LoginRequiredMixin, View):
             app['status'] = status
 
         context['applications'] = applications
-		
-		refresh = 0
+        
+        refresh = 0
 
         if request.GET.get('query') != None: 
             refresh = 1

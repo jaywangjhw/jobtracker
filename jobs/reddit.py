@@ -44,7 +44,7 @@ def get_reddit_data(limit, q, sort, subreddit):
 		entry['score'] = content['score']
 
 		results.append(entry)
-	
+
 	return results		
 
 def printList(list):
