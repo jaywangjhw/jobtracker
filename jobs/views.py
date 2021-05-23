@@ -19,6 +19,7 @@ from .forms import (ApplicationForm,
                     PositionForm)
 from django.contrib import messages
 from jobs.parse_url import get_job_data
+from datetime import date
 import json
 
 
@@ -403,6 +404,13 @@ class ApplicationDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['interviews'] = Interview.objects.filter(application=self.kwargs['pk'])
+
+        for interview in context['interviews']:
+            if interview.date and interview.date > date.today() and not interview.complete:
+                interview.upcoming = True
+            elif not interview.complete and interview.date < date.today():
+                interview.overdue = True
+
         context['assessments'] = Assessment.objects.filter(application=self.kwargs['pk'])
         context['communications'] = Communication.objects.filter(application=self.kwargs['pk'], user=self.request.user)
         return context
@@ -535,7 +543,6 @@ class InterviewCreateView(LoginRequiredMixin, CreateView):
     model = Interview
     template_name = 'jobs/add_interview.html'
     context_object_name = 'interview'
-    #fields = ['application', 'date', 'time', 'location', 'virtual_url', 'complete', 'notes']
     success_url = reverse_lazy('jobs-home')
     form_class = InterviewForm
 
@@ -573,7 +580,7 @@ class InterviewUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        # Go to this Interview's application details page after creating a new interview.
+        # Go to this Interview's application details page after updating an interview.
         return reverse_lazy('jobs-detail-application', kwargs={'pk': self.kwargs['app_pk']})
 
 
@@ -582,7 +589,7 @@ class InterviewDeleteView(LoginRequiredMixin, DeleteView):
     model = Interview
 
     def get_success_url(self):
-        # Go to this Interview's application details page after deleting a new interview.
+        # Go to this Interview's application details page after deleting an interview.
         return reverse_lazy('jobs-detail-application', kwargs={'pk': self.kwargs['app_pk']})
 
 
