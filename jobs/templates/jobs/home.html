@@ -82,33 +82,13 @@
 		</div>
 		
 		<div class="form-check form-check-inline">
-			<input class="btn btn-primary" type="submit" value="Search" id="submit_search">
+			<input class="btn btn-primary" type="submit" value="Display" id="submit_search">
 		</div>
 	</div>
 	
 	</br>
 	
-	<div class="accordion" id="accordionReddit">
-
-		{% for item in reddit_data %}
-
-			<div class="accordion-item">
-				<h2 class="accordion-header" id= {{ item.url }}>
-					<button class="btn btn-secondary btn-lg btn-block" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="true" aria-controls="collapseOne">
-						{{ item.title|safe }}
-					</button>
-				</h2>
-				<div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#accordionReddit">
-					<div class="accordion-body">
-							{{ item.body|safe }}</br>
-							{{ item.url|safe }}
-					</div>
-				</div>
-			</div>
-
-		{% endfor %}
-
-	</div>
+	<div class="accordion" id="accordionReddit"></div>
 
 </div>
 

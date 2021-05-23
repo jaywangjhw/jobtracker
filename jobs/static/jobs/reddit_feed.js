@@ -4,7 +4,6 @@ $(document).ready(function(){
 	
 	$("#submit_search").click(function() {
 
-		// $('.accordion-item').remove();
 
 		// Get current parameters from Reddit feed
 		var subreddit = $('#input_subreddit').val();
@@ -42,7 +41,7 @@ $(document).ready(function(){
 					+ '<div id="collapse' + String(count) + '"class="accordion-collapse collapse" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#accordionReddit">'
 					+ '<div class="accordion-body">'
 					+ response[item].body + '</br>'
-					+ response[item].url + '/div'
+					+ '<a href="' + response[item].url + '">' + response[item].url + '</a>' + '</div>'
 					+ '</div>' + '</div>');
 					
 					count++;
