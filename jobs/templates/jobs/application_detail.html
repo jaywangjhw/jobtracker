@@ -2,78 +2,136 @@
 
 {% block content %}
 
-<div class="container h-100 mt-5">
-	<div class="container ml-3 mb-5">
-		<div class="row mt-3">
-			<div class="col-md-auto">
-				<h2>{{ app.position }}</h2>
-			</div>
+<div class="container h-100 mt-5 mb-5">
+	<div class="row mt-3">
+		<div class="col-md-auto">
+			<h2>Application: {{ app.position }}</h2>
 		</div>
-		<div class="row mt-3">
-			<div class="col-md-auto">
-				<p>Application started on {{ app.date_started }}</p>
-				{% if app.date_submitted %}
-					<p>Status: Submited on {{ app.date_submitted }}</p>
+	</div>
+   	<div class="card border-primary mb-3">
+   		<div class="card-header">
+   			<div class=row>
+   				<div class="col-md-6">
+   					<span>Application Details</span>
+   				</div>
+   				<div class="col-md-6 text-right">
+                	<a class="btn btn-sm btn-primary border-primary" href="{% url 'jobs-update-application' app.id %}">Edit this Application</a>	       					
+   				</div>
+   			</div>
+   		</div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-10">
+                	{% if not app.date_started and not app.date_submitted and not app.offer and not app.accepted and not app.email_used and not app.notes %}
+                		<p>Edit this application to add more details
+                	{% endif %}
+
+                	{% if app.date_started %}
+                		<p>Application started on {{ app.date_started }}</p>
+                	{% endif %}
+
+                	{% if app.date_submitted %}
+                		<p>Application submitted on {{ app.date_submitted }}</p>
+                	{% endif %}
+
 					{% if app.offer %}
 						<p>Offer received</p>
 					{% endif %}
+					
 					{% if app.accepted %}
 						<p>You have accepted this job offer!</p>
 					{% endif %}
-				{% else %}
-					<p>Status: Not submitted yet</p>
-				{% endif %}
-				<p>Email used for this application: {{ app.email_used }}</p>
-				<p>{{ app.notes }}</p>
-			</div>
+
+					{% if app.email_used %}
+						<p>Email used for this application: {{ app.email_used }}</p>
+					{% endif %}
+
+					{% if app.notes %}
+						<p>Notes: {{ app.notes }}</p> 
+					{% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+  	<div class="card border-primary mb-3">
+   		<div class="card-header">
+   			<div class=row>
+   				<div class="col-md-6">
+   					<span>Position Details</span>
+   				</div>
+   				<div class="col-md-6 text-right">
+                	<a class="btn btn-sm btn-primary border-primary" href="{% url 'jobs-update-position' app.position.id %}">Edit this Position</a>	       					
+   				</div>
+   			</div>
+   		</div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-10">
+                	{% if app.position.position_url %}
+                		<a href="{{ app.position.position_url }}">Link to job posting</a>
+                	{% endif %}
+
+                	{% if app.position.job_description %}
+                		<p>Job Description: {{ app.position.job_description }}</p>
+                	{% endif %}
+                </div>
+            </div>
+        </div>
+    </div>			
+ 
+	<div class="row mt-5">
+		<div class="col-md-10">
+			<h3>Interviews for this Application:</h3>
 		</div>
-		<div class="row mt-5">
-			<div class="col">
-				<h3>Interviews:</h3>
-				<a class="btn btn-primary mb-3" href="{% url 'jobs-new-interview' app.id %}">Add Interview</a>
-				{% if interviews %}
-				<table class="table mb-5">
-					<thead class="thead-dark">
-						<tr>
-							<th scope="col" style="width: 10%">Date</th>
-							<th scope="col" style="width: 10%">Time</th>
-							<th scope="col" style="width: 15%">Location</th>
-							<th scope="col" style="width: 8%">URL</th>
-							<th scope="col" style="width: 15%">Status</th>
-							<th scope="col">Notes</th>
-							<th scope="col" class="text-center" style="width: 10%">Update/Delete</th>
-						</tr>
-					</thead>
-					<tbody>
-					{% for interview in interviews %}
-						<tr>
-							<td>{{ interview.date }}</td>
-							<td>{{ interview.time }}</td>
-							<td>{{ interview.location }}</td>
-							{% if interview.virtual_url %}
-								<td><a href="{{ interview.virtual_url }}">Link</a></td>
-							{% else %}
-								<td>N/A</td>
-							{% endif %}
-							{% if interview.complete %}
-								<td>Completed</td>
-							{% else %}
-								<td>
-									<a class="btn btn-primary" href="#" role="button">Complete</a>
-								</td>
-							{% endif %}
-							<td>{{ interview.notes }}</td>
-							<td class="text-right">
-								<a class="btn btn-primary" href="{% url 'jobs-update-interview' app.id interview.id %}" role="button">Edit</a>
-								<a class="btn btn-danger" href="{% url 'jobs-delete-interview' app.id interview.id %}" role="button">  X  </a>
+		<div class="col-md-2 text-right">
+			<a class="btn btn-primary border-primary mb-3" href="{% url 'jobs-new-interview' app.id %}">Add Interview</a>
+		</div>
+	</div>
+	{% if interviews %}
+	<div class="row mt-2">
+		<div class="col">
+			<table class="table mb-5">
+				<thead class="thead-dark">
+					<tr>
+						<th scope="col" style="width: 10%">Date</th>
+						<th scope="col" style="width: 10%">Time</th>
+						<th scope="col" style="width: 15%">Location</th>
+						<th scope="col" style="width: 8%">URL</th>
+						<th scope="col" style="width: 15%">Status</th>
+						<th scope="col">Notes</th>
+						<th scope="col" class="text-center" style="width: 10%">Update/Delete</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for interview in interviews %}
+					<tr>
+						<td>{{ interview.date }}</td>
+						<td>{{ interview.time }}</td>
+						<td>{{ interview.location }}</td>
+						{% if interview.virtual_url %}
+							<td><a href="{{ interview.virtual_url }}">Link</a></td>
+						{% else %}
+							<td>N/A</td>
+						{% endif %}
+						{% if interview.complete %}
+							<td>Completed</td>
+						{% else %}
+							<td>
+								<a class="btn btn-outline-success" href="#" role="button">Complete</a>
 							</td>
-						</tr>
-					{% endfor %}
-					</tbody>
-				</table>
-				{% endif %}
-			</div>
+						{% endif %}
+						<td>{{ interview.notes }}</td>
+						<td class="text-right">
+							<a class="btn btn-primary border-primary" href="{% url 'jobs-update-interview' app.id interview.id %}" role="button">Edit</a>
+							<a class="btn btn-danger border-danger" href="{% url 'jobs-delete-interview' app.id interview.id %}" role="button">  X  </a>
+						</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
 		</div>
+	</div>
+	{% endif %}
 
 		{% if assessments %}
 			<div class="row mt-3">
@@ -85,40 +143,48 @@
 				</div>
 			</div>
 		{% endif %}
-		<div class="row mt-5">
-			<div class="col">
-				<h3>Communication related to this Application:</h3>
-				<a class="btn btn-primary mb-3" href="{% url 'jobs-new-communication' %}?application={{ app.id }}">Add Communication</a>
-				{% if communications %}
-				<table class="table mb-5">
-					<thead class="thead-dark">
-						<tr>
-							<th scope="col" style="width: 15%">Contact</th>
-							<th scope="col" style="width: 15%">Date</th>
-							<th scope="col" style="width: 12%">Method</th>
-							<th scope="col">Notes</th>
-							<th scope="col" class="text-center" style="width: 10%">Update/Delete</th>
-						</tr>
-					</thead>
-					<tbody>
-					{% for comm in communications %}
+
+
+	<div class="row mt-5">
+		<div class="col-md-8">
+			<h3>Communication related to this Application:</h3>
+		</div>
+		<div class="col-md-4 text-right">
+			<a class="btn btn-primary mb-3 border-primary" href="{% url 'jobs-new-communication' %}?application={{ app.id }}">Add Communication</a>
+		</div>
+	</div>
+	{% if communications %}
+	<div class="row mt-2">
+		<div class="col">
+			<table class="table mb-5">
+				<thead class="thead-dark">
+					<tr>
+						<th scope="col" style="width: 15%">Contact</th>
+						<th scope="col" style="width: 15%">Date</th>
+						<th scope="col" style="width: 12%">Method</th>
+						<th scope="col">Notes</th>
+						<th scope="col" class="text-center" style="width: 10%">Update/Delete</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for comm in communications %}
+					<tr>
 						<tr>
 							<td>{{ comm.contact }}</td>
 							<td>{{ comm.date }}</td>
 							<td>{{ comm.method }}</td>
 							<td>{{ comm.notes }}</td>
 							<td class="text-right">
-								<a class="btn btn-primary" href="{% url 'jobs-update-communication' comm.id %}" role="button">Edit</a>
-								<a class="btn btn-danger" href="{% url 'jobs-delete-communication' comm.id %}" role="button">  X  </a>
+								<a class="btn btn-primary border-primary" href="{% url 'jobs-update-communication' comm.id %}" role="button">Edit</a>
+								<a class="btn btn-danger border-danger" href="{% url 'jobs-delete-communication' comm.id %}" role="button">  X  </a>
 							</td>
 						</tr>
-					{% endfor %}
-					</tbody>
-				</table>
-				{% endif %}
-			</div>
+				{% endfor %}
+				</tbody>
+			</table>
 		</div>
 	</div>
+	{% endif %}
 </div>
 
 {% endblock content %}
