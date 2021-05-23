@@ -26,6 +26,7 @@ urlpatterns = [
     path('applications/edit/<int:pk>', ApplicationUpdateView.as_view(), name='jobs-update-application'),
     path('applications/delete/<int:pk>', ApplicationDeleteView.as_view(), name='jobs-delete-application'),
     path('applications/<int:pk>/interview/', InterviewCreateView.as_view(), name='jobs-new-interview'),
+    path('applications/<int:app_pk>/interview/edit/<int:pk>', InterviewUpdateView.as_view(), name='jobs-update-interview'),
     path('contacts/', ContactListView.as_view(), name='jobs-contacts'),
     path('contacts/new', ContactCreateView.as_view(), name='jobs-new-contact'),
     path('contacts/<int:pk>', ContactUpdateView.as_view(), name='jobs-update-contact'),

@@ -50,7 +50,11 @@ class HomeView(LoginRequiredMixin, View):
             elif app['offer'] and app['offer'] == True:
                 status = 'Received Offer'
             elif Interview.objects.filter(application=app['id']):
-                status = 'Interviewed'
+                for interview in Interview.objects.filter(application=app['id']):
+                    if interview.complete:
+                        status = 'Interviewed'
+                    else:
+                        status = 'Interview Scheduled'
             elif app['date_submitted']:
                 status = 'Submitted'
             else:
@@ -397,7 +401,6 @@ class ApplicationDetailView(LoginRequiredMixin, DetailView):
         context['interviews'] = Interview.objects.filter(application=self.kwargs['pk'])
         context['assessments'] = Assessment.objects.filter(application=self.kwargs['pk'])
         context['communications'] = Communication.objects.filter(application=self.kwargs['pk'], user=self.request.user)
-        print(context)
         return context
 
 
@@ -532,6 +535,15 @@ class InterviewCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('jobs-list-applications')
     form_class = InterviewForm
 
+    def get_initial(self):
+        ''' Allows you to set initial values for the new Interview form. 
+        '''
+        # Grabs the initial dictionary by calling superclass.
+        initial = super().get_initial()
+        application = Application.objects.get(pk=self.kwargs['pk'])
+        initial['application'] = application
+        return initial
+
     def get_form_kwargs(self):
         ''' Allows us to pass in the user to the kwargs when the form is created. Then, within
             the PositionForm class, the __init__ filters the company queryset to only those
@@ -544,6 +556,21 @@ class InterviewCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
+
+
+class InterviewUpdateView(LoginRequiredMixin, UpdateView):
+
+    model = Interview
+    fields = ['date', 'time', 'location', 'virtual_url', 'complete', 'notes']
+    template_name = 'jobs/update_interview.html'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        # Go to this Interview's application details page after creating a new interview.
+        return reverse_lazy('jobs-detail-application', kwargs={'pk': self.kwargs['app_pk']})
 
 #-------------------------------------Interview Views End-------------------------------------
 

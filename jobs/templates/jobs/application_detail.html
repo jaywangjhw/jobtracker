@@ -27,21 +27,24 @@
 				<p>{{ app.notes }}</p>
 			</div>
 		</div>
-		{% if app.interviews %}
+		{% if interviews %}
 			<div class="row mt-3">
 				<div class="col-md-auto">
 					<h4>Interviews</h4>
-					{% for interview in app.interviews %}
+					{% for interview in interviews %}
 						<p>Date: {{ interview.date }}</p>
+						<p>Completed: {{ interview.complete }}</p>
+						<a class="btn btn-primary delete-app" href="{% url 'jobs-update-interview' app.id interview.id %}" role="button">Update</a>
+						<a class="btn btn-primary delete-app" href="{% url 'jobs-delete-application' app.id %}" role="button">Delete</a>
 					{% endfor %}
 				</div>
 			</div>
 		{% endif %}
-		{% if app.assessments %}
+		{% if assessments %}
 			<div class="row mt-3">
 				<div class="col-md-auto">
 					<h4>Assessments</h4>
-					{% for assessment in app.assessments %}
+					{% for assessment in assessments %}
 						<p>Date: {{ assessment.date }}</p>
 					{% endfor %}
 				</div>
