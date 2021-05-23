@@ -2,6 +2,3 @@ django==2.1
 django-crispy-forms
 tldextract
 beautifulsoup4
-boto3
-django-storages
-python-decouple
