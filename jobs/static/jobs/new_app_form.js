@@ -1,5 +1,5 @@
 /* Source Citation: https://docs.djangoproject.com/en/3.2/ref/csrf/
-   This is how the Django documentation recoommends acquiring a CSRF
+   This is how the Django documentation recommends acquiring a CSRF
    cookie token for AJAX calls, since it cannot be set in the same
    manner as it is within the typical templates.  
    This 'getCookie()' function is taken from the documentation. 
