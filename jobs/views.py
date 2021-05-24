@@ -163,7 +163,6 @@ class HomeView(LoginRequiredMixin, View):
 @ensure_csrf_cookie
 def parse_job_url(request):
     job_data = {}
-    print(request)
     # Job posting url should be passed in as a query param
     if 'app_url' in request.GET:
         url = request.GET.get('app_url')
@@ -176,10 +175,9 @@ def parse_job_url(request):
     else:
         company_name = None
     
-    print(url)
     # ** NEED TO EXPAND ** Right now only set up for amazon urls.
     job_data = get_job_data(url, company_name)
-
+    print(job_data)
     if not job_data:
         job_data['company_message'] = 'We couldn\'t figure out many details from this url. Please fill out the form manually.'
  
