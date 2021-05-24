@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
 from .models import Position, Company, Account, Contact, Communication, Application, Interview, Assessment
 from .forms import (ApplicationForm,
+                    AssessmentForm,
                     CombinedPositionForm,
                     CombinedApplicationForm,
                     CombinedCompanyForm,
@@ -587,9 +588,9 @@ class InterviewCreateView(LoginRequiredMixin, CreateView):
         return initial
 
     def get_form_kwargs(self):
-        ''' Allows us to pass in the user to the kwargs when the form is created. Then, within
-            the PositionForm class, the __init__ filters the company queryset to only those
-            companies for this user.
+        ''' Allows us to pass in application primary key to kwargs when the form is created. Then, 
+            within the InterviewForm class, the __init__ filters the application queryset to only
+            the application for which this interview is being created.
         '''
         kwargs = super(InterviewCreateView, self).get_form_kwargs()
         kwargs['app_pk'] = self.kwargs['pk']
@@ -625,6 +626,63 @@ class InterviewDeleteView(LoginRequiredMixin, DeleteView):
 
 
 #-------------------------------------Interview Views End-------------------------------------
+
+#-------------------------------------Assessment Views----------------------------------------
+class AssessmentCreateView(LoginRequiredMixin, CreateView):
+    model = Assessment
+    template_name = 'jobs/add_assessment.html'
+    context_object_name = 'assessment'
+    success_url = reverse_lazy('jobs-home')
+    form_class = AssessmentForm
+
+    def get_initial(self):
+        ''' Allows you to set initial values for the new Assessment form. 
+        '''
+        # Grabs the initial dictionary by calling superclass.
+        initial = super().get_initial()
+        application = Application.objects.get(pk=self.kwargs['pk'])
+        initial['application'] = application
+        return initial
+
+    def get_form_kwargs(self):
+        ''' Allows us to pass in application primary key to kwargs when the form is created. Then, 
+            within the AssessmentForm class, the __init__ filters the application queryset to only
+            the application for which this assessment is being created.
+        '''
+        kwargs = super(AssessmentCreateView, self).get_form_kwargs()
+        kwargs['app_pk'] = self.kwargs['pk']
+        return kwargs
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+
+class AssessmentUpdateView(LoginRequiredMixin, UpdateView):
+
+    model = Assessment
+    fields = ['date', 'time', 'virtual_url', 'complete', 'notes']
+    template_name = 'jobs/update_interview.html'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        # Go to this Assessment's application details page after updating an assessment.
+        return reverse_lazy('jobs-detail-application', kwargs={'pk': self.kwargs['app_pk']})
+
+
+class AssessmentDeleteView(LoginRequiredMixin, DeleteView):
+    
+    model = Assessment
+
+    def get_success_url(self):
+        # Go to this Assessment's application details page after deleting an assessment.
+        return reverse_lazy('jobs-detail-application', kwargs={'pk': self.kwargs['app_pk']})
+
+
+#-------------------------------------Assessment Views End-------------------------------------
 
 @login_required
 def account(request):

@@ -100,6 +100,21 @@ class InterviewForm(ModelForm):
         self.fields['application'].queryset = Application.objects.filter(pk=pk)
 
 
+class AssessmentForm(ModelForm):
+
+    class Meta:
+        model = Assessment
+        exclude = ('user',)
+
+    def __init__(self, *args, **kwargs):
+        ''' This filters the options in the application dropdown field to only the application
+            from which the user selected to create a new assessment
+        '''
+        pk = kwargs.pop('app_pk')
+        super(AssessmentForm, self).__init__(*args, **kwargs)
+        self.fields['application'].queryset = Application.objects.filter(pk=pk)
+
+
 class CombinedApplicationForm(ModelForm):
 
     class Meta:
