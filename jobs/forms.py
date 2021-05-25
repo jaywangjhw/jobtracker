@@ -98,6 +98,7 @@ class InterviewForm(ModelForm):
         pk = kwargs.pop('app_pk')
         super(InterviewForm, self).__init__(*args, **kwargs)
         self.fields['application'].queryset = Application.objects.filter(pk=pk)
+        self.fields['date'].required = True
 
 
 class AssessmentForm(ModelForm):
@@ -113,6 +114,7 @@ class AssessmentForm(ModelForm):
         pk = kwargs.pop('app_pk')
         super(AssessmentForm, self).__init__(*args, **kwargs)
         self.fields['application'].queryset = Application.objects.filter(pk=pk)
+        self.fields['date'].required = True
 
 
 class CombinedApplicationForm(ModelForm):
