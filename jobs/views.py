@@ -8,6 +8,7 @@ from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.db.models import Count
 from .models import Position, Company, Account, Contact, Communication, Application, Interview, Assessment
 from .forms import (ApplicationForm,
                     AssessmentForm,
@@ -185,31 +186,19 @@ def parse_job_url(request):
 
 
 #-------------------------------------Company Views----------------------------------------
-class CompanyListView(LoginRequiredMixin, View):
+class CompanyListView(LoginRequiredMixin, ListView):
     
-    def get(self, request):
-        # If it's there, grab the company's pk from the request query param
-        comp_id = request.GET.get('company')
+    model = Company
+    template_name = 'jobs/companies.html'
+    context_object_name = 'companies'
+    fields = ['name', 'industry', 'careers_url']
 
-        # Check if this was called via AJAX
-        if self.request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
-            company = Company.objects.get(pk=comp_id)
-            response = {
-                'name': company.name, 
-                'careers_url': company.careers_url, 
-                'industry': company.industry,
-                'id': company.id
-            }
-            return JsonResponse(response)
-        else:
-            companies = Company.objects.filter(user=request.user)
-            context = {'companies': companies}
-            
-            if comp_id:
-                show_co = Company.objects.get(pk=comp_id)
-                context['show_co'] = show_co
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
 
-            return render(request, 'jobs/companies.html', context)
+    def get_queryset(self):
+        return self.model.objects.filter(user=self.request.user)
 
 
 class CompanyCreateView(LoginRequiredMixin, CreateView):
@@ -229,22 +218,16 @@ class CompanyUpdateView(LoginRequiredMixin, UpdateView):
     model = Company
     fields = ['name', 'careers_url', 'industry']
     template_name_suffix = '_update_form'
+    success_url = reverse_lazy('jobs-companies')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Get the PK from the url so that we can set a 'back' button that will go back
-        # showing this company's details on the Companies page.
         context['id'] = self.kwargs['pk']
         return context
 
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
-
-    def get_success_url(self):
-        # Add query params so the updated company's details will be displayed, when
-        # routing back to the Companies page.
-        return reverse_lazy('jobs-companies') + "?company=" + str(self.kwargs['pk'])
 
 
 class CompanyDeleteView(LoginRequiredMixin, DeleteView):
