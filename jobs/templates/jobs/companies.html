@@ -1,79 +1,93 @@
 {% extends "jobs/base.html" %}
 
 {% block content %}
-<div class="container p-5">
+<div class="container p-3">
 	<h1 class="text-center">Companies</h1>
 </div>
 <div class="row">
-	<div class="col-4">
+  	<div class="col-4" id="companieList">
 		<a class="btn btn-primary mb-3 btn-block" href="{% url 'jobs-new-company' %}">Add New Company</a>
 		<input class="form-control mb-2" id="listSearch" type="text" placeholder="Search for Company">
-		<table class="table table-hover">
-			<thead>
-				<tr>
-					<th scope="col">Company</th>
-					<th scope="col" class="text-center">Positions</th>
-					<th scope="col">Industry</th>
-				</tr>
-			</thead>
-			<tbody id="itemTable">
-				{% for company in companies %}
-				<tr class="make-row-clickable" data-link="{% url 'jobs-companies' %}?company={{ company.id }}">
-					<th scope="row">{{ company.name }}</th>
-					<td class="text-center">{{ company.position_set.count }}</td>
-					<td>{{ company.industry }}</td>
-				</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-	</div>
-	<div class="col-8">
-		<div class="container ml-3 show-company">
-			<div class="row mt-3">
-				<div class="col-md-auto">
-					{% if show_co %}
-					<h2 class="company-name">{{ show_co.name }}</h2>
-					{% else %}
-					<h2 class="company-name"></h2>
-					{% endif %}
+    	<div class="list-group" id="list-tab" role="tablist">
+			{% for company in companies %}
+			<a class="list-group-item list-group-item-action" id="list-{{ company.id }}-list" data-bs-toggle="list" href="#list-{{ company.id }}" role="tab" aria-controls="list-{{ company.id }}">
+				<div class="row">
+					<div class="col-6">
+						{{ company.name }}
+					</div>
+					<div class=col-2>
+						<span class="badge bg-primary text-white rounded-pill text-center">apps {{ company.num_company_apps }}</span>
+					</div>
+					<div class=col-2>
+						<span class="badge bg-primary text-white rounded-pill">positions {{ company.position_set.count }}</span>
+					</div>
 				</div>
-			</div>
-			<div class="row">
-				<div class="col mb-3">
-					{% if show_co %}
-						{% if show_co.careers_url %}
-							<p class="company-url">Careers Link: {{ show_co.careers_url }}</p>
+			</a>
+			{% endfor %}    
+    	</div>
+  	</div>
+  	<div class="col-8">
+    	<div class="tab-content ml-3" id="nav-tabContent">
+			{% for company in companies %}
+		     <div class="tab-pane fade show" id="list-{{ company.id }}" role="tabpanel" aria-labelledby="list-{{ company.id }}-list">		
+		     	<div class="row">
+					<div class="col mb-3">
+						<h3>{{ company.name }}</h3>
+						{% if company.careers_url %}
+							<p class="company-url">Careers Link: {{ company.careers_url }}</p>
 						{% else %}
 							<p class="company-url">Update this Company to add a Careers Link</p>
 						{% endif %}
-						{% if show_co.industry %}
-							<p class="company-industry">Industry: {{ show_co.industry }}</p>
+						{% if company.industry %}
+							<p class="company-industry">Industry: {{ company.industry }}</p>
 						{% else %}
 							<p class="company-industry">Update this Company to add an Industry</p>
 						{% endif %}
-					{% else %}
-					<p class="company-url"></p>
-					<p class="company-industry"></p>
-					{% endif %}
-					<div class="row mb-3">
-						<div class="col">
-							{% if show_co %}
-								<a class="btn btn-primary edit-company" href="{% url 'jobs-company-update' show_co.id %}" role="button">Edit Details</a>
-								<a class="btn btn-primary delete-company" href="{% url 'jobs-company-delete' show_co.id %}" role="button">Delete</a>
-								<a class="btn btn-primary positions-company" href="{% url 'jobs-company-details' show_co.id %}" role="button">Positions</a>
+						<div class="row mb-3">
+							<div class="col">
+								<a class="btn btn-primary edit-company" href="{% url 'jobs-company-update' company.id %}" role="button">Update</a>
+								<a class="btn btn-primary delete-company" href="{% url 'jobs-company-delete' company.id %}" role="button">Delete</a>
 								<a class="btn btn-primary add-position" href="{% url 'jobs-new-position' %}?company={{ company.id }}" role="button">Add Position</a>
-							{% else %}
-								<a class="btn btn-primary invisible edit-company" href="#" role="button">Edit Details</a>
-								<a class="btn btn-primary invisible delete-company" href="#" role="button">Delete</a>
-								<a class="btn btn-primary invisible positions-company" href="#" role="button">Positions</a>
-								<a class="btn btn-primary invisible add-position" href="#" role="button">Add Position</a>
-							{% endif %}
-						</div>
-				    </div>
+							</div>
+					    </div>
+					</div>
 				</div>
-			</div>
-		</div>
-	</div>
-</div>
+				<h3 class="mt-5">Your {{ company.name }} Job Positions:</h3>
+				{% for position in company.position_set.all %}
+				<div class="card mb-3 border-dark">
+					<div class="card-body">
+						<div class="row">
+							<div class="col">
+								<h5 class="card-title mb-2">{{ position.position_title }}</h5>
+							</div>
+							<div class="col text-right">
+								<a class="btn btn-primary" href="{% url 'jobs-update-position' position.id %}" role="button">Edit Position</a>
+								<a class="btn btn-primary" href="{% url 'jobs-delete-position' position.id %}" role="button">Delete Position</a>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								{% for app in position.application_set.all %}
+								<div>
+									<a href="{% url 'jobs-detail-application' app.id %}" class="badge-pill bg-primary text-white">View Application</a>
+								</div>
+								{% empty %}
+								<div>
+									<a href="{% url 'jobs-new-application' %}?position={{ position.id }}" class="badge-pill bg-primary text-white">Add Application</a>
+								</div>								
+								{% endfor %}
+							</div>
+						</div>
+					</div>
+					<div class="card-footer">
+						<span class="card-text"><small class="text-muted"><a href="{{ position.position_url }}" class="mr-5">Link to job posting url</a>Opened {{ position.date_opened }}</small></span>
+					</div>
+				</div>      
+				{% endfor %}
 
+		     </div>
+			{% endfor %}
+    	</div>
+  	</div>
+</div>
 {% endblock content %}
