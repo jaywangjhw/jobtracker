@@ -15,10 +15,23 @@ $(document).ready(function(){
 	        success: function (response) {
 	            console.log(response.name)
 	            $( "h2.company-name" ).replaceWith( "<h2 class='company-name'>" + response.name + "</h2>" );
-	            $( "p.company-url" ).replaceWith( "<p class='company-url'>Careers Link: " 
-	            	+ response.careers_url + "</p>" );
-	            $( "p.company-industry" ).replaceWith( "<p class='company-industry'>Industry: "
-	            	 + response.industry + "</p>" );
+	            
+	            if(response.careers_url) {
+		            $( "p.company-url" ).replaceWith( "<p class='company-url'>Careers Link: " 
+		            	+ response.careers_url + "</p>" );	            	
+	            } 
+	            else {
+		            $( "p.company-url" ).replaceWith( "<p class='company-url'>Update this Company to add a Careers Link</p>" );	
+	            }
+
+	            if(response.industry) {
+	            	$( "p.company-industry" ).replaceWith( "<p class='company-industry'>Industry: "
+	            	 	+ response.industry + "</p>" );	            	
+	            }
+	            else {
+	            	$( "p.company-industry" ).replaceWith( "<p class='company-industry'>Update this Company to add an Industry</p>" );	 	            	
+	            }
+
 	            $( "a" ).removeClass( "invisible" ).addClass( "visible" );
 	            $("a.edit-company").attr("href", "/companies/edit/" + response.id);
 	            $("a.delete-company").attr("href", "/companies/delete/" + response.id);

@@ -39,18 +39,29 @@ $(document).ready(function(){
 					app_url: app_url 
 				},
 	            success : function(response) {
-					if("company_message" in response) {
-	        			$("#existing-company-app-url").after('<div class="alert alert-warning mt-1" role="alert">' + 
+                    $('#new-app-warning').remove();
+                    
+                    var active = $("div.active");
+					
+                    if("company_message" in response) {
+	        			$("#existing-company-app-url").after('<div class="alert alert-warning mt-1" id="new-app-warning" role="alert">' + 
 	        				response.company_message + '</div>');
 	        		}
 
+                    active.find("#id_job_description").val("").removeClass("btn-outline-success");
 	                if("job_description" in response) {
-	                	$("#id_job_description").val(response.job_description).addClass("btn-outline-success");
+	                	active.find("#id_job_description").val(response.job_description).addClass("btn-outline-success");
 	                }
 
+                    active.find("#id_position_title").val("").removeClass("btn-outline-success");
 	                if("position_title" in response) {
-	                	$("#id_position_title").val(response.position_title).addClass("btn-outline-success");
-	                } 
+	                	active.find("#id_position_title").val(response.position_title).addClass("btn-outline-success");
+	                }
+
+                    active.find("#id_date_opened").val("").removeClass("btn-outline-success");
+                    if("date_opened" in response) {
+                        active.find("#id_date_opened").val(response.date_opened).addClass("btn-outline-success");
+                    }
 
 	                $("#id_position_url").val(app_url).addClass("btn-outline-success");   		
 	        	}
@@ -73,23 +84,38 @@ $(document).ready(function(){
             url: target_url,
             data: $(this).serialize(),
             success : function(response) {
-            	console.log(response);
-            	var active = $("div.active");   	
+
+                $('#new-app-warning2').remove();
+
+            	var active = $("div.active");
+                if("company_message" in response) {
+                    $("#new-app-url").after('<div class="alert alert-warning mt-1" id="new-app-warning2" role="alert">' + 
+                        response.company_message + '</div>');
+                } 	
             	// Insert any values we were able to parse from the url, into the form fields.
+                active.find("#id_name").val("").removeClass("btn-outline-success");
             	if("company" in response) {
             		active.find("#id_name").val(response.company).addClass("btn-outline-success");
             	}
 
+                active.find("#id_careers_url").val("").removeClass("btn-outline-success");
                 if("careers_url" in response) {
                 	active.find("#id_careers_url").val(response.careers_url).addClass("btn-outline-success");
                 }  
 
+                active.find("#id_job_description").val("").removeClass("btn-outline-success");
                 if("job_description" in response) {
                 	active.find("#id_job_description").val(response.job_description).addClass("btn-outline-success");
                 }
 
+                active.find("#id_position_title").val("").removeClass("btn-outline-success");
                 if("position_title" in response) {
                 	active.find("#id_position_title").val(response.position_title).addClass("btn-outline-success");
+                }
+
+                active.find("#id_date_opened").val("").removeClass("btn-outline-success");
+                if("date_opened" in response) {
+                    active.find("#id_date_opened").val(response.date_opened).addClass("btn-outline-success");
                 }
 
                 active.find("#id_position_url").val(app_url).addClass("btn-outline-success");

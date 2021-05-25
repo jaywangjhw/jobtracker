@@ -10,8 +10,8 @@ class PositionForm(ModelForm):
         fields = ['company', 'position_title', 'position_url', 'date_opened', 'date_closed',
                     'skills', 'job_description']
         help_texts = {
-            'date_opened': 'Ex: mm/dd/yyyy',
-            'date_closed': 'Ex: mm/dd/yyyy'
+            'date_opened': 'Ex: mm/dd/yyyy or yyyy-mm-dd',
+            'date_closed': 'Ex: mm/dd/yyyy or yyyy-mm-dd'
         }
         labels = {
             'position_title': 'Job Title',

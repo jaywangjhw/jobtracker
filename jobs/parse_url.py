@@ -25,8 +25,6 @@ def get_linkedin_data(url):
 	try:
 		posted_date = soup.find('span', class_='posted-time-ago__text').text
 		posted_list = posted_date.split()
-		if 'days' in posted_list:
-			print(posted_list)
 
 		if 'hours' in posted_list or 'hour' in posted_list or 'minutes' in posted_list or 'minute' in posted_list:
 			posted_date = date.today()
@@ -34,6 +32,8 @@ def get_linkedin_data(url):
 			posted_date = date.today() - timedelta(int(posted_list[0]))
 		elif 'week' in posted_list or 'weeks' in posted_list:
 			posted_date = date.today() - timedelta(weeks=int(posted_list[0]))
+		else:
+			posted_date = date.today()
 
 		data['date_opened'] = posted_date
 	except:
@@ -45,8 +45,11 @@ def get_linkedin_data(url):
 		pass
 
 	try:
-		data['job_description_html'] = str(soup.find('div', class_='show-more-less-html__markup'))
-		data['job_description'] = soup.find('div', class_='show-more-less-html__markup').text
+		job_description_tag = soup.find('div', class_='show-more-less-html__markup')
+		data['job_description'] = job_description_tag.text
+
+		if data['job_description']:
+			data['job_description_html'] = str(job_description_tag)
 	except:
 		pass
 
@@ -60,15 +63,13 @@ def get_indeed_data(url):
 	data = {}
 
 	try:
-		data['company'] = soup.find('a', class_='topcard__org-name-link').text
+		data['company'] = soup.find('div', class_='icl-u-textColor--success').text
 	except:
 		pass
 
 	try:
-		posted_date = soup.find('span', class_='posted-time-ago__text').text
+		posted_date = soup.find('div', class_='icl-u-textColor--success').next_sibling.text
 		posted_list = posted_date.split()
-		if 'days' in posted_list:
-			print(posted_list)
 
 		if 'hours' in posted_list or 'hour' in posted_list or 'minutes' in posted_list or 'minute' in posted_list:
 			posted_date = date.today()
@@ -76,19 +77,25 @@ def get_indeed_data(url):
 			posted_date = date.today() - timedelta(int(posted_list[0]))
 		elif 'week' in posted_list or 'weeks' in posted_list:
 			posted_date = date.today() - timedelta(weeks=int(posted_list[0]))
+		else:
+			posted_date = date.today()
 
 		data['date_opened'] = posted_date
 	except:
 		pass
 
 	try:
-		data['position_title'] = soup.find('h1', class_='topcard__title').text
+		data['position_title'] = soup.find('h1', class_='jobsearch-JobInfoHeader-title').text
 	except:
 		pass
 
 	try:
-		data['job_description_html'] = str(soup.find('div', class_='show-more-less-html__markup'))
-		data['job_description'] = soup.find('div', class_='show-more-less-html__markup').text
+		job_description_tag = soup.find('div', id='jobDescriptionText')
+		data['job_description'] = job_description_tag.text
+
+		if data['job_description']:
+			data['job_description_html'] = str(job_description_tag)
+
 	except:
 		pass
 
@@ -96,24 +103,26 @@ def get_indeed_data(url):
 
 
 def get_amazon_data(url):
-	data = {}
-	company = get_domain_company(url)
-	
-	if company != 'amazon':
-		return data
-
 	page = requests.get(url)
 
 	page = page.text.replace('<br/>', ' ')
 	soup = BeautifulSoup(page, 'html.parser')
 
 	data = {}
-	data['company'] = company
-	data['position_title'] = soup.find('h1', {'class': 'title'}).text
 
-	description = soup.find('div', {'class': 'section description'})
-	description = description.find('p')
-	data['job_description'] = description.text
+	data['company'] = 'Amazon'
+
+	try:
+		data['position_title'] = soup.find('h1', {'class': 'title'}).text
+	except:
+		pass
+
+	try:
+		description = soup.find('div', {'class': 'section description'})
+		description = description.find('p')
+		data['job_description'] = description.text
+	except:
+		pass
 
 	return data
 
@@ -123,6 +132,8 @@ def get_job_data(url, company_name):
 	domain = get_domain_company(url)
 
 	if company_name and company_name.lower() == 'amazon':
+		return get_amazon_data(url)
+	elif domain == 'amazon':
 		return get_amazon_data(url)
 	elif domain == 'indeed':
 		return get_indeed_data(url)
