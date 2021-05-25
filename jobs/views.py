@@ -163,7 +163,6 @@ class HomeView(LoginRequiredMixin, View):
 @ensure_csrf_cookie
 def parse_job_url(request):
     job_data = {}
-    print(request)
     # Job posting url should be passed in as a query param
     if 'app_url' in request.GET:
         url = request.GET.get('app_url')
@@ -176,8 +175,7 @@ def parse_job_url(request):
     else:
         company_name = None
     
-    print(url)
-    # ** NEED TO EXPAND ** Right now only set up for amazon urls.
+    # Handles Indeed, Linkedin, and amazon company page job postings.
     job_data = get_job_data(url, company_name)
 
     if not job_data:
@@ -575,7 +573,7 @@ class InterviewCreateView(LoginRequiredMixin, CreateView):
     model = Interview
     template_name = 'jobs/add_interview.html'
     context_object_name = 'interview'
-    success_url = reverse_lazy('jobs-home')
+    #success_url = reverse_lazy('jobs-home')
     form_class = InterviewForm
 
     def get_initial(self):
@@ -599,6 +597,10 @@ class InterviewCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
+
+    def get_success_url(self):
+        # Go to this Interview's application details page after updating an interview.
+        return reverse_lazy('jobs-detail-application', kwargs={'pk': self.kwargs['pk']})
 
 
 class InterviewUpdateView(LoginRequiredMixin, UpdateView):
@@ -656,6 +658,10 @@ class AssessmentCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
+
+    def get_success_url(self):
+        # Go to this Assessment's application details page after updating an assessment.
+        return reverse_lazy('jobs-detail-application', kwargs={'pk': self.kwargs['pk']})
 
 
 class AssessmentUpdateView(LoginRequiredMixin, UpdateView):
