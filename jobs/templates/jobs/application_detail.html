@@ -71,6 +71,14 @@
                 		<a href="{{ app.position.position_url }}">Link to job posting</a>
                 	{% endif %}
 
+                	{% if app.position.date_opened %}
+                		<p>Date Position was posted: {{ app.position.date_opened }}</p>
+                	{% endif %}
+
+                	{% if app.position.skills %}
+                		<p>Skills Required: {{ app.position.skills }}</p>
+                	{% endif %}
+
                 	{% if app.position.job_description %}
                 		<p>Job Description: {{ app.position.job_description }}</p>
                 	{% endif %}
