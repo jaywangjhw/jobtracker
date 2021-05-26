@@ -34,12 +34,12 @@
 					<div class="col mb-3">
 						<h3>{{ company.name }}</h3>
 						{% if company.careers_url %}
-							<p class="company-url">Careers Link: {{ company.careers_url }}</p>
+							<p class="company-url"><strong>Careers Link:</strong> {{ company.careers_url }}</p>
 						{% else %}
 							<p class="company-url">Update this Company to add a Careers Link</p>
 						{% endif %}
 						{% if company.industry %}
-							<p class="company-industry">Industry: {{ company.industry }}</p>
+							<p class="company-industry"><strong>Industry:</strong> {{ company.industry }}</p>
 						{% else %}
 							<p class="company-industry">Update this Company to add an Industry</p>
 						{% endif %}
@@ -69,7 +69,7 @@
 							<div class="col">
 								{% for app in position.application_set.all %}
 								<div>
-									<a href="{% url 'jobs-detail-application' app.id %}" class="badge-pill bg-primary text-white">View Application</a>
+									<a class="btn btn-primary add-position" href="{% url 'jobs-detail-application' app.id %}" role="button">View Application</a>
 								</div>
 								{% empty %}
 								<div>

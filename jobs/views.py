@@ -147,14 +147,16 @@ class HomeView(LoginRequiredMixin, View):
 
             application_form = CombinedApplicationForm(request.POST)
             application_form.instance.user = self.request.user
+            print(position)
             if position:
                 application_form.instance.position = position
             
-            if application_form.is_valid():
+            if position and application_form.is_valid():
                 application = application_form.save()
                 messages.success(request, f'New Application Saved!')
                 return redirect('jobs-home')
             else:
+                messages.error(request, f'Unable to save Position and Application')
                 context['application_form'] = application_form
 
         return redirect(reverse_lazy('jobs-home'))
