@@ -22,7 +22,7 @@ class Company(models.Model):
 		on_delete=models.CASCADE,
 		default=1)
 	name = models.CharField(max_length=100)
-	careers_url = models.URLField(max_length=300, null=True, blank=True)
+	careers_url = models.URLField(max_length=1000, null=True, blank=True)
 	industry = models.CharField(choices=INDUSTRY_CHOICES, max_length=100, null=True, blank=True)
 
 	def num_company_apps(self):
@@ -59,7 +59,7 @@ class Position(models.Model):
 		on_delete=models.CASCADE
 		)
 	position_title = models.CharField(max_length=100)
-	position_url = models.URLField(max_length=300, null=True)
+	position_url = models.URLField(max_length=1000, null=True)
 	date_opened = models.DateField(null=True)
 	date_closed = models.DateField(null=True, blank=True, default='')
 	skills = models.CharField(choices=INDUSTRY_SKILL, max_length=100) # Need to look into multiple selection
