@@ -485,7 +485,7 @@ class CommunicationCreateView(LoginRequiredMixin, CreateView):
     form_class = CommunicationForm
     template_name = 'jobs/add_communication.html'
     context_object_name = 'comms'
-    success_url = reverse_lazy('jobs-list-communications')
+    success_url = reverse_lazy('jobs-contacts')
 
     def get_form_kwargs(self):
         ''' Allows us to pass in the user to the kwargs when the form is created. Then, within
