@@ -15,9 +15,6 @@
                     <div class="col-6">
                         {{ contact }}
                     </div>
-                    <div class=col-2>
-                        <span class="badge bg-primary text-white rounded-pill text-center"></span>
-                    </div>
                 </div>
             </a>
             {% endfor %}    
@@ -35,15 +32,15 @@
                         {% else %}
                             <p class="contact-email">Update this Contact to add an email address</p>
                         {% endif %}
-                        {% if contact.phone %}
-                            <p class="contact-phone"><strong>Phone:</strong> {{ contact.phone }}</p>
+                        {% if contact.phone_number %}
+                            <p class="contact-phone"><strong>Phone:</strong> {{ contact.phone_number }}</p>
                         {% else %}
                             <p class="contact-phone">Update this Contact to add phone number</p>
                         {% endif %}
                         <div class="row mb-3">
                             <div class="col">
-                                <a class="btn btn-primary edit-contact" href="#" role="button">Update</a>
-                                <a class="btn btn-primary delete-contact" href="#" role="button">Delete</a>
+                                <a class="btn btn-primary edit-contact" href="{% url 'jobs-update-contact' contact.id %}" role="button">Update</a>
+                                <a class="btn btn-primary delete-contact" href="{% url 'jobs-delete-contact' contact.id %}" role="button">Delete</a>
                                 <a class="btn btn-primary add-communication" href="{% url 'jobs-new-communication' %}?contact={{ contact.id }}" role="button">Add Communication</a>
                             </div>
                         </div>
@@ -54,10 +51,12 @@
                 <div class="card mb-3 border-dark">
                     <div class="card-header">
                         <div class="row">
-                            <div class="col">
+                            <div class="col-md-8">
                                 <h4>Re: {{ comm.application }}</h4>
                             </div>
-                            <a class="btn btn-sm btn-primary" href="#" role="button">View Application</a>
+                            <div class="col-md-4 text-right">
+                                <a class="btn btn-sm btn-primary" href="{% url 'jobs-detail-application' comm.application.id %}" role="button">View Application</a>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body">
@@ -75,9 +74,12 @@
                     <div class="card-footer">
                         <div class="row">
                             <div class="col">
-                            <span class="card-text"><small class="text-muted">{{ comm.date }} -- {{ comm.method }}</small></span>
+                                <span class="card-text"><small class="text-muted">{{ comm.date }} -- {{ comm.method }}</small></span>
                             </div>
-                            <a class="btn btn-sm btn-primary" href="#" role="button">Edit Communication</a>
+                            <div class="col float-right">
+                                <a class="btn btn-sm btn-primary" href="{% url 'jobs-update-communication' comm.id %}" role="button">Edit Communication</a>
+                                <a class="btn btn-sm btn-primary" href="{% url 'jobs-delete-communication' comm.id %}" role="button">Delete Communication</a>
+                            </div>
                         </div>
                     </div>
                 </div>      

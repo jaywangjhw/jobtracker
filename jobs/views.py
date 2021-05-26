@@ -457,7 +457,7 @@ class ContactCreateView(LoginRequiredMixin, CreateView):
 
 class ContactUpdateView(LoginRequiredMixin, UpdateView):
     model = Contact
-    fields = '__all__'
+    fields = ['first_name', 'last_name', 'email', 'phone_number', 'notes']
     template_name = 'jobs/update_contact.html'
     context_object_name = 'contact'
 
