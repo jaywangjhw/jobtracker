@@ -8,19 +8,19 @@
 	<div class="container ml-3">
 		<div class="row mt-3">
 			<div class="col-md-auto">
-				<h2>Edit Application Details</h2>
+				<h2>Edit Assessment Details</h2>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-sm-6 mb-3">
 				<form method="POST">
 					<hr>
-				{% csrf_token %}
-				{{ form|crispy }}
+					{% csrf_token %}
+					{{ form|crispy }}
 					<div class="row mb-3">
 						<div class="col mt-3">
 							<input class="btn btn-primary" type="submit" value="Save">
-							<a class="btn btn-primary" href="{% url 'jobs-home' %}" role="button">Cancel</a>
+							<a class="btn btn-primary" href="{% url 'jobs-detail-application' view.kwargs.app_pk %}" role="button">Cancel</a>
 						</div>
 				    </div>
 				</form>

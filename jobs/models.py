@@ -27,12 +27,17 @@ class Company(models.Model):
 	careers_url = models.URLField(max_length=300, null=True, blank=True)
 	industry = models.ManyToManyField(Skill)
 
+	def num_company_apps(self):
+		num_apps = 0
+        
+		for position in self.position_set.all():
+			num_apps += position.num_apps()
+
+		return num_apps
+
 	def __str__(self):
 		"""String for representing the Company as the Company name"""
 		return self.name
-
-	def get_absolute_url(self):
-		return reverse('jobs-company-detail', kwargs={'pk': self.pk})
 
 
 
@@ -54,6 +59,9 @@ class Position(models.Model):
 	date_closed = models.DateField(null=True, blank=True, default='')
 	skills = models.ManyToManyField(Skill)
 	job_description = models.TextField(null=True)
+
+	def num_apps(self):
+		return Application.objects.filter(position=self).count()
 
 	def __str__(self):
 		"""String for representing the Position as the Position name"""

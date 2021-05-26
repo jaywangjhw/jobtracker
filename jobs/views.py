@@ -8,8 +8,10 @@ from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.db.models import Count
 from .models import Position, Company, Account, Contact, Communication, Application, Interview, Assessment
 from .forms import (ApplicationForm,
+                    AssessmentForm,
                     CombinedPositionForm,
                     CombinedApplicationForm,
                     CombinedCompanyForm,
@@ -21,6 +23,7 @@ from django.contrib import messages
 from jobs.parse_url import get_domain_company, get_amazon_data
 from jobs.reddit import get_reddit_data
 from jobs.parse_url import get_job_data
+from datetime import date
 import json
 
 
@@ -52,7 +55,11 @@ class HomeView(LoginRequiredMixin, View):
             elif app['offer'] and app['offer'] == True:
                 status = 'Received Offer'
             elif Interview.objects.filter(application=app['id']):
-                status = 'Interviewed'
+                for interview in Interview.objects.filter(application=app['id']):
+                    if interview.complete:
+                        status = 'Interviewed'
+                    else:
+                        status = 'Interview Scheduled'
             elif app['date_submitted']:
                 status = 'Submitted'
             else:
@@ -157,7 +164,6 @@ class HomeView(LoginRequiredMixin, View):
 @ensure_csrf_cookie
 def parse_job_url(request):
     job_data = {}
-    print(request)
     # Job posting url should be passed in as a query param
     if 'app_url' in request.GET:
         url = request.GET.get('app_url')
@@ -170,8 +176,7 @@ def parse_job_url(request):
     else:
         company_name = None
     
-    print(url)
-    # ** NEED TO EXPAND ** Right now only set up for amazon urls.
+    # Handles Indeed, Linkedin, and amazon company page job postings.
     job_data = get_job_data(url, company_name)
 
     if not job_data:
@@ -181,31 +186,19 @@ def parse_job_url(request):
 
 
 #-------------------------------------Company Views----------------------------------------
-class CompanyListView(LoginRequiredMixin, View):
+class CompanyListView(LoginRequiredMixin, ListView):
     
-    def get(self, request):
-        # If it's there, grab the company's pk from the request query param
-        comp_id = request.GET.get('company')
+    model = Company
+    template_name = 'jobs/companies.html'
+    context_object_name = 'companies'
+    fields = ['name', 'industry', 'careers_url']
 
-        # Check if this was called via AJAX
-        if self.request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
-            company = Company.objects.get(pk=comp_id)
-            response = {
-                'name': company.name, 
-                'careers_url': company.careers_url, 
-                'industry': company.industry,
-                'id': company.id
-            }
-            return JsonResponse(response)
-        else:
-            companies = Company.objects.filter(user=request.user)
-            context = {'companies': companies}
-            
-            if comp_id:
-                show_co = Company.objects.get(pk=comp_id)
-                context['show_co'] = show_co
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
 
-            return render(request, 'jobs/companies.html', context)
+    def get_queryset(self):
+        return self.model.objects.filter(user=self.request.user)
 
 
 class CompanyCreateView(LoginRequiredMixin, CreateView):
@@ -225,22 +218,16 @@ class CompanyUpdateView(LoginRequiredMixin, UpdateView):
     model = Company
     fields = ['name', 'careers_url', 'industry']
     template_name_suffix = '_update_form'
+    success_url = reverse_lazy('jobs-companies')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Get the PK from the url so that we can set a 'back' button that will go back
-        # showing this company's details on the Companies page.
         context['id'] = self.kwargs['pk']
         return context
 
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
-
-    def get_success_url(self):
-        # Add query params so the updated company's details will be displayed, when
-        # routing back to the Companies page.
-        return reverse_lazy('jobs-companies') + "?company=" + str(self.kwargs['pk'])
 
 
 class CompanyDeleteView(LoginRequiredMixin, DeleteView):
@@ -410,6 +397,10 @@ class ApplicationUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
+    
+    def get_success_url(self):
+        # Go to this Interview's application details page after deleting a new interview.
+        return reverse_lazy('jobs-home')
 
 
 class ApplicationDeleteView(LoginRequiredMixin, DeleteView):
@@ -426,9 +417,15 @@ class ApplicationDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['interviews'] = Interview.objects.filter(application=self.kwargs['pk'])
+
+        for interview in context['interviews']:
+            if interview.date and interview.date > date.today() and not interview.complete:
+                interview.upcoming = True
+            elif not interview.complete and interview.date < date.today():
+                interview.overdue = True
+
         context['assessments'] = Assessment.objects.filter(application=self.kwargs['pk'])
         context['communications'] = Communication.objects.filter(application=self.kwargs['pk'], user=self.request.user)
-        print(context)
         return context
 
 
@@ -559,14 +556,22 @@ class InterviewCreateView(LoginRequiredMixin, CreateView):
     model = Interview
     template_name = 'jobs/add_interview.html'
     context_object_name = 'interview'
-    #fields = ['application', 'date', 'time', 'location', 'virtual_url', 'complete', 'notes']
-    success_url = reverse_lazy('jobs-list-applications')
+    #success_url = reverse_lazy('jobs-home')
     form_class = InterviewForm
 
+    def get_initial(self):
+        ''' Allows you to set initial values for the new Interview form. 
+        '''
+        # Grabs the initial dictionary by calling superclass.
+        initial = super().get_initial()
+        application = Application.objects.get(pk=self.kwargs['pk'])
+        initial['application'] = application
+        return initial
+
     def get_form_kwargs(self):
-        ''' Allows us to pass in the user to the kwargs when the form is created. Then, within
-            the PositionForm class, the __init__ filters the company queryset to only those
-            companies for this user.
+        ''' Allows us to pass in application primary key to kwargs when the form is created. Then, 
+            within the InterviewForm class, the __init__ filters the application queryset to only
+            the application for which this interview is being created.
         '''
         kwargs = super(InterviewCreateView, self).get_form_kwargs()
         kwargs['app_pk'] = self.kwargs['pk']
@@ -576,7 +581,97 @@ class InterviewCreateView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
+    def get_success_url(self):
+        # Go to this Interview's application details page after updating an interview.
+        return reverse_lazy('jobs-detail-application', kwargs={'pk': self.kwargs['pk']})
+
+
+class InterviewUpdateView(LoginRequiredMixin, UpdateView):
+
+    model = Interview
+    fields = ['date', 'time', 'location', 'virtual_url', 'complete', 'notes']
+    template_name = 'jobs/update_interview.html'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        # Go to this Interview's application details page after updating an interview.
+        return reverse_lazy('jobs-detail-application', kwargs={'pk': self.kwargs['app_pk']})
+
+
+class InterviewDeleteView(LoginRequiredMixin, DeleteView):
+    
+    model = Interview
+
+    def get_success_url(self):
+        # Go to this Interview's application details page after deleting an interview.
+        return reverse_lazy('jobs-detail-application', kwargs={'pk': self.kwargs['app_pk']})
+
+
 #-------------------------------------Interview Views End-------------------------------------
+
+#-------------------------------------Assessment Views----------------------------------------
+class AssessmentCreateView(LoginRequiredMixin, CreateView):
+    model = Assessment
+    template_name = 'jobs/add_assessment.html'
+    context_object_name = 'assessment'
+    success_url = reverse_lazy('jobs-home')
+    form_class = AssessmentForm
+
+    def get_initial(self):
+        ''' Allows you to set initial values for the new Assessment form. 
+        '''
+        # Grabs the initial dictionary by calling superclass.
+        initial = super().get_initial()
+        application = Application.objects.get(pk=self.kwargs['pk'])
+        initial['application'] = application
+        return initial
+
+    def get_form_kwargs(self):
+        ''' Allows us to pass in application primary key to kwargs when the form is created. Then, 
+            within the AssessmentForm class, the __init__ filters the application queryset to only
+            the application for which this assessment is being created.
+        '''
+        kwargs = super(AssessmentCreateView, self).get_form_kwargs()
+        kwargs['app_pk'] = self.kwargs['pk']
+        return kwargs
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        # Go to this Assessment's application details page after updating an assessment.
+        return reverse_lazy('jobs-detail-application', kwargs={'pk': self.kwargs['pk']})
+
+
+class AssessmentUpdateView(LoginRequiredMixin, UpdateView):
+
+    model = Assessment
+    fields = ['date', 'time', 'virtual_url', 'complete', 'notes']
+    template_name = 'jobs/update_interview.html'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        # Go to this Assessment's application details page after updating an assessment.
+        return reverse_lazy('jobs-detail-application', kwargs={'pk': self.kwargs['app_pk']})
+
+
+class AssessmentDeleteView(LoginRequiredMixin, DeleteView):
+    
+    model = Assessment
+
+    def get_success_url(self):
+        # Go to this Assessment's application details page after deleting an assessment.
+        return reverse_lazy('jobs-detail-application', kwargs={'pk': self.kwargs['app_pk']})
+
+
+#-------------------------------------Assessment Views End-------------------------------------
 
 @login_required
 def account(request):

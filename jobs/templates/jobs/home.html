@@ -102,7 +102,7 @@
 			</div>
 		</div>
 	</div>
-
+	<hr>
 	<div class="row mt-5">
 		<div class="col">
 			<h3>Your current applications:</h3>
@@ -111,7 +111,7 @@
 				<thead class="thead-dark">
 					<tr>
 						<th scope="col">Company</th>
-						<th scope="col" class="text-center">Position</th>
+						<th scope="col">Position</th>
 						<th scope="col">Status</th>
 						<th scope="col" class="text-center">Update/Delete</th>
 					</tr>
@@ -122,7 +122,7 @@
 						<th scope="row">{{ app.company }}</th>
 						<td>{{ app.position }}</td>
 						<td>{{ app.status }}</td>
-						<td class="text-center">
+						<td class="text-right">
 							<a class="btn btn-primary delete-app" href="{% url 'jobs-detail-application' app.id %}" role="button">Details</a>
 							<a class="btn btn-primary delete-app" href="{% url 'jobs-update-application' app.id %}" role="button">Update</a>
 							<a class="btn btn-primary delete-app" href="{% url 'jobs-delete-application' app.id %}" role="button">Delete</a>
@@ -131,7 +131,7 @@
 								<div class="dropdown-menu dropdown-menu-right" aria-labelledby="app-list-dropdown">
 									<a class="dropdown-item" href="{% url 'jobs-new-communication' %}?application={{ app.id }}">Add Communication</a>
 									<a class="dropdown-item" href="{% url 'jobs-new-interview' app.id %}">Add Interview</a>
-									<a class="dropdown-item" href="#">Add Assessment</a>
+									<a class="dropdown-item" href="{% url 'jobs-new-assessment' app.id %}">Add Assessment</a>
 								</div>
 							</span>
 						</td>
@@ -142,7 +142,7 @@
 		</div>
 	</div>
 </div>	
-
+<hr>
 <div class="container">
 
     <div class="container-fluid">
