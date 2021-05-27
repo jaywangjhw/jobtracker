@@ -5,4 +5,3 @@ beautifulsoup4
 boto3
 django-storages
 python-decouple
-django-allauth
