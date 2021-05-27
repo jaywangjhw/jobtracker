@@ -1,6 +1,5 @@
 {% extends "jobs/base.html" %}
 {% load crispy_forms_tags %}
-{% load socialaccount %}
 {% block content %}
  
 <div class="container h-100 mt-5">
@@ -22,10 +21,6 @@
                         <a class="" href="{% url 'login' %}">Already have an account?</a>
                     </div>
                 </div>
-				<div class="row mb-3">
-					<div class="col">
-						<a href="{% provider_login_url 'google' %}">Login with Google</a>
-					</div>
             </form>
         </div>
     </div>
