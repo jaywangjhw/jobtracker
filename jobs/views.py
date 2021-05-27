@@ -147,14 +147,16 @@ class HomeView(LoginRequiredMixin, View):
 
             application_form = CombinedApplicationForm(request.POST)
             application_form.instance.user = self.request.user
+            print(position)
             if position:
                 application_form.instance.position = position
             
-            if application_form.is_valid():
+            if position and application_form.is_valid():
                 application = application_form.save()
                 messages.success(request, f'New Application Saved!')
                 return redirect('jobs-home')
             else:
+                messages.error(request, f'Unable to save Position and Application')
                 context['application_form'] = application_form
 
         return redirect(reverse_lazy('jobs-home'))
@@ -455,7 +457,7 @@ class ContactCreateView(LoginRequiredMixin, CreateView):
 
 class ContactUpdateView(LoginRequiredMixin, UpdateView):
     model = Contact
-    fields = '__all__'
+    fields = ['first_name', 'last_name', 'email', 'phone_number', 'notes']
     template_name = 'jobs/update_contact.html'
     context_object_name = 'contact'
 
@@ -483,7 +485,7 @@ class CommunicationCreateView(LoginRequiredMixin, CreateView):
     form_class = CommunicationForm
     template_name = 'jobs/add_communication.html'
     context_object_name = 'comms'
-    success_url = reverse_lazy('jobs-list-communications')
+    success_url = reverse_lazy('jobs-contacts')
 
     def get_form_kwargs(self):
         ''' Allows us to pass in the user to the kwargs when the form is created. Then, within
