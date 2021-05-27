@@ -21,7 +21,8 @@ class Skill(models.Model):
 class Company(models.Model):
 	INDUSTRY_CHOICES = [
 		('tech', 'Tech'),
-		('ecommerce', 'Ecommerce'), 
+		('ecommerce', 'Ecommerce'),
+		('gaming', 'Gaming'), 
 		('healthcare', 'Healthcare'),
 		('pharma', 'Pharmaceutical'),
 		('aerospace', 'Aerospace'),
@@ -30,7 +31,7 @@ class Company(models.Model):
 		('defense', 'Defense'),
 		('other', 'Other'),
 	]
-	
+
 	user = models.ForeignKey(
 		User,
 		on_delete=models.CASCADE,
