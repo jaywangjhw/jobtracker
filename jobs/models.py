@@ -3,11 +3,26 @@ from django.db.models.signals import post_save
 from django.urls import reverse
 from django.contrib.auth.models import User
 
+class Skill(models.Model):
+
+	# Columns in Skill table
+	user = models.ForeignKey(
+		User,
+		on_delete=models.CASCADE,
+		default=1
+		)
+
+	skill_name = models.CharField(max_length=100)
+
+	def __str__(self):
+		"""String for representing the Skill as the Skill name"""
+		return self.skill_name
 
 class Company(models.Model):
 	INDUSTRY_CHOICES = [
 		('tech', 'Tech'),
-		('ecommerce', 'Ecommerce'), 
+		('ecommerce', 'Ecommerce'),
+		('gaming', 'Gaming'), 
 		('healthcare', 'Healthcare'),
 		('pharma', 'Pharmaceutical'),
 		('aerospace', 'Aerospace'),
@@ -16,7 +31,7 @@ class Company(models.Model):
 		('defense', 'Defense'),
 		('other', 'Other'),
 	]
-	
+
 	user = models.ForeignKey(
 		User,
 		on_delete=models.CASCADE,
@@ -38,15 +53,8 @@ class Company(models.Model):
 		return self.name
 
 
-class Position(models.Model):
 
-	INDUSTRY_SKILL = [
-		('Java', 'Java'), 
-		('C++', 'C++'),
-		('Algorithm Design', 'Algorithm Design'), 
-		('Object Oriented', 'Object Oriented'), 
-		('Kubernetes', 'Kubernetes')
-	]
+class Position(models.Model):
 
 	# Columns in Position table
 	user = models.ForeignKey(
@@ -62,7 +70,7 @@ class Position(models.Model):
 	position_url = models.URLField(max_length=1000, null=True)
 	date_opened = models.DateField(null=True)
 	date_closed = models.DateField(null=True, blank=True, default='')
-	skills = models.CharField(choices=INDUSTRY_SKILL, max_length=100) # Need to look into multiple selection
+	skills = models.ManyToManyField(Skill)
 	job_description = models.TextField(null=True)
 
 	def num_apps(self):
@@ -105,7 +113,6 @@ class Account(models.Model):
 
 	def __str__(self):
 		return self.user.username
-
 
 class Application(models.Model):
 	user = models.ForeignKey(
