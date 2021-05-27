@@ -322,6 +322,13 @@ class PositionDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('jobs-list-positions')
 
 
+class PositionDetailView(LoginRequiredMixin, DetailView):
+
+    model = Position
+    template_name = 'jobs/positions_detail.html'
+    context_object_name = 'position'
+
+
 #-------------------------------------Position Views End----------------------------------------
 
 #---------------------------------------Application Views-----------------------------------------

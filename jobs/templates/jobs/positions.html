@@ -3,20 +3,53 @@
 {% block content %}
     <h1>Positions Page</h1>
 
-    <button type="button" class="btn btn-primary btn-lg" onclick="location.href='/positions/new'">Add Position</button></br></br>
+    <div class="container h-100 mt-5">
+        <div class="container ml-3">
+            <div class="row mt-3">
+                <div class="col-md-auto">
+                    <h2>Positions</h2>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-auto">
+                    <button type="button" class="btn btn-primary btn-lg" onclick="location.href='/positions/new'">Add Position</button>
+                </div>
+            </div>
+        </div>
 
-	{% for position in positions %}
-		<h3>{{ position.position_title }}
-            <a class="btn btn-sm btn-info" href="{% url 'jobs-update-position' position.id %}"> Update</a>
-            <a class="btn btn-sm btn-danger" href="{% url 'jobs-delete-position' position.id %}"> Delete</a>
-            <a class="btn btn-sm btn-primary" href="{% url 'jobs-new-application' %}?position={{ position.id }}" role="button">Add Application</a>
-        </h3>
-        <p>Company: {{ position.company.name }}</p>
-        <p>URL: {{ position.position_url }}</p>
-        <p>Date Opened: {{ position.date_opened }}</p>
-        <p>Date Closed: {{ position.date_closed }}</p>
-        <p>Skills: {{ position.skills }}</p>
-        <p>Job Description: {{ position.job_description }}</p></br>
-	{% endfor %}
+        <div class="container positions mt-3 ml-3 mb-5">
+            {% for position in positions %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <h3>{{ position.position_title }}</h3>
+                            <h5>Company: {{ position.company }}</h5>
+                            <h5>Skills:</h5>
+                            <ul>
+                                {% for skill in position.skills.all %}
+                                    <h7><li>{{ skill }}</li></h7>
+                                {% endfor %}
+                            </ul>
+    
+                        </div>
+                        <div class="col-md-2 align-content-stretch">
+                            <div class="row mb-1">
+                                <a class="btn btn-sm btn-primary" href="{% url 'jobs-position-details' position.id %}">Details</a>
+                            </div>
+                            <div class="row mb-1">
+                                <a class="btn btn-sm btn-primary" href="{% url 'jobs-update-position' position.id %}">Update</a>
+                            </div>
+                            <div class="row mb-1">
+                                <a class="btn btn-sm btn-danger" href="{% url 'jobs-delete-position' position.id %}"> Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>      
+            {% endfor %}
+        </div>
+    </div>
+    
 
 {% endblock content %}
