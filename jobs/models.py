@@ -19,13 +19,25 @@ class Skill(models.Model):
 		return self.skill_name
 
 class Company(models.Model):
+	INDUSTRY_CHOICES = [
+		('tech', 'Tech'),
+		('ecommerce', 'Ecommerce'), 
+		('healthcare', 'Healthcare'),
+		('pharma', 'Pharmaceutical'),
+		('aerospace', 'Aerospace'),
+		('fintech', 'FinTech'),
+		('nonprofit', 'Nonprofit'),
+		('defense', 'Defense'),
+		('other', 'Other'),
+	]
+	
 	user = models.ForeignKey(
 		User,
 		on_delete=models.CASCADE,
 		default=1)
 	name = models.CharField(max_length=100)
 	careers_url = models.URLField(max_length=300, null=True, blank=True)
-	industry = models.ManyToManyField(Skill)
+	industry = models.CharField(choices=INDUSTRY_CHOICES, max_length=100, null=True, blank=True)
 
 	def num_company_apps(self):
 		num_apps = 0
