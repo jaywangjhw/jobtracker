@@ -39,7 +39,7 @@
 					{% endif %}
 					
 					{% if app.accepted %}
-						<p>You have accepted this job offer!</p>
+						<p><span class="badge rounded-pill bg-success text-white">You have accepted this job offer!</span></p>
 					{% endif %}
 
 					{% if app.email_used %}
@@ -67,8 +67,15 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-10">
-                	{% if app.position.skills %}
-                		<p><strong>Skills Required:</strong> {{ app.position.skills }}</p>
+                	{% if app.position.skills.all %}
+					<p><strong>Skills Required:</strong></p>
+        			<ul>
+        				{% for skill in app.position.skills.all %}
+        				<li>{{ skill }}</li>
+        				{% endfor %}
+        			</ul>
+                	{% else %}
+                	<p><strong>Skills Required:</strong> Add Skills from this job description to your skills page!</p>
                 	{% endif %}
 
                 	{% if app.position.job_description %}
