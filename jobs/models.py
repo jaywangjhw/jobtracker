@@ -3,6 +3,7 @@ from django.db.models.signals import post_save
 from django.urls import reverse
 from django.contrib.auth.models import User
 
+
 class Skill(models.Model):
 
 	# Columns in Skill table
@@ -17,6 +18,7 @@ class Skill(models.Model):
 	def __str__(self):
 		"""String for representing the Skill as the Skill name"""
 		return self.skill_name
+
 
 class Company(models.Model):
 	INDUSTRY_CHOICES = [
@@ -70,7 +72,7 @@ class Position(models.Model):
 	position_url = models.URLField(max_length=1000, null=True)
 	date_opened = models.DateField(null=True)
 	date_closed = models.DateField(null=True, blank=True, default='')
-	skills = models.ManyToManyField(Skill)
+	skills = models.ManyToManyField(Skill, blank=True)
 	job_description = models.TextField(null=True)
 
 	def num_apps(self):
@@ -113,6 +115,7 @@ class Account(models.Model):
 
 	def __str__(self):
 		return self.user.username
+
 
 class Application(models.Model):
 	user = models.ForeignKey(

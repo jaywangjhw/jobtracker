@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from .models import Position, Company, Account, Contact, Application, Communication, Interview, Assessment
+from .models import Position, Company, Account, Contact, Application, Communication, Interview, Assessment, Skill
 
 
 class PositionForm(ModelForm):
@@ -22,11 +22,12 @@ class PositionForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         ''' This filters the options in the company dropdown field to only those companies
-            this user has added.
+            this user has added. Same thing for the list of Skills to chose from. 
         '''
         user = kwargs.pop('user')
         super(PositionForm, self).__init__(*args, **kwargs)
         self.fields['company'].queryset = Company.objects.filter(user=user)
+        self.fields['skills'].queryset = Skill.objects.filter(user=user)
 
 
 class AccountForm(ModelForm):
@@ -137,6 +138,14 @@ class CombinedPositionForm(ModelForm):
     class Meta:
         model = Position
         exclude = ('user', 'company', )
+
+    def __init__(self, *args, **kwargs):
+        ''' This filters the options in the skills selection field to only those skills
+            this user has added.
+        '''
+        user = kwargs.pop('user')
+        super(CombinedPositionForm, self).__init__(*args, **kwargs)
+        self.fields['skills'].queryset = Skill.objects.filter(user=user)
 
 
 class CombinedCompanyForm(CompanyForm):

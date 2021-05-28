@@ -30,9 +30,8 @@ import json
 class HomeView(LoginRequiredMixin, View):
 
     def get(self, request):
-
         company_form = CombinedCompanyForm()
-        combined_position_form = CombinedPositionForm()
+        combined_position_form = CombinedPositionForm(user=request.user)
         full_position_form = PositionForm(user=request.user)
         combined_application_form = CombinedApplicationForm()
         full_application_form = ApplicationForm(user=request.user)
@@ -124,7 +123,7 @@ class HomeView(LoginRequiredMixin, View):
             if 'company' in request.POST:
                 position_form = PositionForm(request.POST, user=self.request.user)
             else:
-                position_form = CombinedPositionForm(request.POST)
+                position_form = CombinedPositionForm(request.POST, user=self.request.user)
 
                 company_form = CombinedCompanyForm(request.POST)
                 company_form.instance.user = self.request.user
@@ -309,10 +308,20 @@ class PositionCreateView(LoginRequiredMixin, CreateView):
 
 class PositionUpdateView(LoginRequiredMixin, UpdateView):
     model = Position
-    fields = ['company', 'position_title', 'position_url', 'date_opened', 'date_closed',
-                'skills', 'job_description']
+    form_class = PositionForm
+    #fields = ['company', 'position_title', 'position_url', 'date_opened', 'date_closed',
+     #           'skills', 'job_description']
     template_name = 'jobs/update_position.html'
     context_object_name = 'position'
+
+    def get_form_kwargs(self):
+        ''' Allows us to pass in the user to the kwargs when the position is updated. Then, within
+            the PositionForm class, the __init__ filters the company queryset to only those
+            companies for this user. The skills list will also be filtered accordingly for the user.
+        '''
+        kwargs = super(PositionUpdateView, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -391,10 +400,20 @@ class ApplicationCreateView(LoginRequiredMixin, CreateView):
 
 class ApplicationUpdateView(LoginRequiredMixin, UpdateView):
     model = Application
-    fields = ['position', 'date_started', 'date_submitted', 'email_used', 'offer',
-                'accepted', 'notes']
+    form_class = ApplicationForm
+    #fields = ['position', 'date_started', 'date_submitted', 'email_used', 'offer',
+     #           'accepted', 'notes']
     template_name = 'jobs/update_application.html'
     context_object_name = 'application'
+
+    def get_form_kwargs(self):
+        ''' Allows us to pass in the user to the kwargs when this application is updated. 
+            Then, within the ApplicationForm class, the __init__ filters the position queryset 
+            to only those positions for this user.
+        '''
+        kwargs = super(ApplicationUpdateView, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -529,7 +548,7 @@ class CommunicationCreateView(LoginRequiredMixin, CreateView):
 class CommunicationUpdateView(LoginRequiredMixin, UpdateView):
     
     model = Communication
-    fields = ['application', 'contact', 'date', 'method', 'notes']
+    fields = ['date', 'method', 'notes']
     template_name = 'jobs/update_communication.html'
     context_object_name = 'comms'
 
