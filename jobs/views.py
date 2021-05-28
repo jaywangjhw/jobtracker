@@ -9,7 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.db.models import Count
-from .models import Position, Company, Account, Contact, Communication, Application, Interview, Assessment
+from .models import Position, Company, Account, Contact, Communication, Application, Interview, Assessment, Skill
 from .forms import (ApplicationForm,
                     AssessmentForm,
                     CombinedPositionForm,
@@ -22,7 +22,7 @@ from .forms import (ApplicationForm,
 from django.contrib import messages
 from jobs.parse_url import get_domain_company, get_amazon_data
 from jobs.reddit import get_reddit_data
-from jobs.parse_url import get_job_data
+from jobs.parse_url import get_job_data, get_position_skills
 from datetime import date
 import json
 

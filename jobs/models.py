@@ -55,7 +55,6 @@ class Company(models.Model):
 		return self.name
 
 
-
 class Position(models.Model):
 
 	# Columns in Position table

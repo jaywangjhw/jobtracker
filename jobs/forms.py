@@ -1,5 +1,5 @@
 from django import forms
-from django.forms import ModelForm
+from django.forms import ModelForm, CheckboxSelectMultiple
 from .models import Position, Company, Account, Contact, Application, Communication, Interview, Assessment, Skill
 
 
@@ -19,6 +19,12 @@ class PositionForm(ModelForm):
             'date_opened': 'When did the job open?',
             'date_closed': 'When did the job close? (optional)'
         }
+
+    skills = forms.ModelMultipleChoiceField(
+        queryset=Skill.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
 
     def __init__(self, *args, **kwargs):
         ''' This filters the options in the company dropdown field to only those companies
@@ -138,6 +144,12 @@ class CombinedPositionForm(ModelForm):
     class Meta:
         model = Position
         exclude = ('user', 'company', )
+
+    skills = forms.ModelMultipleChoiceField(
+        queryset=Skill.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
 
     def __init__(self, *args, **kwargs):
         ''' This filters the options in the skills selection field to only those skills

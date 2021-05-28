@@ -6,6 +6,15 @@ from bs4 import BeautifulSoup
 from datetime import date, timedelta
 
 
+def get_position_skills(description, skills):
+	position_skills = list()
+	for skill in skills:
+		if skill.skill_name.lower() in description.lower():
+			position_skills.append(skill)
+
+	return position_skills
+
+
 def get_domain_company(url):
 	domain = extract(url).domain
 	return domain
