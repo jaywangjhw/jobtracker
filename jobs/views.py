@@ -146,7 +146,7 @@ class HomeView(LoginRequiredMixin, View):
 
             application_form = CombinedApplicationForm(request.POST)
             application_form.instance.user = self.request.user
-            print(position)
+            
             if position:
                 application_form.instance.position = position
             
