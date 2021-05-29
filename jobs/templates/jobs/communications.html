@@ -14,27 +14,36 @@
 			</div>
 		</div>
 		{% for comm in comms %}
-		<div class="card mb-3">
-			<div class="card-body">
-				<div class="row">
-					<div class="col-md-10">
-						<h5 class="card-title mb-2">{{ comm.application }}</h5>
-						<p>{{ comm.contact }}</p>
-						<p>{{ comm.notes }}</p>
-						<p>{{ comm.method }}</p>
-						<p class="card-text"><small class="text-muted">{{ comms.date }}</small></p>
-					</div>
-					<div class="col-md-2 align-content-stretch">
-						<div class="row mb-1">
-							<a class="btn btn-primary" href="{% url 'jobs-update-communication' comm.id %}" role="button">Update</a>
-						</div>
-						<div class="row mb-1">
-							<a class="btn btn-primary" href="{% url 'jobs-delete-communication' comm.id %}" role="button">Delete</a>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>      
+		<div class="card mb-3 border-dark">
+		    <div class="card-header">
+		        <div class="row">
+		            <div class="col-md-8">
+		                <h4>{{ comm.contact }}  -  {{ comm.application }}</h4>
+		            </div>
+		            <div class="col-md-4 text-right">
+		                <a class="btn btn-sm btn-primary" href="{% url 'jobs-detail-application' comm.application.id %}" role="button">View Application</a>
+		            </div>
+		        </div>
+		    </div>
+		    <div class="card-body">
+		        <div class="row">
+		            <div class="col">
+		                <p><strong>Notes: </strong>{{ comm.notes }}</p>
+		            </div>
+		        </div>
+		    </div>
+		    <div class="card-footer">
+		        <div class="row">
+		            <div class="col">
+		                <span class="card-text"><small class="text-muted">{{ comm.date }} -- {{ comm.method }}</small></span>
+		            </div>
+		            <div class="col text-right">
+		                <a class="btn btn-sm btn-primary" href="{% url 'jobs-update-communication' comm.id %}" role="button">Edit</a>
+		                <a class="btn btn-sm btn-primary" href="{% url 'jobs-delete-communication' comm.id %}" role="button">Delete</a>
+		            </div>
+		        </div>
+		    </div>
+		</div>
 		{% endfor %}
 	</div>
 </div>
