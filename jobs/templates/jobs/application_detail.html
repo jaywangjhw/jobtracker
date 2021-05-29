@@ -35,11 +35,11 @@
                 	{% endif %}
 
 					{% if app.offer %}
-						<p><span class="badge rounded-pill bg-success text-white">Offer received</span></p>
+						<p><span class="badge-pill bg-success text-white">Offer received</span></p>
 					{% endif %}
 					
 					{% if app.accepted %}
-						<p>You have accepted this job offer!</p>
+						<p><span class="badge-pill bg-success text-white">You have accepted this job offer!</span></p>
 					{% endif %}
 
 					{% if app.email_used %}
@@ -67,9 +67,15 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-10">
-                	{% if app.position.skills %}
-                		<p><strong>Skills Required:</strong> {{ app.position.skills }}</p>
+                	<p><strong>Skills Required: </strong>
+                	{% if app.position.skills.all %}
+                		{% for skill in app.position.skills.all %}
+                		<span class="badge-pill bg-success text-white mr-2">{{ skill }}</span>
+                		{% endfor %}
+                	{% else %}
+                		<span>Add Skills from this job description to your skills page!</span>
                 	{% endif %}
+                	</p>
 
                 	{% if app.position.job_description %}
                 		<p><strong>Job Description:</strong> {{ app.position.job_description }}</p>
@@ -78,7 +84,7 @@
             </div>
         </div>
         <div class="card-footer">
-            <span class="card-text"><small class="text-muted"><a href="{{ app.position.position_url }}" class="mr-5">Link to job posting url</a>Job position opened on {{ app.position.date_opened }}</small></span>
+            <span class="card-text"><small class="text-muted"><a href="{{ app.position.position_url }}" class="mr-5">Link to external job posting url</a>Job position opened on {{ app.position.date_opened }}</small></span>
         </div>
     </div>			
  	<hr>
