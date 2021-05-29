@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.urls import reverse
 from django.contrib.auth.models import User
+from users.models import Document
 
 
 class Skill(models.Model):
@@ -126,6 +127,11 @@ class Application(models.Model):
 		Position,
 		on_delete=models.CASCADE
 		)
+	resume = models.ForeignKey(
+		Document,
+		on_delete=models.SET_NULL,
+		null=True,
+		blank=True)
 	date_started = models.DateField(null=True, blank=True)
 	date_submitted = models.DateField(null=True, blank=True)
 	email_used = models.EmailField(null=True, blank=True, max_length=128)

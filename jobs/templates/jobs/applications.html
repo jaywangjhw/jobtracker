@@ -20,9 +20,9 @@
             </div>
         </div>
     </div>
-    <div class="container positions mt-3 ml-3 mb-5">
+    <div class="container positions mt-5 ml-3 mb-5">
         {% for application in applications %}
-        <div class="card mb-3 border-dark searchable">
+        <div class="card mb-5 border-dark searchable">
             <div class="card-header">
                 <div class="row">
                     <div class="col-md-8">
@@ -60,8 +60,8 @@
                         <span class="card-text"><small class="text-muted"><a href="{{ application.position.position_url }}" class="mr-5">Link to external job posting url</a>Job position opened on {{ application.position.date_opened }}</small></span>
                     </div>
                     <div class="col text-right">
-                        <a class="btn-sm btn-primary" href="{% url 'jobs-update-application' application.id %}" role="button"><i class="bi bi-pencil-square"></i> Application</a>
-                        <a class="btn-sm btn-primary" href="{% url 'jobs-delete-application' application.id %}" role="button"><i class="bi bi-trash"></i> Application</a>
+                        <a class="btn btn-sm btn-primary" href="{% url 'jobs-update-application' application.id %}" role="button"><i class="bi bi-pencil-square"></i> Application</a>
+                        <a class="btn btn-sm btn-primary" href="{% url 'jobs-delete-application' application.id %}" role="button"><i class="bi bi-trash"></i> Application</a>
                     </div>
                 </div>
             </div>

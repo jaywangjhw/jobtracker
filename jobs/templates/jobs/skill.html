@@ -38,12 +38,16 @@
                 </div>
                 <div class="row">
                     <div class="col">
+                        {% if num_positions %}
                         <h5>Found in {{ skill.occurences }} ({{ skill.position_set.count }} out of {{ num_positions }}) of your positions</h5>
+                        {% else %}
+                        <h5>Add positions to track this skill's occurences</h5>
+                        {% endif %}
                     </div>
                 </div>
                 <h3 class="mt-5">Your {{ skill.skill_name }} Job Positions:</h3>
                 {% for position in skill.position_set.all %}
-                <div class="card mb-3 border-dark">
+                <div class="card mb-5 border-dark">
                     <div class="card-header">
                         <div class="row">
                             <div class="col-md-8">
@@ -63,7 +67,7 @@
                                 </div>
                                 {% empty %}
                                 <div class="mt">
-                                    <a class="btn-sm btn-primary" href="{% url 'jobs-new-application' %}?position={{ position.id }}">Add Application</a>
+                                    <a class="btn btn-sm btn-primary" href="{% url 'jobs-new-application' %}?position={{ position.id }}">Add Application</a>
                                 </div>                              
                                 {% endfor %}
                             </div>
@@ -75,8 +79,8 @@
                                 <span class="card-text"><small class="text-muted"><a href="{{ position.position_url }}" class="mr-5">Link to external job posting url</a>Opened {{ position.date_opened }}</small></span>
                             </div>
                             <div class="col text-right">
-                                <a class="btn-sm btn-primary" href="{% url 'jobs-update-position' position.id %}" role="button"><i class="bi bi-pencil-square"></i> Position</a>
-                                <a class="btn-sm btn-primary" href="{% url 'jobs-delete-position' position.id %}" role="button"><i class="bi bi-trash"></i> Position</a>
+                                <a class="btn btn-sm btn-primary" href="{% url 'jobs-update-position' position.id %}" role="button"><i class="bi bi-pencil-square"></i> Position</a>
+                                <a class="btn btn-sm btn-primary" href="{% url 'jobs-delete-position' position.id %}" role="button"><i class="bi bi-trash"></i> Position</a>
                             </div>
                         </div>
                     </div>
