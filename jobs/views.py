@@ -501,10 +501,20 @@ class ContactDeleteView(LoginRequiredMixin, DeleteView):
 class SkillListView(LoginRequiredMixin, ListView):
     model = Skill
     template_name = 'jobs/skill.html'
-    context_object_name = 'skill'
+    context_object_name = 'skills'
 
     def get_queryset(self):
         return self.model.objects.filter(user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        num_positions = Position.objects.all().filter(user=self.request.user).count()
+        context['num_positions'] = num_positions
+        for skill in context['skills']:
+            skill.occurences = '{:.1%}'.format(skill.position_set.count() / num_positions)
+
+        return context
+
 
 
 class SkillCreateView(LoginRequiredMixin, CreateView):
@@ -522,7 +532,6 @@ class SkillCreateView(LoginRequiredMixin, CreateView):
         # Go to this Skill's page after updating
         return reverse_lazy('jobs-list-skill')
     
-
 
 class SkillUpdateView(LoginRequiredMixin, UpdateView):
     model = Skill

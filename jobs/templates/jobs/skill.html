@@ -1,42 +1,85 @@
 {% extends "jobs/base.html" %}
 
 {% block content %}
-    <h1>Skills</h1>
-
-    <div class="container h-100 mt-5">
-        <div class="container ml-3">
-            <div class="row mt-3">
-            </div>
-            <div class="row mt-3">
-                <div class="col-md-auto">
-                    <button type="button" class="btn btn-primary btn-lg" onclick="location.href='/skill/new'">Add Skill</button>
+<div class="container p-3 mb-3">
+    <h1 class="text-center">Skills</h1>
+</div>
+<div class="row">
+    <div class="col-4" id="skillList">
+        <a class="btn btn-primary mb-3 btn-block" href="{% url 'jobs-new-skill' %}">Add New Skill</a>
+        <input class="form-control mb-2" id="listSearch" type="text" placeholder="Search for Skill">
+        <div class="list-group" id="list-tab" role="tablist">
+            {% for skill in skills %}
+            <a class="list-group-item list-group-item-action" id="list-{{ skill.id }}-list" data-bs-toggle="list" href="#list-{{ skill.id }}" role="tab" aria-controls="list-{{ skill.id }}">
+                <div class="row">
+                    <div class="col-6">
+                        {{ skill.skill_name }}
+                    </div>
+                    <div class=col-2>
+                        <span class="badge bg-primary text-white rounded-pill">positions {{ skill.position_set.count }}</span>
+                    </div>
                 </div>
-            </div>
+            </a>
+            {% endfor %}    
         </div>
-
-        <div class="container positions mt-3 ml-3 mb-5">
-            {% for item in skill %}
-            <div class="card mb-3">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-10">
-                            <h3>{{ item.skill_name }}</h3>
-    
-                        </div>
-                        <div class="col-md-2 align-content-stretch">
-                            <div class="row mb-1">
-                                <a class="btn btn-sm btn-primary" href="{% url 'jobs-update-skill' item.id %}">Update</a>
+    </div>
+    <div class="col-8">
+        <div class="tab-content ml-3" id="nav-tabContent">
+            {% for skill in skills %}
+             <div class="tab-pane fade show" id="list-{{ skill.id }}" role="tabpanel" aria-labelledby="list-{{ skill.id }}-list">       
+                <div class="row">
+                    <div class="col mb-3">
+                        <h3>{{ skill.skill_name }}</h3>
+                    </div>
+                    <div class="col">
+                        <a class="btn btn-primary edit-skill" href="{% url 'jobs-update-skill' skill.id %}" role="button"><i class="bi bi-pencil-square"></i></a>
+                        <a class="btn btn-primary delete-skill" href="{% url 'jobs-delete-skill' skill.id %}" role="button"><i class="bi bi-trash"></i></a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h5>Found in {{ skill.occurences }} ({{ skill.position_set.count }} out of {{ num_positions }}) of your positions</h5>
+                    </div>
+                </div>
+                <h3 class="mt-5">Your {{ skill.skill_name }} Job Positions:</h3>
+                {% for position in skill.position_set.all %}
+                <div class="card mb-3 border-dark">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                <h5 class="card-title mb-2">{{ position.position_title }}</h5>
                             </div>
-                            <div class="row mb-1">
-                                <a class="btn btn-sm btn-danger" href="{% url 'jobs-delete-skill' item.id %}"> Delete</a>
+                            <div class="col text-right">
+                                <a class="btn-sm btn-primary" href="{% url 'jobs-update-position' position.id %}" role="button"><i class="bi bi-pencil-square"></i> Position</a>
+                                <a class="btn-sm btn-primary" href="{% url 'jobs-delete-position' position.id %}" role="button"><i class="bi bi-trash"></i> Position</a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                {% for app in position.application_set.all %}
+                                <div class="mt-2">
+                                    <span>You applied for this position - </span><a class="btn-sm btn-primary" href="{% url 'jobs-detail-application' app.id %}" role="button">View Application</a>
+                                </div>
+                                {% empty %}
+                                <div class="mt-2">
+                                    <a class="btn-sm btn-primary" href="{% url 'jobs-new-application' %}?position={{ position.id }}">Add Application</a>
+                                </div>                              
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>      
+                    <div class="card-footer">
+                        <span class="card-text"><small class="text-muted"><a href="{{ position.position_url }}" class="mr-5">Link to external job posting url</a>Opened {{ position.date_opened }}</small></span>
+                    </div>
+                </div>      
+                {% endfor %}
+
+             </div>
             {% endfor %}
         </div>
     </div>
+</div>
+
     
 
 {% endblock content %}
