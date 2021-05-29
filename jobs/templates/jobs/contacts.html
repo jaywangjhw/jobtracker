@@ -39,8 +39,8 @@
                         {% endif %}
                         <div class="row mb-3">
                             <div class="col">
-                                <a class="btn btn-primary edit-contact" href="{% url 'jobs-update-contact' contact.id %}" role="button">Update</a>
-                                <a class="btn btn-primary delete-contact" href="{% url 'jobs-delete-contact' contact.id %}" role="button">Delete</a>
+                                <a class="btn btn-primary edit-contact" href="{% url 'jobs-update-contact' contact.id %}" role="button"><i class="bi bi-pencil-square"></i></a>
+                                <a class="btn btn-primary delete-contact" href="{% url 'jobs-delete-contact' contact.id %}" role="button"><i class="bi bi-trash"></i></a>
                                 <a class="btn btn-primary add-communication" href="{% url 'jobs-new-communication' %}?contact={{ contact.id }}" role="button">Add Communication</a>
                             </div>
                         </div>
@@ -71,9 +71,9 @@
                             <div class="col">
                                 <span class="card-text"><small class="text-muted">{{ comm.date }} -- {{ comm.method }}</small></span>
                             </div>
-                            <div class="col float-right">
-                                <a class="btn btn-sm btn-primary" href="{% url 'jobs-update-communication' comm.id %}" role="button">Edit Communication</a>
-                                <a class="btn btn-sm btn-primary" href="{% url 'jobs-delete-communication' comm.id %}" role="button">Delete Communication</a>
+                            <div class="col text-right">
+                                <a class="btn btn-sm btn-primary" href="{% url 'jobs-update-communication' comm.id %}" role="button"><i class="bi bi-pencil-square"></i> Communication</a>
+                                <a class="btn btn-sm btn-primary" href="{% url 'jobs-delete-communication' comm.id %}" role="button"><i class="bi bi-trash"></i> Communication</a>
                             </div>
                         </div>
                     </div>
