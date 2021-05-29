@@ -45,9 +45,9 @@
 						{% endif %}
 						<div class="row mb-3">
 							<div class="col">
-								<a class="btn btn-primary edit-company" href="{% url 'jobs-company-update' company.id %}" role="button">Update</a>
-								<a class="btn btn-primary delete-company" href="{% url 'jobs-company-delete' company.id %}" role="button">Delete</a>
-								<a class="btn btn-primary add-position" href="{% url 'jobs-new-position' %}?company={{ company.id }}" role="button">Add Position</a>
+								<a class="btn btn-primary edit-company" href="{% url 'jobs-company-update' company.id %}" role="button"><i class="bi bi-pencil-square"></i></a>
+								<a class="btn btn-primary delete-company" href="{% url 'jobs-company-delete' company.id %}" role="button"><i class="bi bi-trash"></i></a>
+								<a class="btn btn-primary add-position" href="{% url 'jobs-new-position' %}?company={{ company.id }}" role="button"><i class="bi bi-plus-lg"></i> Position</a>
 							</div>
 					    </div>
 					</div>
@@ -61,8 +61,8 @@
 								<h5 class="card-title mb-2">{{ position.position_title }}</h5>
 							</div>
 							<div class="col text-right">
-								<a class="btn-sm btn-primary" href="{% url 'jobs-update-position' position.id %}" role="button">Edit Position</a>
-								<a class="btn-sm btn-primary" href="{% url 'jobs-delete-position' position.id %}" role="button">Delete Position</a>
+								<a class="btn-sm btn-primary" href="{% url 'jobs-update-position' position.id %}" role="button"><i class="bi bi-pencil-square"></i> Position</a>
+								<a class="btn-sm btn-primary" href="{% url 'jobs-delete-position' position.id %}" role="button"><i class="bi bi-trash"></i> Position</a>
 							</div>
 						</div>
 						<div class="row">
