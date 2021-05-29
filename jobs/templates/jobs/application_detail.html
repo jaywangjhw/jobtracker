@@ -15,7 +15,7 @@
    					<span>Application Details</span>
    				</div>
    				<div class="col-md-6 text-right">
-                	<a class="btn btn-sm btn-primary border-primary" href="{% url 'jobs-update-application' app.id %}">Edit this Application</a>	       					
+                	<a class="btn btn-sm btn-primary border-primary" href="{% url 'jobs-update-application' app.id %}"><i class="bi bi-pencil-square"></i> Application</a>	       					
    				</div>
    			</div>
    		</div>
@@ -60,7 +60,7 @@
    					<span>Position Details</span>
    				</div>
    				<div class="col-md-6 text-right">
-                	<a class="btn btn-sm btn-primary border-primary" href="{% url 'jobs-update-position' app.position.id %}">Edit this Position</a>	       					
+                	<a class="btn btn-sm btn-primary border-primary" href="{% url 'jobs-update-position' app.position.id %}"><i class="bi bi-pencil-square"></i> Position</a>	       					
    				</div>
    			</div>
    		</div>
@@ -129,8 +129,8 @@
 						{% endif %}
 						<td>{{ interview.notes }}</td>
 						<td class="text-right">
-							<a class="btn btn-primary border-primary" href="{% url 'jobs-update-interview' app.id interview.id %}" role="button">Edit</a>
-							<a class="btn btn-danger border-danger" href="{% url 'jobs-delete-interview' app.id interview.id %}" role="button">  X  </a>
+							<a class="btn btn-primary border-primary" href="{% url 'jobs-update-interview' app.id interview.id %}" role="button"><i class="bi bi-pencil-square"></i></a>
+							<a class="btn btn-danger border-danger" href="{% url 'jobs-delete-interview' app.id interview.id %}" role="button"><i class="bi bi-trash"></i></a>
 						</td>
 					</tr>
 				{% endfor %}
@@ -179,8 +179,8 @@
 						{% endif %}
 						<td>{{ assessment.notes }}</td>
 						<td class="text-right">
-							<a class="btn btn-primary border-primary" href="{% url 'jobs-update-assessment' app.id assessment.id %}" role="button">Edit</a>
-							<a class="btn btn-danger border-danger" href="{% url 'jobs-delete-assessment' app.id assessment.id %}" role="button">  X  </a>
+							<a class="btn btn-primary border-primary" href="{% url 'jobs-update-assessment' app.id assessment.id %}" role="button"><i class="bi bi-pencil-square"></i></a>
+							<a class="btn btn-danger border-danger" href="{% url 'jobs-delete-assessment' app.id assessment.id %}" role="button"><i class="bi bi-trash"></i></a>
 						</td>
 					</tr>
 				{% endfor %}
@@ -220,8 +220,8 @@
 							<td>{{ comm.method }}</td>
 							<td>{{ comm.notes }}</td>
 							<td class="text-right">
-								<a class="btn btn-primary border-primary" href="{% url 'jobs-update-communication' comm.id %}" role="button">Edit</a>
-								<a class="btn btn-danger border-danger" href="{% url 'jobs-delete-communication' comm.id %}" role="button">  X  </a>
+								<a class="btn btn-primary border-primary" href="{% url 'jobs-update-communication' comm.id %}" role="button"><i class="bi bi-pencil-square"></i></a>
+								<a class="btn btn-danger border-danger" href="{% url 'jobs-delete-communication' comm.id %}" role="button"><i class="bi bi-trash"></i></a>
 							</td>
 						</tr>
 				{% endfor %}

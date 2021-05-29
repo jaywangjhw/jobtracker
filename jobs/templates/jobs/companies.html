@@ -1,7 +1,7 @@
 {% extends "jobs/base.html" %}
 
 {% block content %}
-<div class="container p-3">
+<div class="container p-3 mb-3">
 	<h1 class="text-center">Companies</h1>
 </div>
 <div class="row">
@@ -10,7 +10,7 @@
 		<input class="form-control mb-2" id="listSearch" type="text" placeholder="Search for Company">
     	<div class="list-group" id="list-tab" role="tablist">
 			{% for company in companies %}
-			<a class="list-group-item list-group-item-action" id="list-{{ company.id }}-list" data-bs-toggle="list" href="#list-{{ company.id }}" role="tab" aria-controls="list-{{ company.id }}">
+			<a class="list-group-item list-group-item-action searchable" id="list-{{ company.id }}-list" data-bs-toggle="list" href="#list-{{ company.id }}" role="tab" aria-controls="list-{{ company.id }}">
 				<div class="row">
 					<div class="col-6">
 						{{ company.name }}
@@ -45,9 +45,9 @@
 						{% endif %}
 						<div class="row mb-3">
 							<div class="col">
-								<a class="btn btn-primary edit-company" href="{% url 'jobs-company-update' company.id %}" role="button">Update</a>
-								<a class="btn btn-primary delete-company" href="{% url 'jobs-company-delete' company.id %}" role="button">Delete</a>
-								<a class="btn btn-primary add-position" href="{% url 'jobs-new-position' %}?company={{ company.id }}" role="button">Add Position</a>
+								<a class="btn btn-primary edit-company" href="{% url 'jobs-company-update' company.id %}" role="button"><i class="bi bi-pencil-square"></i></a>
+								<a class="btn btn-primary delete-company" href="{% url 'jobs-company-delete' company.id %}" role="button"><i class="bi bi-trash"></i></a>
+								<a class="btn btn-primary add-position" href="{% url 'jobs-new-position' %}?company={{ company.id }}" role="button"><i class="bi bi-plus-lg"></i> Position</a>
 							</div>
 					    </div>
 					</div>
@@ -55,24 +55,25 @@
 				<h3 class="mt-5">Your {{ company.name }} Job Positions:</h3>
 				{% for position in company.position_set.all %}
 				<div class="card mb-3 border-dark">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h5>{{ position.position_title }}</h5>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <a class="btn btn-sm btn-primary" href="{% url 'jobs-position-details' position.id %}" role="button">Position Details</a>
+                            </div>
+                        </div>
+                    </div>
 					<div class="card-body">
 						<div class="row">
 							<div class="col">
-								<h5 class="card-title mb-2">{{ position.position_title }}</h5>
-							</div>
-							<div class="col text-right">
-								<a class="btn-sm btn-primary" href="{% url 'jobs-update-position' position.id %}" role="button">Edit Position</a>
-								<a class="btn-sm btn-primary" href="{% url 'jobs-delete-position' position.id %}" role="button">Delete Position</a>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col">
 								{% for app in position.application_set.all %}
-								<div class="mt-2">
-									<span>You applied for this position - </span><a class="btn-sm btn-primary" href="{% url 'jobs-detail-application' app.id %}" role="button">View Application</a>
+								<div class="mt">
+									<a href="{% url 'jobs-detail-application' app.id %}" role="button"><span class="badge-pill bg-success text-white">You applied for this position</span></a>
 								</div>
 								{% empty %}
-								<div class="mt-2">
+								<div class="mt">
 									<a class="btn-sm btn-primary" href="{% url 'jobs-new-application' %}?position={{ position.id }}">Add Application</a>
 								</div>								
 								{% endfor %}
@@ -80,7 +81,15 @@
 						</div>
 					</div>
 					<div class="card-footer">
-						<span class="card-text"><small class="text-muted"><a href="{{ position.position_url }}" class="mr-5">Link to external job posting url</a>Opened {{ position.date_opened }}</small></span>
+						<div class="row">
+							<div class="col-8">
+								<span class="card-text"><small class="text-muted"><a href="{{ position.position_url }}" class="mr-5">Link to external job posting url</a>Opened {{ position.date_opened }}</small></span>
+							</div>
+							<div class="col text-right">
+								<a class="btn-sm btn-primary" href="{% url 'jobs-update-position' position.id %}" role="button"><i class="bi bi-pencil-square"></i> Position</a>
+								<a class="btn-sm btn-primary" href="{% url 'jobs-delete-position' position.id %}" role="button"><i class="bi bi-trash"></i> Position</a>
+							</div>
+						</div>
 					</div>
 				</div>      
 				{% endfor %}

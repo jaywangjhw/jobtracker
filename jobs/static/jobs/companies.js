@@ -4,7 +4,7 @@ $(document).ready(function(){
 	    // make the search case insensitive
 	    var searchStr = $(this).val().toLowerCase();
 	    // hide any rows in the company table that do not match this search
-	    $(".list-group-item").each(function() {
+	    $(".searchable").each(function() {
 	        if ($(this).text().toLowerCase().indexOf(searchStr) != -1) {
 	            $(this).show();
 	        }
