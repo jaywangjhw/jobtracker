@@ -10,7 +10,7 @@
         <input class="form-control mb-2" id="listSearch" type="text" placeholder="Search for Skill">
         <div class="list-group" id="list-tab" role="tablist">
             {% for skill in skills %}
-            <a class="list-group-item list-group-item-action" id="list-{{ skill.id }}-list" data-bs-toggle="list" href="#list-{{ skill.id }}" role="tab" aria-controls="list-{{ skill.id }}">
+            <a class="list-group-item list-group-item-action searchable" id="list-{{ skill.id }}-list" data-bs-toggle="list" href="#list-{{ skill.id }}" role="tab" aria-controls="list-{{ skill.id }}">
                 <div class="row">
                     <div class="col-6">
                         {{ skill.skill_name }}

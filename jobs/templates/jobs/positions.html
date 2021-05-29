@@ -13,11 +13,14 @@
             <div class="col-md-auto">
                 <button type="button" class="btn btn-primary btn" onclick="location.href='/positions/new'">Add Position</button>
             </div>
+            <div class="col">
+                <input class="form-control mb-2" id="listSearch" type="text" placeholder="Search your positions">
+            </div>
         </div>
     </div>
     <div class="container positions mt-3 ml-3 mb-5">
         {% for position in positions %}
-        <div class="card mb-3 border-dark">
+        <div class="card mb-3 border-dark searchable">
             <div class="card-header">
                 <div class="row">
                     <div class="col-md-8">
