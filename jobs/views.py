@@ -460,6 +460,8 @@ class ApplicationDetailView(LoginRequiredMixin, DetailView):
 
 #-------------------------------------Applications Views End------------------------------------------
 
+#-------------------------------------Contact Views---------------------------------------------------
+
 class ContactListView(LoginRequiredMixin, ListView):
     model = Contact
     template_name = 'jobs/contacts.html'
@@ -491,6 +493,53 @@ class ContactUpdateView(LoginRequiredMixin, UpdateView):
 class ContactDeleteView(LoginRequiredMixin, DeleteView):
     model = Contact
     success_url = reverse_lazy('jobs-contacts')
+
+#-------------------------------------Contact Views End---------------------------------------------------
+
+#-------------------------------------Skill Views---------------------------------------------------
+
+class SkillListView(LoginRequiredMixin, ListView):
+    model = Skill
+    template_name = 'jobs/skill.html'
+    context_object_name = 'skill'
+
+    def get_queryset(self):
+        return self.model.objects.filter(user=self.request.user)
+
+
+class SkillCreateView(LoginRequiredMixin, CreateView):
+    model = Skill
+    context_object_name = 'skill'
+    template_name = 'jobs/add_skill.html'
+    fields = ['skill_name']
+    success = '/skill'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        # Go to this Skill's page after updating
+        return reverse_lazy('jobs-list-skill')
+    
+
+
+class SkillUpdateView(LoginRequiredMixin, UpdateView):
+    model = Skill
+    fields = ['skill_name']
+    template_name = 'jobs/update_skill.html'
+    context_object_name = 'skill'
+       
+    def get_success_url(self):
+        # Go to this Skill's page after updating
+        return reverse_lazy('jobs-list-skill')
+
+
+class SkillDeleteView(LoginRequiredMixin, DeleteView):
+    model = Skill
+    success_url = reverse_lazy('jobs-list-skill')
+
+#-------------------------------------Skill Views End---------------------------------------------------
 
 #-------------------------------------Communication Views----------------------------------------
 
