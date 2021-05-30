@@ -48,7 +48,7 @@
                 <h3 class="mt-5">Your {{ skill.skill_name }} Job Positions:</h3>
                 {% for position in skill.position_set.all %}
                 <div class="card mb-5 border-dark">
-                    <div class="card-header">
+                    <div class="card-header position-card">
                         <div class="row">
                             <div class="col-md-8">
                                 <h5>{{ position.position_title }}</h5>
