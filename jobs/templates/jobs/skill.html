@@ -63,7 +63,7 @@
                             <div class="col">
                                 {% for app in position.application_set.all %}
                                 <div class="mt">
-                                    <a href="{% url 'jobs-detail-application' app.id %}" role="button"><span class="badge-pill bg-success text-white">You applied for this position</span></a>
+                                    <a href="{% url 'jobs-detail-application' app.id %}" role="button"><span class="badge badge-pill bg-success text-white">You applied for this position</span></a>
                                 </div>
                                 {% empty %}
                                 <div class="mt">
