@@ -49,7 +49,7 @@
                 <h3 class="mt-5 mb-3">Communication history with {{ contact }}:</h3>
                 {% for comm in contact.communication_set.all %}
                 <div class="card mb-5 border-dark">
-                    <div class="card-header">
+                    <div class="card-header comm-card">
                         <div class="row">
                             <div class="col-md-8">
                                 <h4>Re: {{ comm.application }}</h4>
