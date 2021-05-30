@@ -3,7 +3,8 @@ from .views import *
 from . import views
 from users import views as user_views
 from django.contrib.auth import views as auth_views
-
+from django.contrib import admin
+from django.views.generic import TemplateView
 
 
 urlpatterns = [
@@ -46,6 +47,7 @@ urlpatterns = [
     path('communications/<int:pk>', CommunicationUpdateView.as_view(), name='jobs-update-communication'),
     path('communications/delete/<int:pk>', CommunicationDeleteView.as_view(), name='jobs-delete-communication'),
     path('parse_job_url', views.parse_job_url, name='parse-job-url'),
+    path('accounts/', include('allauth.urls')),
 
 ]
 
@@ -64,6 +66,7 @@ urlpatterns += [
         template_name='users/password_reset_confirm.html'), name='password_reset_confirm'),
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(
         template_name='users/password_reset_complete.html'), name='password_reset_complete'),
+    path('accounts/', include('allauth.urls')),
 
 ]
 
