@@ -2,9 +2,9 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<div class="container p-5">
+<div class="container p-5 mb-3">
   <h2>Resume Upload</h2>
-  <h3>Please Upload Your Resume</h3>
+  <h3 class="mb-5">Please Upload Your Resume</h3>
 <div>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
@@ -12,12 +12,11 @@
     <button type="submit">Submit</button>
   </form>
 
-  <table>
+  <table class="mt-5">
     <thead>
       <tr>
         <th>Name</th>
         <th>Uploaded at</th>
-
       </tr>
     </thead>
     <tbody>
@@ -25,7 +24,6 @@
         <tr>
           <td><a href="{{ document.upload.url }}" target="_blank">{{ document.upload.name }}</a></td>
           <td>{{ document.uploaded_at }}</td>
-
         </tr>
       {% empty %}
         <tr>

@@ -33,7 +33,7 @@ class HomeView(LoginRequiredMixin, View):
         company_form = CombinedCompanyForm()
         combined_position_form = CombinedPositionForm(user=request.user)
         full_position_form = PositionForm(user=request.user)
-        combined_application_form = CombinedApplicationForm()
+        combined_application_form = CombinedApplicationForm(user=request.user)
         full_application_form = ApplicationForm(user=request.user)
 
         context = {'company_form': company_form}
@@ -144,7 +144,7 @@ class HomeView(LoginRequiredMixin, View):
             else:
                 context['position_form'] = position_form
 
-            application_form = CombinedApplicationForm(request.POST)
+            application_form = CombinedApplicationForm(request.POST, user=self.request.user)
             application_form.instance.user = self.request.user
             print(position)
             if position:
@@ -428,7 +428,7 @@ class ApplicationUpdateView(LoginRequiredMixin, UpdateView):
     
     def get_success_url(self):
         # Go to this Interview's application details page after deleting a new interview.
-        return reverse_lazy('jobs-home')
+        return reverse_lazy('jobs-list-applications')
 
 
 class ApplicationDeleteView(LoginRequiredMixin, DeleteView):
@@ -509,9 +509,10 @@ class SkillListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         num_positions = Position.objects.all().filter(user=self.request.user).count()
-        context['num_positions'] = num_positions
-        for skill in context['skills']:
-            skill.occurences = '{:.1%}'.format(skill.position_set.count() / num_positions)
+        if num_positions > 0:
+            context['num_positions'] = num_positions
+            for skill in context['skills']:
+                skill.occurences = '{:.1%}'.format(skill.position_set.count() / num_positions)
 
         return context
 

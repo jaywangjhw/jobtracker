@@ -1,28 +1,26 @@
 {% extends "jobs/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <div class="content-section">
-      <div class="media">
+<div class="container content-section mb-5 mt-5">
+    <div class="media">
         <div class="media-body">
-          <h2 class="account-heading">{{ user.username }}</h2>
-          <p class="text-secondary">{{ user.first_name }} {{ user.last_name }}</p>
-          <p class="text-secondary">{{ user.email }}</p>
+                <h2 class="account-heading">{{ user.username }}</h2>
+                <p class="text-secondary">{{ user.first_name }} {{ user.last_name }}</p>
+                <p class="text-secondary">{{ user.email }}</p>
+                <a href="/upload" class="btn btn-outline-primary mb-3" type="button">Upload Resume</a>
         </div>
-      </div>
-      <form method="POST" enctype="multipart/form-data">
-          {% csrf_token %}
-          <fieldset class="form-group">
-              <legend class="border-bottom mb-4">Profile Info</legend>
-              {{ u_form|crispy }}
-          </fieldset>
-          <div class="form-group">
-              <button class="btn btn-outline-info" type="submit">Update</button>
-          </div>
-		<button class="btn btn-outline-info" type="button">
-    			<a href="/upload">Upload Resume</a>
-		</button>
-      </form>
     </div>
+    <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+        <fieldset class="form-group">
+          <legend class="border-bottom mb-4">Profile Info</legend>
+          {{ u_form|crispy }}
+        </fieldset>
+        <div class="form-group">
+            <button class="btn btn-outline-primary" type="submit">Update</button>
+        </div>
+    </form>
+</div>
 
 
 {% endblock content %}

@@ -1,6 +1,15 @@
 from django import forms
 from django.forms import ModelForm, CheckboxSelectMultiple
-from .models import Position, Company, Account, Contact, Application, Communication, Interview, Assessment, Skill
+from .models import (Position, 
+                     Company,
+                     Account, 
+                     Contact, 
+                     Application, 
+                     Communication, 
+                     Interview, 
+                     Assessment, 
+                     Skill)
+from users.models import Document
 
 
 class PositionForm(ModelForm):
@@ -71,6 +80,7 @@ class ApplicationForm(ModelForm):
         user = kwargs.pop('user')
         super(ApplicationForm, self).__init__(*args, **kwargs)
         self.fields['position'].queryset = Position.objects.filter(user=user)
+        self.fields['resume'].queryset = Document.objects.filter(user=user)
 
 
 class CommunicationForm(ModelForm):
@@ -137,6 +147,14 @@ class CombinedApplicationForm(ModelForm):
             'accepted': 'Check if you\'ve accepted',
             'notes': 'Any notes specific to this application:'
         }
+    
+    def __init__(self, *args, **kwargs):
+        ''' This filters the options in the position dropdown field to only those positions
+            this user has added.
+        '''
+        user = kwargs.pop('user')
+        super(CombinedApplicationForm, self).__init__(*args, **kwargs)
+        self.fields['resume'].queryset = Document.objects.filter(user=user)
 
 
 class CombinedPositionForm(ModelForm):

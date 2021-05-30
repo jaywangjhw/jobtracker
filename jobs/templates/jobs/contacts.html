@@ -1,7 +1,7 @@
 {% extends "jobs/base.html" %}
 
 {% block content %}
-<div class="container p-3">
+<div class="container p-3 mb-3">
     <h1 class="text-center">Contacts</h1>
 </div>
 <div class="row">
@@ -48,7 +48,7 @@
                 </div>
                 <h3 class="mt-5 mb-3">Communication history with {{ contact }}:</h3>
                 {% for comm in contact.communication_set.all %}
-                <div class="card mb-3 border-dark">
+                <div class="card mb-5 border-dark">
                     <div class="card-header">
                         <div class="row">
                             <div class="col-md-8">

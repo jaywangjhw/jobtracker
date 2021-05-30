@@ -46,6 +46,10 @@
 						<p><strong>Email used for this application:</strong> {{ app.email_used }}</p>
 					{% endif %}
 
+					{% if app.resume %}
+						<p><strong>Resume used:</strong><a href="{{ app.resume.upload.url }}" target="_blank"> {{ app.resume.upload.name }}</a></p>
+					{% endif %}
+
 					{% if app.notes %}
 						<p><strong>Notes:</strong> {{ app.notes }}</p> 
 					{% endif %}
