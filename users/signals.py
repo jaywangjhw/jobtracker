@@ -37,6 +37,6 @@ def check_for_existing_user(sender, request, sociallogin, **kwargs):
         # If we have an existing user with this email address, log them in
         # Note: If multiple accounts exist with this email address, only the first user is going
         # to be connected to this social account.
-        perform_login(request, users[0], email_verification='optional')
+        perform_login(request, existing_users[0], email_verification='optional')
         # Redirect the user to the home page
         raise ImmediateHttpResponse(redirect(settings.LOGIN_REDIRECT_URL.format(id=request.user.id)))
