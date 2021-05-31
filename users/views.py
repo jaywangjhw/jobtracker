@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from .forms import UserRegisterForm, UserUpdateForm
 from django.views.generic.edit import CreateView
@@ -9,8 +10,7 @@ from django.urls import reverse_lazy
 from .models import Document
 
 
-# Create your views here.
-def register(request):
+def register(request, backend='django.contrib.auth.backends.ModelBackend'):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
@@ -20,12 +20,13 @@ def register(request):
             username = form.cleaned_data.get('username')
             pw = form.cleaned_data.get('password')
             authenticate(username=username, password=pw)
-            login(request, new_user)
+            login(request, new_user, backend=backend)
             messages.success(request, f'Account created for {username}')
             return redirect('jobs-home')
     else:
         form = UserRegisterForm()
     return render(request, 'users/register.html', {'form': form})
+
 
 @login_required
 def profile(request):
@@ -46,8 +47,7 @@ def profile(request):
     return render(request, 'users/profile.html', context)
 
 
-
-class DocumentCreateView(CreateView):
+class DocumentCreateView(LoginRequiredMixin, CreateView):
     model = Document
     fields = ['upload' ]
     success_url = reverse_lazy('upload')

@@ -105,7 +105,7 @@ class Contact(models.Model):
 	def __str__(self):
 		"""String for representing a Contact as their first and last names"""
 		return self.first_name + ' ' + self.last_name
-    
+
 
 class Account(models.Model):
 	user = models.OneToOneField(
@@ -208,16 +208,3 @@ class Communication(models.Model):
 	
 	def get_absolute_url(self):
 		return reverse('jobs-list-communications')
-
-
-def post_new_user_created_signal(sender, instance, created, **kwargs):
-	''' Every time a new user registers for the site and a new User
-		is created in the db, this function gets passed to the post_save
-		signal, to automatically create an Account for that new User.
-	'''
-	if created:
-		Account.objects.create(user=instance)
-
-
-# Listens for new User creation
-post_save.connect(post_new_user_created_signal, sender=User)
