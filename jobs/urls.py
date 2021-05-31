@@ -9,7 +9,6 @@ from django.views.generic import TemplateView
 
 urlpatterns = [
     path('', HomeView.as_view(), name='jobs-home'),
-    #path('', views.home, name='jobs-home'),
     path('companies/', CompanyListView.as_view(), name='jobs-companies'),
     path('companies/<int:pk>', CompanyDetailView.as_view(), name='jobs-company-details'),
     path('companies/edit/<int:pk>', CompanyUpdateView.as_view(), name='jobs-company-update'),
@@ -25,7 +24,6 @@ urlpatterns = [
     path('skill/new', SkillCreateView.as_view(), name='jobs-new-skill'),
     path('skill/edit/<int:pk>', SkillUpdateView.as_view(), name='jobs-update-skill'),
     path('skill/delete/<int:pk>', SkillDeleteView.as_view(), name='jobs-delete-skill'),
-    path('account/', views.account, name='jobs-account'),
     path('applications/', ApplicationListView.as_view(), name='jobs-list-applications'),
     path('applications/new', ApplicationCreateView.as_view(), name='jobs-new-application'),
     path('applications/<int:pk>', ApplicationDetailView.as_view(), name='jobs-detail-application'),

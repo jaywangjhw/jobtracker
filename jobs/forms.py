@@ -2,7 +2,6 @@ from django import forms
 from django.forms import ModelForm, CheckboxSelectMultiple
 from .models import (Position, 
                      Company,
-                     Account, 
                      Contact, 
                      Application, 
                      Communication, 
@@ -43,13 +42,6 @@ class PositionForm(ModelForm):
         super(PositionForm, self).__init__(*args, **kwargs)
         self.fields['company'].queryset = Company.objects.filter(user=user)
         self.fields['skills'].queryset = Skill.objects.filter(user=user)
-
-
-class AccountForm(ModelForm):
-
-	class Meta:
-		model = Account
-		fields = '__all__'
 
 
 class CompanyForm(ModelForm):

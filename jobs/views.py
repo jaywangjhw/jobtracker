@@ -9,7 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.db.models import Count
-from .models import Position, Company, Account, Contact, Communication, Application, Interview, Assessment, Skill
+from .models import Position, Company, Contact, Communication, Application, Interview, Assessment, Skill
 from .forms import (ApplicationForm,
                     AssessmentForm,
                     CombinedPositionForm,
@@ -146,7 +146,7 @@ class HomeView(LoginRequiredMixin, View):
 
             application_form = CombinedApplicationForm(request.POST, user=self.request.user)
             application_form.instance.user = self.request.user
-            print(position)
+
             if position:
                 application_form.instance.position = position
             
@@ -309,8 +309,6 @@ class PositionCreateView(LoginRequiredMixin, CreateView):
 class PositionUpdateView(LoginRequiredMixin, UpdateView):
     model = Position
     form_class = PositionForm
-    #fields = ['company', 'position_title', 'position_url', 'date_opened', 'date_closed',
-     #           'skills', 'job_description']
     template_name = 'jobs/update_position.html'
     context_object_name = 'position'
 
@@ -408,8 +406,6 @@ class ApplicationCreateView(LoginRequiredMixin, CreateView):
 class ApplicationUpdateView(LoginRequiredMixin, UpdateView):
     model = Application
     form_class = ApplicationForm
-    #fields = ['position', 'date_started', 'date_submitted', 'email_used', 'offer',
-     #           'accepted', 'notes']
     template_name = 'jobs/update_application.html'
     context_object_name = 'application'
 
@@ -643,7 +639,6 @@ class InterviewCreateView(LoginRequiredMixin, CreateView):
     model = Interview
     template_name = 'jobs/add_interview.html'
     context_object_name = 'interview'
-    #success_url = reverse_lazy('jobs-home')
     form_class = InterviewForm
 
     def get_initial(self):
@@ -759,14 +754,3 @@ class AssessmentDeleteView(LoginRequiredMixin, DeleteView):
 
 
 #-------------------------------------Assessment Views End-------------------------------------
-
-@login_required
-def account(request):
-    account = Account.objects.all()
-    
-    context = {
-        'title': 'Account',
-        'account': account
-    }
-    return render(request, 'jobs/account.html', context)
-
