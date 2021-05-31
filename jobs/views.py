@@ -61,8 +61,10 @@ class HomeView(LoginRequiredMixin, View):
                         status = 'Interview Scheduled'
             elif app['date_submitted']:
                 status = 'Submitted'
-            else:
+            elif app['date_started']:
                 status = 'Started'
+            else:
+                status = "Not Started"
 
             app['status'] = status
 
