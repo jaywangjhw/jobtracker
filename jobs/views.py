@@ -182,7 +182,7 @@ def parse_job_url(request):
     # Handles Indeed, Linkedin, and amazon company page job postings.
     job_data = get_job_data(url, company_name)
 
-    if not job_data:
+    if 'position_title' not in job_data:
         job_data['company_message'] = 'We couldn\'t figure out many details from this url. Please fill out the form manually.'
  
     return JsonResponse(job_data)
@@ -690,11 +690,9 @@ class CommunicationUpdateView(LoginRequiredMixin, UpdateView):
     def get_success_url(self, **kwargs):
         if self.request.GET.get('next'):
             next_url = self.request.GET.get('next')
-            print(next_url)
             if self.request.GET.get('contact'):
                 contact_id = int(self.request.GET.get('contact'))
                 next_url = f'{next_url}?contact={contact_id}'
-                print(next_url)
             return next_url
         else:
             return reverse_lazy('jobs-list-communications')
