@@ -15,7 +15,7 @@
    					<span>Application Details</span>
    				</div>
    				<div class="col-md-6 text-right">
-                	<a class="btn btn-sm btn-primary border-primary" href="{% url 'jobs-update-application' app.id %}"><i class="bi bi-pencil-square"></i> Application</a>	       					
+                	<a class="btn btn-sm btn-primary border-primary" href="{% url 'jobs-update-application' app.id %}?next={{ request.path }}"><i class="bi bi-pencil-square"></i> Application</a>	       					
    				</div>
    			</div>
    		</div>
@@ -64,7 +64,7 @@
    					<span>Position Details</span>
    				</div>
    				<div class="col-md-6 text-right">
-                	<a class="btn btn-sm btn-primary border-primary" href="{% url 'jobs-update-position' app.position.id %}"><i class="bi bi-pencil-square"></i> Position</a>	       					
+                	<a class="btn btn-sm btn-primary border-primary" href="{% url 'jobs-update-position' app.position.id %}?next={{ request.path }}"><i class="bi bi-pencil-square"></i> Position</a>	       					
    				</div>
    			</div>
    		</div>
@@ -199,7 +199,7 @@
 			<h3>Communication related to this Application:</h3>
 		</div>
 		<div class="col-md-4 text-right">
-			<a class="btn btn-primary mb-3 border-primary" href="{% url 'jobs-new-communication' %}?application={{ app.id }}">Add Communication</a>
+			<a class="btn btn-primary mb-3 border-primary" href="{% url 'jobs-new-communication' %}?application={{ app.id }}&next={{ request.path }}">Add Communication</a>
 		</div>
 	</div>
 	{% if communications %}
@@ -224,8 +224,8 @@
 							<td>{{ comm.method }}</td>
 							<td>{{ comm.notes }}</td>
 							<td class="text-right">
-								<a class="btn btn-primary border-primary" href="{% url 'jobs-update-communication' comm.id %}" role="button"><i class="bi bi-pencil-square"></i></a>
-								<a class="btn btn-danger border-danger" href="{% url 'jobs-delete-communication' comm.id %}" role="button"><i class="bi bi-trash"></i></a>
+								<a class="btn btn-primary border-primary" href="{% url 'jobs-update-communication' comm.id %}?next={{ request.path }}" role="button"><i class="bi bi-pencil-square"></i></a>
+								<a class="btn btn-danger border-danger" href="{% url 'jobs-delete-communication' comm.id %}?next={{ request.path }}" role="button"><i class="bi bi-trash"></i></a>
 							</td>
 						</tr>
 				{% endfor %}
