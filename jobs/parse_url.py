@@ -27,7 +27,8 @@ def get_linkedin_data(url):
 	data = {}
 
 	try:
-		data['company'] = soup.find('a', class_='topcard__org-name-link').text
+		company_name = soup.find('a', class_='topcard__org-name-link').text
+		data['company'] = company_name.strip()
 	except:
 		pass
 
@@ -72,7 +73,8 @@ def get_indeed_data(url):
 	data = {}
 
 	try:
-		data['company'] = soup.find('div', class_='icl-u-textColor--success').text
+		company_name = soup.find('div', class_='icl-u-textColor--success').text
+		data['company'] = company_name.strip()
 	except:
 		pass
 
