@@ -279,8 +279,9 @@ class PositionCreateView(LoginRequiredMixin, CreateView):
         if self.request.GET.get('next'):
             next_url = self.request.GET.get('next')
 
-            if self.request.GET.get('companyName'):
-                next_url = next_url + '?companyName=' + self.request.GET.get('companyName')
+            if self.request.GET.get('company'):
+                company_id = int(self.request.GET.get('company'))
+                next_url = f'{next_url}?company={company_id}'
 
             return next_url
         else:
@@ -326,13 +327,8 @@ class PositionUpdateView(LoginRequiredMixin, UpdateView):
     context_object_name = 'position'
 
     def get_success_url(self, **kwargs):
-        if self.request.GET.get('next'):
-            next_url = self.request.GET.get('next')
-
-            if self.request.GET.get('companyName'):
-                next_url = next_url + '?companyName=' + self.request.GET.get('companyName')
-
-            return next_url
+        if self.request.GET.get('next'): 
+            return self.request.GET.get('next')
         else:
             return reverse_lazy('jobs-list-positions')
 
@@ -356,12 +352,7 @@ class PositionDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_success_url(self, **kwargs):
         if self.request.GET.get('next'):
-            next_url = self.request.GET.get('next')
-
-            if self.request.GET.get('companyName'):
-                next_url = next_url + '?companyName=' + self.request.GET.get('companyName')
-
-            return next_url
+            return self.request.GET.get('next')
         else:
             return reverse_lazy('jobs-list-positions')
 
@@ -409,9 +400,17 @@ class ApplicationCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self, **kwargs):
         if self.request.GET.get('next'):
             next_url = self.request.GET.get('next')
+            
+            if self.request.GET.get('skill'):
+                skill_id = int(self.request.GET.get('skill'))
+                next_url = f'{next_url}?skill={skill_id}'
+            elif self.request.GET.get('company'):
+                company_id = int(self.request.GET.get('company'))
+                next_url = f'{next_url}?company={company_id}'
+            
             return next_url
         else:
-            return reverse_lazy('jobs-list-applications')
+            return reverse_lazy('jobs-detail-application', args=(self.object.id,))
 
 
     def get_form_kwargs(self):
@@ -530,10 +529,29 @@ class ContactUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'jobs/update_contact.html'
     context_object_name = 'contact'
 
+    def get_success_url(self, **kwargs):
+        if self.request.GET.get('next'):
+            next_url = self.request.GET.get('next')
+            if self.request.GET.get('contact'):
+                contact_id = int(self.request.GET.get('contact'))
+                next_url = f'{next_url}?contact={contact_id}'
+            return next_url
+        else:
+            return reverse_lazy('jobs-contacts')
+
 
 class ContactDeleteView(LoginRequiredMixin, DeleteView):
     model = Contact
-    success_url = reverse_lazy('jobs-contacts')
+    
+    def get_success_url(self, **kwargs):
+        if self.request.GET.get('next'):
+            next_url = self.request.GET.get('next')
+            if self.request.GET.get('contact'):
+                contact_id = int(self.request.GET.get('contact'))
+                next_url = f'{next_url}?contact={contact_id}'
+            return next_url
+        else:
+            return reverse_lazy('jobs-contacts')
 
 #-------------------------------------Contact Views End---------------------------------------------------
 
@@ -565,17 +583,6 @@ class SkillCreateView(LoginRequiredMixin, CreateView):
     fields = ['skill_name']
     success = '/skill'
 
-    def get_success_url(self, **kwargs):
-        if self.request.GET.get('next'):
-            next_url = self.request.GET.get('next')
-
-            if self.request.GET.get('skillName'):
-                next_url = next_url + '?skillName=' + self.request.GET.get('skillName')
-
-            return next_url
-        else:
-            return reverse_lazy('jobs-list-skill')
-
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
@@ -592,15 +599,7 @@ class SkillUpdateView(LoginRequiredMixin, UpdateView):
     context_object_name = 'skill'
        
     def get_success_url(self, **kwargs):
-        if self.request.GET.get('next'):
-            next_url = self.request.GET.get('next')
-
-            if self.request.GET.get('skillName'):
-                next_url = next_url + '?skillName=' + self.request.GET.get('skillName')
-
-            return next_url
-        else:
-            return reverse_lazy('jobs-list-skill')
+        return reverse_lazy('jobs-list-skill')
 
 
 class SkillDeleteView(LoginRequiredMixin, DeleteView):
@@ -635,7 +634,8 @@ class CommunicationCreateView(LoginRequiredMixin, CreateView):
             next_url = self.request.GET.get('next')
 
             if self.request.GET.get('contact'):
-                next_url = next_url + '?contact=' + self.request.GET.get('contact')
+                contact_id = int(self.request.GET.get('contact'))
+                next_url = f'{next_url}?contact={contact_id}'
 
             return next_url
         else:
@@ -690,7 +690,11 @@ class CommunicationUpdateView(LoginRequiredMixin, UpdateView):
     def get_success_url(self, **kwargs):
         if self.request.GET.get('next'):
             next_url = self.request.GET.get('next')
-
+            print(next_url)
+            if self.request.GET.get('contact'):
+                contact_id = int(self.request.GET.get('contact'))
+                next_url = f'{next_url}?contact={contact_id}'
+                print(next_url)
             return next_url
         else:
             return reverse_lazy('jobs-list-communications')
@@ -708,7 +712,6 @@ class CommunicationDeleteView(LoginRequiredMixin, DeleteView):
     def get_success_url(self, **kwargs):
         if self.request.GET.get('next'):
             next_url = self.request.GET.get('next')
-
             return next_url
         else:
             return reverse_lazy('jobs-list-communications')
