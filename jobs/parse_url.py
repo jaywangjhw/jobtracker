@@ -142,9 +142,7 @@ def get_job_data(url, company_name):
 
 	domain = get_domain_company(url)
 
-	if company_name and company_name.lower() == 'amazon':
-		return get_amazon_data(url)
-	elif domain == 'amazon':
+	if domain == 'amazon':
 		return get_amazon_data(url)
 	elif domain == 'indeed':
 		return get_indeed_data(url)
