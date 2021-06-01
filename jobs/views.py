@@ -181,7 +181,7 @@ def parse_job_url(request):
     
     # Handles Indeed, Linkedin, and amazon company page job postings.
     job_data = get_job_data(url, company_name)
-
+    print(job_data)
     if 'position_title' not in job_data:
         job_data['company_message'] = 'We couldn\'t figure out many details from this url. Please fill out the form manually.'
  
