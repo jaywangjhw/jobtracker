@@ -181,8 +181,8 @@ def parse_job_url(request):
     
     # Handles Indeed, Linkedin, and amazon company page job postings.
     job_data = get_job_data(url, company_name)
-
-    if not job_data:
+    print(job_data)
+    if 'position_title' not in job_data:
         job_data['company_message'] = 'We couldn\'t figure out many details from this url. Please fill out the form manually.'
  
     return JsonResponse(job_data)
@@ -273,7 +273,19 @@ class PositionCreateView(LoginRequiredMixin, CreateView):
     form_class = PositionForm
     context_object_name = 'position'
     template_name = 'jobs/add_position.html'
-    success = '/positions'
+    #success = '/positions'
+
+    def get_success_url(self, **kwargs):
+        if self.request.GET.get('next'):
+            next_url = self.request.GET.get('next')
+
+            if self.request.GET.get('company'):
+                company_id = int(self.request.GET.get('company'))
+                next_url = f'{next_url}?company={company_id}'
+
+            return next_url
+        else:
+            return reverse_lazy('jobs-list-positions')
 
     def get_form_kwargs(self):
         ''' Allows us to pass in the user to the kwargs when the form is created. Then, within
@@ -314,6 +326,12 @@ class PositionUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'jobs/update_position.html'
     context_object_name = 'position'
 
+    def get_success_url(self, **kwargs):
+        if self.request.GET.get('next'): 
+            return self.request.GET.get('next')
+        else:
+            return reverse_lazy('jobs-list-positions')
+
     def get_form_kwargs(self):
         ''' Allows us to pass in the user to the kwargs when the position is updated. Then, within
             the PositionForm class, the __init__ filters the company queryset to only those
@@ -330,7 +348,13 @@ class PositionUpdateView(LoginRequiredMixin, UpdateView):
 
 class PositionDeleteView(LoginRequiredMixin, DeleteView):
     model = Position
-    success_url = reverse_lazy('jobs-list-positions')
+    #success_url = reverse_lazy('jobs-list-positions')
+
+    def get_success_url(self, **kwargs):
+        if self.request.GET.get('next'):
+            return self.request.GET.get('next')
+        else:
+            return reverse_lazy('jobs-list-positions')
 
 
 class PositionDetailView(LoginRequiredMixin, DetailView):
@@ -372,7 +396,22 @@ class ApplicationCreateView(LoginRequiredMixin, CreateView):
     form_class = ApplicationForm
     context_object_name = 'application'
     template_name = 'jobs/add_application.html'
-    success = '/applications'
+
+    def get_success_url(self, **kwargs):
+        if self.request.GET.get('next'):
+            next_url = self.request.GET.get('next')
+            
+            if self.request.GET.get('skill'):
+                skill_id = int(self.request.GET.get('skill'))
+                next_url = f'{next_url}?skill={skill_id}'
+            elif self.request.GET.get('company'):
+                company_id = int(self.request.GET.get('company'))
+                next_url = f'{next_url}?company={company_id}'
+            
+            return next_url
+        else:
+            return reverse_lazy('jobs-detail-application', args=(self.object.id,))
+
 
     def get_form_kwargs(self):
         ''' Allows us to pass in the user to the kwargs when the form is created. Then, within
@@ -424,9 +463,12 @@ class ApplicationUpdateView(LoginRequiredMixin, UpdateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
     
-    def get_success_url(self):
-        # Go to this Interview's application details page after deleting a new interview.
-        return reverse_lazy('jobs-list-applications')
+    def get_success_url(self, **kwargs):
+        if self.request.GET.get('next'):
+            next_url = self.request.GET.get('next')
+            return next_url
+        else:
+            return reverse_lazy('jobs-list-applications')
 
 
 class ApplicationDeleteView(LoginRequiredMixin, DeleteView):
@@ -487,10 +529,29 @@ class ContactUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'jobs/update_contact.html'
     context_object_name = 'contact'
 
+    def get_success_url(self, **kwargs):
+        if self.request.GET.get('next'):
+            next_url = self.request.GET.get('next')
+            if self.request.GET.get('contact'):
+                contact_id = int(self.request.GET.get('contact'))
+                next_url = f'{next_url}?contact={contact_id}'
+            return next_url
+        else:
+            return reverse_lazy('jobs-contacts')
+
 
 class ContactDeleteView(LoginRequiredMixin, DeleteView):
     model = Contact
-    success_url = reverse_lazy('jobs-contacts')
+    
+    def get_success_url(self, **kwargs):
+        if self.request.GET.get('next'):
+            next_url = self.request.GET.get('next')
+            if self.request.GET.get('contact'):
+                contact_id = int(self.request.GET.get('contact'))
+                next_url = f'{next_url}?contact={contact_id}'
+            return next_url
+        else:
+            return reverse_lazy('jobs-contacts')
 
 #-------------------------------------Contact Views End---------------------------------------------------
 
@@ -515,7 +576,6 @@ class SkillListView(LoginRequiredMixin, ListView):
         return context
 
 
-
 class SkillCreateView(LoginRequiredMixin, CreateView):
     model = Skill
     context_object_name = 'skill'
@@ -538,8 +598,7 @@ class SkillUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'jobs/update_skill.html'
     context_object_name = 'skill'
        
-    def get_success_url(self):
-        # Go to this Skill's page after updating
+    def get_success_url(self, **kwargs):
         return reverse_lazy('jobs-list-skill')
 
 
@@ -569,6 +628,18 @@ class CommunicationCreateView(LoginRequiredMixin, CreateView):
     template_name = 'jobs/add_communication.html'
     context_object_name = 'comms'
     success_url = reverse_lazy('jobs-contacts')
+
+    def get_success_url(self, **kwargs):
+        if self.request.GET.get('next'):
+            next_url = self.request.GET.get('next')
+
+            if self.request.GET.get('contact'):
+                contact_id = int(self.request.GET.get('contact'))
+                next_url = f'{next_url}?contact={contact_id}'
+
+            return next_url
+        else:
+            return reverse_lazy('jobs-list-communications')
 
     def get_form_kwargs(self):
         ''' Allows us to pass in the user to the kwargs when the form is created. Then, within
@@ -616,6 +687,16 @@ class CommunicationUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'jobs/update_communication.html'
     context_object_name = 'comms'
 
+    def get_success_url(self, **kwargs):
+        if self.request.GET.get('next'):
+            next_url = self.request.GET.get('next')
+            if self.request.GET.get('contact'):
+                contact_id = int(self.request.GET.get('contact'))
+                next_url = f'{next_url}?contact={contact_id}'
+            return next_url
+        else:
+            return reverse_lazy('jobs-list-communications')
+
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
@@ -625,6 +706,13 @@ class CommunicationDeleteView(LoginRequiredMixin, DeleteView):
     
     model = Communication
     success_url = reverse_lazy('jobs-list-communications')
+
+    def get_success_url(self, **kwargs):
+        if self.request.GET.get('next'):
+            next_url = self.request.GET.get('next')
+            return next_url
+        else:
+            return reverse_lazy('jobs-list-communications')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

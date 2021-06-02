@@ -40,7 +40,7 @@
                         </div>
                         {% empty %}
                         <div class="mt">
-                            <a class="btn btn-sm btn-primary" href="{% url 'jobs-new-application' %}?position={{ position.id }}">Add Application</a>
+                            <a class="btn btn-sm btn-primary" href="{% url 'jobs-new-application' %}?position={{ position.id }}&next={{ request.path }}">Add Application</a>
                         </div>                              
                         {% endfor %}
                     </div>
@@ -52,8 +52,8 @@
                         <span class="card-text"><small class="text-muted"><a href="{{ position.position_url }}" class="mr-5">Link to external job posting url</a>Job position opened on {{ position.date_opened }}</small></span>
                     </div>
                     <div class="col text-right">
-                        <a class="btn btn-sm btn-primary" href="{% url 'jobs-update-position' position.id %}" role="button"><i class="bi bi-pencil-square"></i> Position</a>
-                        <a class="btn btn-sm btn-primary" href="{% url 'jobs-delete-position' position.id %}" role="button"><i class="bi bi-trash"></i> Position</a>
+                        <a class="btn btn-sm btn-primary" href="{% url 'jobs-update-position' position.id %}?next={{ request.path }}" role="button"><i class="bi bi-pencil-square"></i> Position</a>
+                        <a class="btn btn-sm btn-primary" href="{% url 'jobs-delete-position' position.id %}?next={{ request.path }}" role="button"><i class="bi bi-trash"></i> Position</a>
                     </div>
                 </div>
             </div>

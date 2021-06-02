@@ -124,12 +124,12 @@
 						<td>{{ app.status }}</td>
 						<td class="text-center">
 							<a class="btn btn-primary delete-app" href="{% url 'jobs-detail-application' app.id %}" role="button">Details</a>
-							<a class="btn btn-primary delete-app" href="{% url 'jobs-update-application' app.id %}" role="button"><i class="bi bi-pencil-square"></i></a>
-							<a class="btn btn-primary delete-app" href="{% url 'jobs-delete-application' app.id %}" role="button"><i class="bi bi-trash"></i></a>
+							<a class="btn btn-primary delete-app" href="{% url 'jobs-update-application' app.id %}?next={{ request.path }}" role="button"><i class="bi bi-pencil-square"></i></a>
+							<a class="btn btn-primary delete-app" href="{% url 'jobs-delete-application' app.id %}?next={{ request.path }}" role="button"><i class="bi bi-trash"></i></a>
 							<span class="dropdown">
 								<button class="dropdown-toggle btn btn-primary" href="#" id="app-list-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"> + </button>
 								<div class="dropdown-menu dropdown-menu-right" aria-labelledby="app-list-dropdown">
-									<a class="dropdown-item" href="{% url 'jobs-new-communication' %}?application={{ app.id }}">Add Communication</a>
+									<a class="dropdown-item" href="{% url 'jobs-new-communication' %}?application={{ app.id }}&next={% url 'jobs-detail-application' app.id %}">Add Communication</a>
 									<a class="dropdown-item" href="{% url 'jobs-new-interview' app.id %}">Add Interview</a>
 									<a class="dropdown-item" href="{% url 'jobs-new-assessment' app.id %}">Add Assessment</a>
 								</div>

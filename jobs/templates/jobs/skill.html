@@ -10,7 +10,11 @@
         <input class="form-control mb-2" id="listSearch" type="text" placeholder="Search for Skill">
         <div class="list-group" id="list-tab" role="tablist">
             {% for skill in skills %}
+            {% if skill.id == request.GET.skill|add:"0"  %}
+            <a class="list-group-item list-group-item-action searchable active" id="list-{{ skill.id }}-list" data-bs-toggle="list" href="#list-{{ skill.id }}" role="tab" aria-controls="list-{{ skill.id }}">
+            {% else %}
             <a class="list-group-item list-group-item-action searchable" id="list-{{ skill.id }}-list" data-bs-toggle="list" href="#list-{{ skill.id }}" role="tab" aria-controls="list-{{ skill.id }}">
+            {% endif %}
                 <div class="row">
                     <div class="col-6">
                         {{ skill.skill_name }}
@@ -26,7 +30,11 @@
     <div class="col-8">
         <div class="tab-content ml-3" id="nav-tabContent">
             {% for skill in skills %}
-             <div class="tab-pane fade show" id="list-{{ skill.id }}" role="tabpanel" aria-labelledby="list-{{ skill.id }}-list">       
+            {% if skill.id == request.GET.skill|add:"0"  %}
+             <div class="tab-pane fade show active" id="list-{{ skill.id }}" role="tabpanel" aria-labelledby="list-{{ skill.id }}-list"> 
+             {% else %}
+            <div class="tab-pane fade show" id="list-{{ skill.id }}" role="tabpanel" aria-labelledby="list-{{ skill.id }}-list">      
+            {% endif %} 
                 <div class="row">
                     <div class="col mb-3">
                         <h3>{{ skill.skill_name }}</h3>
@@ -51,7 +59,7 @@
                     <div class="card-header position-card">
                         <div class="row">
                             <div class="col-md-8">
-                                <h5>{{ position.position_title }}</h5>
+                                <h5>{{ position }}</h5>
                             </div>
                             <div class="col-md-4 text-right">
                                 <a class="btn btn-sm btn-primary" href="{% url 'jobs-position-details' position.id %}" role="button">Position Details</a>
@@ -67,7 +75,7 @@
                                 </div>
                                 {% empty %}
                                 <div class="mt">
-                                    <a class="btn btn-sm btn-primary" href="{% url 'jobs-new-application' %}?position={{ position.id }}">Add Application</a>
+                                    <a class="btn btn-sm btn-primary" href="{% url 'jobs-new-application' %}?position={{ position.id }}&next={{ request.path }}&skill={{ skill.id }}">Add Application</a>
                                 </div>                              
                                 {% endfor %}
                             </div>
@@ -79,8 +87,8 @@
                                 <span class="card-text"><small class="text-muted"><a href="{{ position.position_url }}" class="mr-5">Link to external job posting url</a>Opened {{ position.date_opened }}</small></span>
                             </div>
                             <div class="col text-right">
-                                <a class="btn btn-sm btn-primary" href="{% url 'jobs-update-position' position.id %}" role="button"><i class="bi bi-pencil-square"></i> Position</a>
-                                <a class="btn btn-sm btn-primary" href="{% url 'jobs-delete-position' position.id %}" role="button"><i class="bi bi-trash"></i> Position</a>
+                                <a class="btn btn-sm btn-primary" href="{% url 'jobs-update-position' position.id %}?next={{ request.path }}?skill={{ skill.id }}" role="button"><i class="bi bi-pencil-square"></i> Position</a>
+                                <a class="btn btn-sm btn-primary" href="{% url 'jobs-delete-position' position.id %}?next={{ request.path }}?skill={{ skill.id }}" role="button"><i class="bi bi-trash"></i> Position</a>
                             </div>
                         </div>
                     </div>

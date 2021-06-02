@@ -10,7 +10,11 @@
         <input class="form-control mb-2" id="listSearch" type="text" placeholder="Search for Contact">
         <div class="list-group" id="list-tab" role="tablist">
             {% for contact in contacts %}
+            {% if contact.id == request.GET.contact|add:"0"  %}
+            <a class="list-group-item list-group-item-action searchable active" id="list-{{ contact.id }}-list" data-bs-toggle="list" href="#list-{{ contact.id }}" role="tab" aria-controls="list-{{ contact.id }}">
+            {% else %}
             <a class="list-group-item list-group-item-action searchable" id="list-{{ contact.id }}-list" data-bs-toggle="list" href="#list-{{ contact.id }}" role="tab" aria-controls="list-{{ contact.id }}">
+            {% endif %}
                 <div class="row">
                     <div class="col-6">
                         {{ contact }}
@@ -23,7 +27,11 @@
     <div class="col-8">
         <div class="tab-content ml-3" id="nav-tabContent">
             {% for contact in contacts %}
-             <div class="tab-pane fade show" id="list-{{ contact.id }}" role="tabpanel" aria-labelledby="list-{{ contact.id }}-list">       
+            {% if contact.id == request.GET.contact|add:"0"  %}
+            <div class="tab-pane fade show active" id="list-{{ contact.id }}" role="tabpanel" aria-labelledby="list-{{ contact.id }}-list">
+            {% else %}
+            <div class="tab-pane fade show" id="list-{{ contact.id }}" role="tabpanel" aria-labelledby="list-{{ contact.id }}-list">
+            {% endif %}
                 <div class="row">
                     <div class="col mb-3">
                         <h3>{{ contact }}</h3>
@@ -37,11 +45,16 @@
                         {% else %}
                             <p class="contact-phone">Update this Contact to add phone number</p>
                         {% endif %}
+                        {% if contact.notes %}
+                            <p class="contact-notes"><strong>Notes:</strong> {{ contact.notes }}</p>
+                        {% else %}
+                            <p class="contact-notes">Update this Contact to add notes</p>
+                        {% endif %}
                         <div class="row mb-3">
                             <div class="col">
-                                <a class="btn btn-primary edit-contact" href="{% url 'jobs-update-contact' contact.id %}" role="button"><i class="bi bi-pencil-square"></i></a>
-                                <a class="btn btn-primary delete-contact" href="{% url 'jobs-delete-contact' contact.id %}" role="button"><i class="bi bi-trash"></i></a>
-                                <a class="btn btn-primary add-communication" href="{% url 'jobs-new-communication' %}?contact={{ contact.id }}" role="button">Add Communication</a>
+                                <a class="btn btn-primary edit-contact" href="{% url 'jobs-update-contact' contact.id %}?next={{ request.path }}?contact={{ contact.id }}" role="button"><i class="bi bi-pencil-square"></i></a>
+                                <a class="btn btn-primary delete-contact" href="{% url 'jobs-delete-contact' contact.id %}?next={{ request.path }}?contact={{ contact.id }}" role="button"><i class="bi bi-trash"></i></a>
+                                <a class="btn btn-primary add-communication" href="{% url 'jobs-new-communication' %}?next={{ request.path }}&contact={{ contact.id }}" role="button">Add Communication</a>
                             </div>
                         </div>
                     </div>
@@ -72,8 +85,8 @@
                                 <span class="card-text"><small class="text-muted">{{ comm.date }} -- {{ comm.method }}</small></span>
                             </div>
                             <div class="col text-right">
-                                <a class="btn btn-sm btn-primary" href="{% url 'jobs-update-communication' comm.id %}" role="button"><i class="bi bi-pencil-square"></i> Communication</a>
-                                <a class="btn btn-sm btn-primary" href="{% url 'jobs-delete-communication' comm.id %}" role="button"><i class="bi bi-trash"></i> Communication</a>
+                                <a class="btn btn-sm btn-primary" href="{% url 'jobs-update-communication' comm.id %}?next={{ request.path }}?contact={{ contact.id }}" role="button"><i class="bi bi-pencil-square"></i> Communication</a>
+                                <a class="btn btn-sm btn-primary" href="{% url 'jobs-delete-communication' comm.id %}?next={{ request.path }}?contact={{ contact.id }}" role="button"><i class="bi bi-trash"></i> Communication</a>
                             </div>
                         </div>
                     </div>

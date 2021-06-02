@@ -10,7 +10,11 @@
 		<input class="form-control mb-2" id="listSearch" type="text" placeholder="Search for Company">
     	<div class="list-group" id="list-tab" role="tablist">
 			{% for company in companies %}
+			{% if company.id == request.GET.company|add:"0"  %}
+			<a class="list-group-item list-group-item-action searchable active" id="list-{{ company.id }}-list" data-bs-toggle="list" href="#list-{{ company.id }}" role="tab" aria-controls="list-{{ company.id }}">
+			{% else %}
 			<a class="list-group-item list-group-item-action searchable" id="list-{{ company.id }}-list" data-bs-toggle="list" href="#list-{{ company.id }}" role="tab" aria-controls="list-{{ company.id }}">
+			{% endif %}
 				<div class="row">
 					<div class="col-6">
 						{{ company.name }}
@@ -29,7 +33,11 @@
   	<div class="col-8">
     	<div class="tab-content ml-3" id="nav-tabContent">
 			{% for company in companies %}
-		     <div class="tab-pane fade show" id="list-{{ company.id }}" role="tabpanel" aria-labelledby="list-{{ company.id }}-list">		
+			{% if company.id == request.GET.company|add:"0"  %}
+		     <div class="tab-pane fade show active" id="list-{{ company.id }}" role="tabpanel" aria-labelledby="list-{{ company.id }}-list">
+		     {% else %}
+		     <div class="tab-pane fade show" id="list-{{ company.id }}" role="tabpanel" aria-labelledby="list-{{ company.id }}-list">
+		     {% endif %}		
 		     	<div class="row">
 					<div class="col mb-3">
 						<h3>{{ company.name }}</h3>
@@ -47,7 +55,7 @@
 							<div class="col">
 								<a class="btn btn-primary edit-company" href="{% url 'jobs-company-update' company.id %}" role="button"><i class="bi bi-pencil-square"></i></a>
 								<a class="btn btn-primary delete-company" href="{% url 'jobs-company-delete' company.id %}" role="button"><i class="bi bi-trash"></i></a>
-								<a class="btn btn-primary add-position" href="{% url 'jobs-new-position' %}?company={{ company.id }}" role="button"><i class="bi bi-plus-lg"></i> Position</a>
+								<a class="btn btn-primary add-position" href="{% url 'jobs-new-position' %}?company={{ company.id }}&next={{ request.path }}" role="button"><i class="bi bi-plus-lg"></i> Position</a>
 							</div>
 					    </div>
 					</div>
@@ -74,7 +82,7 @@
 								</div>
 								{% empty %}
 								<div class="mt">
-									<a class="btn btn-sm btn-primary" href="{% url 'jobs-new-application' %}?position={{ position.id }}">Add Application</a>
+									<a class="btn btn-sm btn-primary" href="{% url 'jobs-new-application' %}?position={{ position.id }}&next={{ request.path }}&company={{ company.id }}">Add Application</a>
 								</div>								
 								{% endfor %}
 							</div>
@@ -86,8 +94,8 @@
 								<span class="card-text"><small class="text-muted"><a href="{{ position.position_url }}" class="mr-5">Link to external job posting url</a>Opened {{ position.date_opened }}</small></span>
 							</div>
 							<div class="col text-right">
-								<a class="btn btn-sm btn-primary" href="{% url 'jobs-update-position' position.id %}" role="button"><i class="bi bi-pencil-square"></i> Position</a>
-								<a class="btn btn-sm btn-primary" href="{% url 'jobs-delete-position' position.id %}" role="button"><i class="bi bi-trash"></i> Position</a>
+								<a class="btn btn-sm btn-primary" href="{% url 'jobs-update-position' position.id %}?next={{ request.path }}?company={{ company.id }}" role="button"><i class="bi bi-pencil-square"></i> Position</a>
+								<a class="btn btn-sm btn-primary" href="{% url 'jobs-delete-position' position.id %}?next={{ request.path }}?company={{ company.id }}" role="button"><i class="bi bi-trash"></i> Position</a>
 							</div>
 						</div>
 					</div>

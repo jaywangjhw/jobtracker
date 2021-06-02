@@ -16,7 +16,7 @@
 					{% csrf_token %}
 					<p>You are about to delete communication: "{{ object }}". Are you sure?</p>
 					<input class="btn btn-primary" type="submit" value="Yes, Delete it">
-					<a class="btn btn-primary" href="{% url 'jobs-list-communications' %}" role="button">Cancel</a>
+					<a class="btn btn-primary" href="{{ request.GET.next }}" role="button">Cancel</a>
 				</form>
 			</div>
 		</div>

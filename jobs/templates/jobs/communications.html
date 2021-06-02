@@ -38,8 +38,8 @@
 		                <span class="card-text"><small class="text-muted">{{ comm.date }} -- {{ comm.method }}</small></span>
 		            </div>
 		            <div class="col text-right">
-		                <a class="btn btn-sm btn-primary" href="{% url 'jobs-update-communication' comm.id %}" role="button"><i class="bi bi-pencil-square"></i></a>
-		                <a class="btn btn-sm btn-primary" href="{% url 'jobs-delete-communication' comm.id %}" role="button"><i class="bi bi-trash"></i></a>
+		                <a class="btn btn-sm btn-primary" href="{% url 'jobs-update-communication' comm.id %}?next={{ request.path }}" role="button"><i class="bi bi-pencil-square"></i></a>
+		                <a class="btn btn-sm btn-primary" href="{% url 'jobs-delete-communication' comm.id %}?next={{ request.path }}" role="button"><i class="bi bi-trash"></i></a>
 		            </div>
 		        </div>
 		    </div>
